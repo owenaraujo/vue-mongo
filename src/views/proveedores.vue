@@ -54,7 +54,7 @@ proveedores
               
           <div
             style="position: absolute; right: 15px"
-            class="text-center boton-cuadrado red-alert c-hand text-white mt-3 ml-3"
+            class="text-center boton-cuadrado red-alert c-hand text-white mt-3 ml-3 d-none"
             data-toggle="modal"
             data-target="#modalDelete"
           >
@@ -70,7 +70,21 @@ proveedores
           <div class="text-center">
             <div>
              
-    <b-table class="card mt-3 list-scroll scrollbar-light-blue" :sticky-header="true" striped  hover :filter="filter" :items="proveedores" :fields="fields"></b-table>
+    <b-table class="card mt-3 list-scroll scrollbar-light-blue" :sticky-header="true" striped  hover :filter="filter" :items="proveedores" :fields="fields">
+<template #cell(funciones)="row">
+        <div class="btn red-alert text-white mt-0 c-hand" size="sm" @click="deleteProveedor(row.item._id)" >
+         <i class="fas fa-trash-alt"></i>
+        </div>
+        <div class="btn red-dangers mt-0 c-hand" size="sm" data-toggle="modal"
+            data-target="#modalEdit" @click="FormEditSend(row.item)" >
+          <i class="fa fas-trash"></i>
+        </div>
+
+        <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->
+        
+      </template>
+
+    </b-table>
   </div>
             
           </div>
@@ -82,14 +96,17 @@ proveedores
       <!-- modal edit -->
 
       <div
+      data-bs-backdrop="static"
+       data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true"
         class="modal fade"
         id="modalEdit"
-        tabindex="-1"
+        
         role="dialog"
-        aria-labelledby="myModalLabel"
-        aria-hidden="true"
+       
+       
       >
-        <div class="modal-dialog modal-md" role="document">
+        <div class="modal-dialog modal-md">
           <div class="modal-content" :class="{ 'dark-secondary ': dark }">
             <div
               class="modal-header text-center"
@@ -106,67 +123,7 @@ proveedores
               </button>
             </div>
             <div class="modal-body mx-3">
-              <div
-                id="busquedaEdit"
-                :class="{ 'd-none': !inputEditVisibilyty }"
-              >
-                <div class="md-form mb-4 d-flex">
-                  <i class="fas fa-search prefix grey-text"></i>
-                  <b-form-input
-                    autocomplete="off"
-                    @keyup="getByParamsEdit"
-                    v-model="params.InputEdit"
-                    
-                    :class="{ 'text-white': dark }"
-                  >
-                  </b-form-input>
-                  <b-form-select
-                    style="
-                      
-                      border-left: 0px;
-                      border-right: 0px;
-
-                      border-top: 0px;
-                      padding-left: 10px;
-                    "
-                    :options="optionsSearch"
-                    @change="getByParamsEdit"
-                    v-model="params.paramEdit"
-                    class="form-control custom-select ml-3"
-                    :class="{ 'text-white dark-secondary': dark }"
-                  >
-                    
-                  </b-form-select>
-                  <label
-                    data-error="wrong"
-                    :class="{ 'text-white': dark }"
-                    data-success="right"
-                    for="defaultForm-pass"
-                    >buscar</label
-                  >
-                </div>
-
-                <div
-                  id="resultadoEdit"
-                  class="list-scroll scrollbar-light-blue"
-                  style="max-height: 50vh"
-                >
-                  <div
-                    v-for="resultado of resultados"
-                    v-bind:key="resultado._id"
-                  >
-                    <div class="c-hand div-search mb-3">
-                      <div
-                        @click="formData(resultado._id)"
-                        class="text-center w-100"
-                      >
-                        {{ resultado.nombre }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
+             
               <!-- form editar -->
               <div :class="{ 'd-none': !formVisibilityEDit }">
                 <form id="formEdit" class="">
@@ -340,247 +297,7 @@ proveedores
       </div>
 
       <!-- modal add  -->
-      <!-- modal delete  -->
-      <div
-        class="modal fade"
-        id="modalDelete"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="myModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-md" role="document">
-          <div class="modal-content" :class="{ 'dark-secondary ': dark }">
-            <div
-              class="modal-header text-center"
-              :class="{ 'color-secondary text-white': dark }"
-            >
-              <h4 class="modal-title w-100 font-weight-bold">Borrar</h4>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body mx-3">
-              <div id="busqueda" :class="{'d-none' : !inputDeleteVisibilyty}">
-                <div class="md-form mb-4 d-flex" id="formSearchDelete">
-                  <i class="fas fa-search prefix grey-text"></i>
-
-                  <b-form-input
-                    v-model="params.InputDelete"
-                    
-                    autocomplete="off"
-                    :class="{ 'text-white': dark }"
-                    type="text"
-                    @keyup="getByParamsDelete"
-                  >
-                  </b-form-input>
-
-                  <b-form-select
-                    v-model="params.paramDelete"
-                    :options="optionsSearch"
-                    @change="getByParamsDelete"
-                    style="
-                      
-                      border-left: 0px;
-                      border-right: 0px;
-
-                      border-top: 0px;
-                      padding-left: 10px;
-                    "
-                    name=""
-                    id="parametroDelete"
-                    class="form-control  custom-select ml-3"
-                    :class="{ 'text-white dark-secondary': dark }"
-                  >
-                  </b-form-select>
-                  <label
-                    data-error="wrong"
-                    :class="{ 'text-white': dark }"
-                    data-success="right"
-                    for="defaultForm-pass"
-                    >buscar</label
-                  >
-                </div>
-
-                <div
-                  id="resultadoDelete"
-                  class="list-scroll scrollbar-light-blue"
-                  style="max-height: 50vh"
-                >
-                  <div
-                    v-for="resultado of resultadosDelete"
-                    v-bind:key="resultado._id"
-                  >
-                    <div class="c-hand div-search mb-3">
-                      <div
-                        @click="infoData(resultado._id)"
-                        class="text-center w-100"
-                      >
-                        {{ resultado.nombre }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div id="informacionDelete" :class="{'d-none': inputDeleteVisibilyty}">
-                <div id="contenedorDelete">
-                  <h4>{{infoDelete.nombre}}</h4>
-                  
-                  <div class="d-flex justify-content-center">
-                   
-                    <p class="h5 ml-3">{{infoDelete.telefono}}</p>
-                  </div>
-                  <div class="d-flex justify-content-center">
-                    <div
-                      @click="deleteProveedor(infoDelete._id)"
-                      class="text-center boton-cuadrado color-primary c-hand text-white mt-3 mr-5"
-                    >
-                      <i class="fas fa-check"></i> <br />
-                      borrar
-                    </div>
-                    <div
-                      @click="cancelDelete"
-                      class="text-center boton-cuadrado red-alert c-hand text-white mt-3 ml-5"
-                    >
-                      <i class="fas fa-times"></i> <br />
-                      cancelar
-                    </div>
-                    
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="modal-footer d-flex justify-content-center mr-4 ml-4"
-            ></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- modal delete  -->
-      <!-- modal search  -->
-      <div
-        class="modal fade"
-        id="modalSearch"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="myModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-md" role="document">
-          <div class="modal-content" :class="{ 'dark-secondary ': dark }">
-            <div
-              class="modal-header text-center"
-              :class="{ 'color-secondary text-white': dark }"
-            >
-              <h4 class="modal-title w-100 font-weight-bold">Borrar</h4>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body mx-3">
-              <div id="busqueda" :class="{'d-none' : !inputSearchVisibilyty}">
-                <div class="md-form mb-4 d-flex" id="formSearch">
-                  <i class="fas fa-search prefix grey-text"></i>
-
-                  <b-form-input
-                    v-model="params.InputSearch"
-                    
-                    autocomplete="off"
-                    :class="{ 'text-white': dark }"
-                    type="text"
-                    @keyup="getByParamsSearch"
-                  >
-                  </b-form-input>
-
-                  <b-form-select
-                    v-model="params.paramSearch"
-                    :options="optionsSearch"
-                    @change="getByParamsSearch"
-                    style="
-                      
-                      border-left: 0px;
-                      border-right: 0px;
-
-                      border-top: 0px;
-                      padding-left: 10px;
-                    "
-                    name=""
-                    id="parametroSearch"
-                    class="form-control  custom-select ml-3"
-                    :class="{ 'text-white dark-secondary': dark }"
-                  >
-                  </b-form-select>
-                  <label
-                    data-error="wrong"
-                    :class="{ 'text-white': dark }"
-                    data-success="right"
-                    for="defaultForm-pass"
-                    >buscar</label
-                  >
-                </div>
-
-                <div
-                  id="resultadoSearch"
-                  class="list-scroll scrollbar-light-blue"
-                  style="max-height: 50vh"
-                >
-                  <div
-                    v-for="resultado of resultadoSearch"
-                    v-bind:key="resultado._id"
-                  >
-                    <div class="c-hand div-search mb-3">
-                      <div
-                        @click="infoDataSearch(resultado._id)"
-                        class="text-center w-100"
-                      >
-                        {{ resultado.nombre }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div id="informacionSearch" :class="{'d-none': inputSearchVisibilyty}">
-                <div id="contenedorSearch" class="text-capitalize">
-                  <p class="h4 text-center mb-5">{{infoSearch.nombre}}</p>
-                   <p class=" h5">RIF N°: {{infoSearch.rif}}</p>
-                  
-                    <p class="h5">telefono: {{infoSearch.telefono}}</p>
-                    <p class="h5">codigo: {{infoSearch.codigo}}</p>
-                  <div class="d-flex justify-content-center">
-                   
-                  </div>
-                  <div class="d-flex justify-content-center">
-                    <div
-                      @click="intercambioSearch"
-                      class="text-center boton-cuadrado color-primary c-hand text-white mt-3 mr-5"
-                    >
-                      <i class="fas fa-check"></i> <br />
-                      
-                    </div>
-                    
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="modal-footer d-flex justify-content-center mr-4 ml-4"
-            ></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- modal search  -->
+      
       
     </div>
     <!-- modales  -->
@@ -620,12 +337,9 @@ export default {
         
         
       ],
-      inputEditVisibilyty: true,
-      inputSearchVisibilyty: true,
+      
       formVisibilityEDit: false,
-      infoVisibilityDelete: false,
-      infoVisibilityEdit: false,
-      inputDeleteVisibilyty: true,
+      
 
       FormEdit: {
         codigo: null,
@@ -699,6 +413,8 @@ export default {
             key: 'rif',
             sortable: true
           },
+        'funciones',
+
         ],
       formAdd: {
         nombre: "",
@@ -717,6 +433,7 @@ export default {
     this.getting()
   },
   methods: {
+    anonimo(data){console.log(data);},
     alert(data) {
       this.alerts.push(data);
     },
@@ -734,14 +451,12 @@ export default {
         }
       );
     this.getting()
-      
+       document.querySelector('#modalEdit').classList.remove('show')
+       document.querySelector('#modalEdit').classList.add('d-none')
       this.intercambioEdit();
       this.alert(data);
     },
-    cancelDelete(){
-      
-      this.intercambioDelete()
-    },
+   
     async deleteProveedor(id){
    const {data}= await  axios
         .delete(
@@ -750,85 +465,30 @@ export default {
       this.alert(data);
     this.getting()
 
-      this.intercambioDelete()
-
     },
-    getByParamsSearch() {
-      // if (this.params.InputEdit === "") return (this.resultados = []);
-      axios
-        .get(
-          `${this.server}/proveedores/get/${this.params.InputSearch}/${this.params.paramSearch}`
-        )
-        .then((response) => (this.resultadoSearch = response.data, console.log(response.data)),
-        
-        
-        );
-      
+    FormEditSend(data){
+      this.FormEdit= data
+      this.intercambioEdit()
     },
-    getByParamsEdit() {
-      // if (this.params.InputEdit === "") return (this.resultados = []);
-      axios
-        .get(
-          `${this.server}/proveedores/get/${this.params.InputEdit}/${this.params.paramEdit}`
-        )
-        .then((response) => (this.resultados = response.data));
-      // this.resultados = data;
-    },
-    getByParamsDelete() {
-      axios
-        .get(
-          `${this.server}/proveedores/get/${this.params.InputDelete}/${this.params.paramDelete}`
-        )
-        .then((response) => (this.resultadosDelete = response.data));
-    },
-    intercambioDelete() {
-      
-      this.inputDeleteVisibilyty = !this.inputDeleteVisibilyty;
-      this.params.InputDelete = null;
-    },
-    intercambioSearch() {
-      
-      this.inputSearchVisibilyty = !this.inputSearchVisibilyty;
-      this.params.InputSearch = null;
-    },
+    
+    
+    
+    
     intercambioEdit() {
       this.formVisibilityEDit = !this.formVisibilityEDit;
-      this.inputEditVisibilyty = !this.inputEditVisibilyty;
-      this.params.InputEdit = null;
+      
     },
-    async formData(id) {
-      const { data } = await axios.get(
-        `${this.server}/proveedores/get/${id}`
-      );
-      this.FormEdit = data;
-      this.resultados = [];
-      this.intercambioEdit();
-    },
-    async infoData(id) {
-      const { data } = await axios.get(
-        `${this.server}/proveedores/get/${id}`
-      );
-      this.infoDelete = data;
-      this.resultadosDelete = [];
-      this.intercambioDelete();
-    },
-    async infoDataSearch(id) {
-      const { data } = await axios.get(
-        `${this.server}/proveedores/get/${id}`
-      );
-      this.infoSearch = data;
-      this.resultadoSearch = [];
-      this.intercambioSearch();
-    },
+    
+   
     async addProveedores() {
       const { data } = await axios.post(
         `${this.server}/proveedores/post`,
         this.formAdd
       );
-
+      this.alert(data);
+if (data.value == false) return
       this.formAdd = {};
       this.getting()
-      this.alert(data);
     },
    
     async getting() {
