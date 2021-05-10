@@ -23,6 +23,16 @@
             editar
           </div>
           <div
+            class="text-center boton-cuadrado color-primary c-hand text-white mt-3 ml-3"
+            data-toggle="modal"
+            data-target="#modalSearch"
+          >
+            <i class="fas fa-search"></i> <br />
+            buscar
+          </div>
+          
+              
+          <div
             style="position: absolute; right: 15px"
             class="text-center boton-cuadrado red-alert c-hand text-white mt-3 ml-3"
             data-toggle="modal"
@@ -48,19 +58,17 @@
                   <th scope="col">proveedor</th>
                   <th scope="col">codigo</th>
                   <th scope="col">telefono</th>
-                  <th scope="col">correo</th>
                 </tr>
               </thead>
               <tbody class="" id="tabla">
 
 
-                  <tr class="table-active" v-for="proveedor of proveedores" v-bind:key="proveedor._id">
+                  <tr class="table-active" v-for="(proveedor, key) in proveedores" v-bind:key="proveedor._id">
    
-                      <th scope="row">{{ proveedor.i++}}</th>
+                      <th scope="row">{{ key +1}}</th>
                       <td>{{proveedor.nombre}}</td>
                       <td>{{proveedor.codigo}}</td>
                       <td>{{proveedor.telefono}}</td>
-                      <td>{{proveedor.correo}}</td>
 
                       
                     </tr>
@@ -73,7 +81,6 @@
                   <th scope="col">proveedor</th>
                   <th scope="col">codigo</th>
                   <th scope="col">telefono</th>
-                  <th scope="col">correo</th>
                 </tr>
               </tfoot>
             </table>
@@ -198,29 +205,9 @@
                       class="form-control mt-3"
                       autocomplete="off"
                     ></b-form-input>
-                    <b-form-input
-                      v-model="FormEdit.descripcion"
-                      required
-                      type="text"
-                      onkeyup="validateDescripcion(this)"
-                      id="descripcionEdit"
-                      name="descripcion"
-                      placeholder="descripcion"
-                      class="form-control mt-3"
-                      autocomplete="off"
-                    ></b-form-input>
+                    
                     <div class="d-flex">
-                      <b-form-input
-                        v-model="FormEdit.correo"
-                        required
-                        type="email"
-                        onkeyup="validateCorreo(this)"
-                        id="correoEdit"
-                        name="correo"
-                        placeholder="correo"
-                        class="form-control mt-3 mr-2"
-                        autocomplete="off"
-                      ></b-form-input>
+                     
                       <b-form-input
                         v-model="FormEdit.telefono"
                         required
@@ -229,21 +216,21 @@
                         id="telefonoEdit"
                         name="telefono"
                         placeholder="telefono"
-                        class="form-control mt-3 ml-2 w-75"
+                        class="form-control mt-3  w-50"
+                        autocomplete="off"
+                      ></b-form-input>
+                      <b-form-input
+                        v-model="FormEdit.rif"
+                        
+                
+                       
+                        
+                        placeholder="rif"
+                        class="form-control mt-3 ml-2 w-50"
                         autocomplete="off"
                       ></b-form-input>
                     </div>
-                    <b-form-input
-                      v-model="FormEdit.direccion"
-                      required
-                      type="text"
-                      onkeyup="validateDireccion(this)"
-                      id="direccionEdit"
-                      name="direccion"
-                      placeholder="direccion"
-                      class="form-control mt-3"
-                      autocomplete="off"
-                    ></b-form-input>
+                    
                   </div>
                 </form>
                 <div class="d-flex text-white">
@@ -321,27 +308,9 @@
                     class="form-control mt-3"
                     autocomplete="off"
                   />
-                  <b-form-input
-                    required
-                    type="text"
-                    onkeyup="validateDescripcion(this)"
-                    id="descripcion"
-                    v-model="formAdd.descripcion"
-                    placeholder="descripcion"
-                    class="form-control mt-3"
-                    autocomplete="off"
-                  />
+                 
                   <div class="d-flex">
-                    <b-form-input
-                      required
-                      type="email"
-                      onkeyup="validateCorreo(this)"
-                      id="correo"
-                      v-model="formAdd.correo"
-                      placeholder="correo"
-                      class="form-control mt-3 mr-2"
-                      autocomplete="off"
-                    />
+                    
                     <b-form-input
                       required
                       type="number"
@@ -349,20 +318,21 @@
                       id="telefono"
                       v-model="formAdd.telefono"
                       placeholder="telefono"
-                      class="form-control mt-3 ml-2 w-75"
+                      class="form-control mt-3  w-50"
                       autocomplete="off"
                     />
-                  </div>
-                  <b-form-input
+                    <b-form-input
                     required
                     type="text"
-                    onkeyup="validateDireccion(this)"
-                    id="direccion"
-                    v-model="formAdd.direccion"
-                    placeholder="direccion"
-                    class="form-control mt-3"
+                    id="rif"
+                    v-model="formAdd.rif"
+                    placeholder="rif"
+                    class="form-control mt-3 ml-2 w-50"
                     autocomplete="off"
                   />
+                  </div>
+                 
+                  
                 </div>
               </form>
             </div>
@@ -471,9 +441,9 @@
               <div id="informacionDelete" :class="{'d-none': inputDeleteVisibilyty}">
                 <div id="contenedorDelete">
                   <h4>{{infoDelete.nombre}}</h4>
-                  <p>{{infoDelete.descripcion}}</p>
+                  
                   <div class="d-flex justify-content-center">
-                    <p class="h5">{{infoDelete.correo}}</p>
+                   
                     <p class="h5 ml-3">{{infoDelete.telefono}}</p>
                   </div>
                   <div class="d-flex justify-content-center">
@@ -491,6 +461,7 @@
                       <i class="fas fa-times"></i> <br />
                       cancelar
                     </div>
+                    
                   </div>
                 </div>
               </div>
@@ -503,6 +474,125 @@
       </div>
 
       <!-- modal delete  -->
+      <!-- modal search  -->
+      <div
+        class="modal fade"
+        id="modalSearch"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="myModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-md" role="document">
+          <div class="modal-content" :class="{ 'dark-secondary ': dark }">
+            <div
+              class="modal-header text-center"
+              :class="{ 'color-secondary text-white': dark }"
+            >
+              <h4 class="modal-title w-100 font-weight-bold">Borrar</h4>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body mx-3">
+              <div id="busqueda" :class="{'d-none' : !inputSearchVisibilyty}">
+                <div class="md-form mb-4 d-flex" id="formSearch">
+                  <i class="fas fa-search prefix grey-text"></i>
+
+                  <b-form-input
+                    v-model="params.InputSearch"
+                    
+                    autocomplete="off"
+                    :class="{ 'text-white': dark }"
+                    type="text"
+                    @keyup="getByParamsSearch"
+                  >
+                  </b-form-input>
+
+                  <b-form-select
+                    v-model="params.paramSearch"
+                    :options="optionsSearch"
+                    @change="getByParamsSearch"
+                    style="
+                      
+                      border-left: 0px;
+                      border-right: 0px;
+
+                      border-top: 0px;
+                      padding-left: 10px;
+                    "
+                    name=""
+                    id="parametroSearch"
+                    class="form-control  custom-select ml-3"
+                    :class="{ 'text-white dark-secondary': dark }"
+                  >
+                  </b-form-select>
+                  <label
+                    data-error="wrong"
+                    :class="{ 'text-white': dark }"
+                    data-success="right"
+                    for="defaultForm-pass"
+                    >buscar</label
+                  >
+                </div>
+
+                <div
+                  id="resultadoSearch"
+                  class="list-scroll scrollbar-light-blue"
+                  style="max-height: 50vh"
+                >
+                  <div
+                    v-for="resultado of resultadoSearch"
+                    v-bind:key="resultado._id"
+                  >
+                    <div class="c-hand div-search mb-3">
+                      <div
+                        @click="infoDataSearch(resultado._id)"
+                        class="text-center w-100"
+                      >
+                        {{ resultado.nombre }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div id="informacionSearch" :class="{'d-none': inputSearchVisibilyty}">
+                <div id="contenedorSearch" class="text-capitalize">
+                  <p class="h4 text-center mb-5">{{infoSearch.nombre}}</p>
+                   <p class=" h5">RIF N°: {{infoSearch.rif}}</p>
+                  
+                    <p class="h5">telefono: {{infoSearch.telefono}}</p>
+                    <p class="h5">codigo: {{infoSearch.codigo}}</p>
+                  <div class="d-flex justify-content-center">
+                   
+                  </div>
+                  <div class="d-flex justify-content-center">
+                    <div
+                      @click="intercambioSearch"
+                      class="text-center boton-cuadrado color-primary c-hand text-white mt-3 mr-5"
+                    >
+                      <i class="fas fa-check"></i> <br />
+                      
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="modal-footer d-flex justify-content-center mr-4 ml-4"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- modal search  -->
+      
     </div>
     <!-- modales  -->
   </div>
@@ -528,54 +618,80 @@ export default {
         },
         { value: "nombre", text: "nombre" },
         { value: "codigo", text: "codigo" },
-        { value: "correo", text: "Correo" },
-        { value: "direccion", text: "Dirección" },
+        
+        
       ],
       inputEditVisibilyty: true,
+      inputSearchVisibilyty: true,
       formVisibilityEDit: false,
       infoVisibilityDelete: false,
+      infoVisibilityEdit: false,
       inputDeleteVisibilyty: true,
 
       FormEdit: {
         codigo: null,
-        correo: null,
+        
         createdAt: null,
-        descripcion: null,
-        direccion: null,
+        
+        
         nombre: null,
         status: null,
         telefono: null,
         updatedAt: null,
         _id: null,
+        rif: null
+
       },
       infoDelete: {
         codigo: null,
-        correo: null,
+        
         createdAt: null,
-        descripcion: null,
-        direccion: null,
+       
+        rif: null,
         nombre: null,
         status: null,
         telefono: null,
         updatedAt: null,
-        _id: null,
+        _id: null
+        
+
+      },
+      infoSearch: {
+        codigo: null,
+        
+        createdAt: null,
+       
+        rif: null,
+        nombre: null,
+        status: null,
+        telefono: null,
+        updatedAt: null,
+        _id: null
+        
+
       },
       resultadosDelete: [],
+      resultadosEdit: [],
       resultados: [],
+      resultadoSearch: [],
 
       params: {
         InputDelete: null,
         InputEdit: null,
+        InputSearch: null,
         paramDelete: null,
         paramEdit: null,
+        paramSearch: null,
       },
       formAdd: {
         nombre: "",
         codigo: "",
-        descripcion: "",
-        correo: "",
+       
+        
         telefono: "",
-        direccion: "",
+        
+        rif: ""
+
       },
       proveedores: [],
     };
@@ -593,10 +709,11 @@ export default {
         {
           nombre: this.FormEdit.nombre,
           codigo: this.FormEdit.codigo,
-          descripcion: this.FormEdit.correo,
-          correo: this.FormEdit.correo,
+          rif: this.FormEdit.rif,
+          
           telefono: this.FormEdit.telefono,
-          direccion: this.FormEdit.direccion,
+         
+          
         }
       );
     this.getting()
@@ -619,6 +736,18 @@ export default {
       this.intercambioDelete()
 
     },
+    getByParamsSearch() {
+      // if (this.params.InputEdit === "") return (this.resultados = []);
+      axios
+        .get(
+          `${this.server}/proveedores/get/${this.params.InputSearch}/${this.params.paramSearch}`
+        )
+        .then((response) => (this.resultadoSearch = response.data, console.log(response.data)),
+        
+        
+        );
+      
+    },
     getByParamsEdit() {
       // if (this.params.InputEdit === "") return (this.resultados = []);
       axios
@@ -640,6 +769,11 @@ export default {
       this.inputDeleteVisibilyty = !this.inputDeleteVisibilyty;
       this.params.InputDelete = null;
     },
+    intercambioSearch() {
+      
+      this.inputSearchVisibilyty = !this.inputSearchVisibilyty;
+      this.params.InputSearch = null;
+    },
     intercambioEdit() {
       this.formVisibilityEDit = !this.formVisibilityEDit;
       this.inputEditVisibilyty = !this.inputEditVisibilyty;
@@ -660,6 +794,14 @@ export default {
       this.infoDelete = data;
       this.resultadosDelete = [];
       this.intercambioDelete();
+    },
+    async infoDataSearch(id) {
+      const { data } = await axios.get(
+        `${this.server}/proveedores/get/${id}`
+      );
+      this.infoSearch = data;
+      this.resultadoSearch = [];
+      this.intercambioSearch();
     },
     async addProveedores() {
       const { data } = await axios.post(

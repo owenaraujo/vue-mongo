@@ -7,8 +7,8 @@
               
               <img src="/cssl/images/user.jpg" class="demo-avatar mx-auto" />
               <div class="demo-avatar-dropdown">
-                <span class="mx-auto">
-                  
+                <span class="mx-auto text-white mt-4">
+                  {{usuario.username}}
                 </span>
               </div>
               <div class="demo-avatar-dropdown">
@@ -20,7 +20,7 @@
                 
                 <button
                   id="accbtn"
-                  class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon text-white"
+                  class="d-none mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon text-white"
                 >
                   <i class="material-icons" role="presentation"
                     >arrow_drop_down</i
@@ -106,16 +106,42 @@
               <router-link
                 class="mdl-navigation__link"
                 :class="{'text-white' : dark, 'text-dark': !dark}"
+                to="ventas"
+                ><i
+                  class="material-icons"
+                  :class="{'text-white' : dark, ' text-dark': !dark}"
+                  role="presentation"
+                  >dashboard</i
+                >Ventas</router-link
+              >
+            >
+              <router-link
+                class="mdl-navigation__link"
+                :class="{'text-white' : dark, 'text-dark': !dark}"
                 to="productos"
                 ><i
                   class="material-icons"
                   :class="{'text-white' : dark, ' text-dark': !dark}"
                   role="presentation"
                   >dashboard</i
-                >productos</router-link
+                >Productos</router-link
               >
               <router-link
                 class="mdl-navigation__link"
+                :class="{'text-white' : dark, ' text-dark': !dark}"
+                to="Proveedores"
+              >
+                <i
+                  class="material-icons"
+                  :class="{'text-white' : dark, ' text-dark': !dark}"
+                  role="presentation"
+                  >add_business</i
+                >proveedores</router-link
+              >
+              
+              <div class="d-none">
+                <router-link
+                class="mdl-navigation__link d-none"
                 :class="{'text-white' : dark, ' text-dark': !dark}"
                 to="maquinas"
               >
@@ -127,11 +153,11 @@
                 >equipos</router-link
               >
               <router-link
-                class="mdl-navigation__link"
+                class="mdl-navigation__link d-none"
                 :class="{'text-white' : dark, 'text-dark': !dark}"
                 to="mantenimiento"
                 ><i
-                  class="material-icons"
+                  class="material-icons "
                   :class="{' text-white ' : dark, '  text-dark': !dark}"
                   role="presentation"
                   >engineering</i
@@ -148,18 +174,7 @@
                   >build</i
                 >herramientas</router-link
               >
-              <router-link
-                class="mdl-navigation__link"
-                :class="{'text-white' : dark, ' text-dark': !dark}"
-                to="proveedores"
-              >
-                <i
-                  class="material-icons"
-                  :class="{'text-white' : dark, ' text-dark': !dark}"
-                  role="presentation"
-                  >add_business</i
-                >proveedores</router-link
-              >
+              
               <router-link
                 class="mdl-navigation__link"
                 :class="{'text-white' : dark, ' text-dark': !dark}"
@@ -184,12 +199,14 @@
                   >shopping_cart</i
                 >Purchases</router-link
               >
+              </div>
 
               <div class="mdl-layout-spacer"></div>
-              <router-link
-                class=""
+              <div class="pb-1" style="position:absolute; bottom:0; width: 100%;">
+                <router-link
+                class="mb-0"
                 :class="{'mdl-navigation__link text-white' : dark, 'mdl-navigation__link text-dark': !dark}"
-                to="#"
+                to="informacion"
                 ><i
                   class="material-icons"
                   :class="{'text-white' : dark, ' text-dark': !dark}"
@@ -197,6 +214,7 @@
                   >help_outline</i
                 >informacion
               </router-link>
+              </div>
             </nav>
           </div>
 </template>
@@ -211,7 +229,7 @@ export default {
       }
     },
     computed:{
-    ...mapState(['dark'])
+    ...mapState(['dark', 'usuario'])
   },
 }
 </script>

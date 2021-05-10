@@ -4,8 +4,12 @@ Vue.use(Vuex)
 export default new Vuex.Store({
 
 state:{
-    server :'http://localhost:3000',
+    server :'http://192.168.0.102:3000',
     dark : false,
+    usuario:{
+username : 'owen',
+password : '1234'
+    },
     alerts: []
 },
 mutations:{
