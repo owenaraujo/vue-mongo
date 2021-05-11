@@ -13,7 +13,7 @@
             <i class="fas fa-plus"></i> <br />
             nuevo
           </div>
-
+          
           <div
             class="text-center boton-cuadrado yellow-danger c-hand text-white mt-3 ml-3"
             data-toggle="modal"
@@ -24,11 +24,31 @@
           </div>
           <div
             class="text-center boton-cuadrado color-primary c-hand text-white mt-3 ml-3"
+           
+          >
+           <i>{{proveedores.length}}</i> <br>
+proveedores
+          </div>
+          <div
+            class="d-none text-center boton-cuadrado color-primary c-hand text-white mt-3 ml-3"
             data-toggle="modal"
             data-target="#modalSearch"
           >
             <i class="fas fa-search"></i> <br />
             buscar
+          </div>
+           <div class="d-flex align-items-center" >
+            <b-form-input
+            class="w-75 ml-3"
+              id="filter-input"
+              v-model="filter"
+              type="search"
+              placeholder="Type to Search"
+            ></b-form-input>
+
+            
+             
+            
           </div>
           
               
@@ -46,44 +66,13 @@
     </b-row>
     <b-row>
       <b-col sm="12">
-        <div class="card mt-3 list-scroll scrollbar-light-blue">
+        <div class="">
           <div class="text-center">
-            <table
-              class="table table-striped table-hover"
-              :class="{ 'table-dark': dark }"
-            >
-              <thead class="table-dark">
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">proveedor</th>
-                  <th scope="col">codigo</th>
-                  <th scope="col">telefono</th>
-                </tr>
-              </thead>
-              <tbody class="" id="tabla">
-
-
-                  <tr class="table-active" v-for="(proveedor, key) in proveedores" v-bind:key="proveedor._id">
-   
-                      <th scope="row">{{ key +1}}</th>
-                      <td>{{proveedor.nombre}}</td>
-                      <td>{{proveedor.codigo}}</td>
-                      <td>{{proveedor.telefono}}</td>
-
-                      
-                    </tr>
-
-              
-              </tbody>
-              <tfoot class="table-dark">
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">proveedor</th>
-                  <th scope="col">codigo</th>
-                  <th scope="col">telefono</th>
-                </tr>
-              </tfoot>
-            </table>
+            <div>
+             
+    <b-table class="card mt-3 list-scroll scrollbar-light-blue" :sticky-header="true" striped  hover :filter="filter" :items="proveedores" :fields="fields"></b-table>
+  </div>
+            
           </div>
         </div>
       </b-col>
@@ -605,10 +594,20 @@ export default {
   name: "proveedor",
 
   computed: {
+    sortOptions() {
+        // Create an options list from our fields
+        return this.fields
+          .filter(f => f.sortable)
+          .map(f => {
+            return { text: f.label, value: f.key }
+          })
+      },
     ...mapState(["dark", "alerts", "server"]),
   },
   data() {
     return {
+      filter: null,
+        filterOn: [],
       optionsSearch: [
         {
           value: null,
@@ -683,6 +682,24 @@ export default {
         paramEdit: null,
         paramSearch: null,
       },
+      fields: [
+          {
+            key: 'nombre',
+            sortable: true
+          },
+          {
+            key: 'codigo',
+            sortable: true
+          },
+          {
+            key: 'telefono',
+            sortable: true
+          },
+          {
+            key: 'rif',
+            sortable: true
+          },
+        ],
       formAdd: {
         nombre: "",
         codigo: "",
@@ -814,20 +831,11 @@ export default {
       this.alert(data);
     },
    
-    getting() {
-      axios
+    async getting() {
+      const {data} = await axios
         .get(`${this.server}/proveedores/get`)
-        .then(
-          (response) => (
-            (this.proveedores = response.data)
-          )
-        );
+        this.proveedores = data
     },
   },
 };
 </script>
-<style >
-.form-control {
-  border-radius: 20rem;
-}
-</style>

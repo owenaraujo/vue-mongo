@@ -114,7 +114,7 @@
                   >dashboard</i
                 >Ventas</router-link
               >
-            >
+            
               <router-link
                 class="mdl-navigation__link"
                 :class="{'text-white' : dark, 'text-dark': !dark}"
@@ -137,6 +137,19 @@
                   role="presentation"
                   >add_business</i
                 >proveedores</router-link
+              >
+              
+              <router-link
+                class="mdl-navigation__link"
+                :class="{'text-white' : dark, ' text-dark': !dark}"
+                to="configuracion"
+              >
+                <i
+                  class="material-icons"
+                  :class="{'text-white' : dark, ' text-dark': !dark}"
+                  role="presentation"
+                  >add_business</i
+                >configuracion</router-link
               >
               
               <div class="d-none">

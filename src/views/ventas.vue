@@ -114,7 +114,7 @@ export default {
           precio: 1,
           cantidad: 9,
           alerta: null,
-          stock: 3,
+          stock: 0,
         },
         {
           id: 7,
