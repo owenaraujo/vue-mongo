@@ -4,7 +4,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
 
 state:{
-    server :'http://192.168.0.103:3000',
+    server :'http://192.168.0.102:3000',
     dark : false,
     usuario:{
 username : 'owen',

@@ -15,7 +15,7 @@
           </div>
           
           <div
-            class="text-center boton-cuadrado yellow-danger c-hand text-white mt-3 ml-3"
+            class=" d-none text-center boton-cuadrado yellow-danger c-hand text-white mt-3 ml-3"
             data-toggle="modal"
             data-target="#modalEdit"
           >
@@ -52,15 +52,7 @@ proveedores
           </div>
           
               
-          <div
-            style="position: absolute; right: 15px"
-            class="text-center boton-cuadrado red-alert c-hand text-white mt-3 ml-3 d-none"
-            data-toggle="modal"
-            data-target="#modalDelete"
-          >
-            <i class="fas fa-trash-alt"></i> <br />
-            borrar
-          </div>
+          
         </div>
       </b-col>
     </b-row>
@@ -75,9 +67,9 @@ proveedores
         <div class="btn red-alert text-white mt-0 c-hand" size="sm" @click="deleteProveedor(row.item._id)" >
          <i class="fas fa-trash-alt"></i>
         </div>
-        <div class="btn red-dangers mt-0 c-hand" size="sm" data-toggle="modal"
+        <div class="btn yellow-danger text-white mt-0 c-hand" size="sm" data-toggle="modal"
             data-target="#modalEdit" @click="FormEditSend(row.item)" >
-          <i class="fa fas-trash"></i>
+          <i class="fas fa-pencil-alt"></i>
         </div>
 
         <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->
@@ -451,8 +443,7 @@ export default {
         }
       );
     this.getting()
-       document.querySelector('#modalEdit').classList.remove('show')
-       document.querySelector('#modalEdit').classList.add('d-none')
+      
       this.intercambioEdit();
       this.alert(data);
     },
