@@ -212,7 +212,7 @@ proveedores
               class="modal-header text-center"
               :class="{ 'color-secondary text-white': dark }"
             >
-              <h4 class="modal-title w-100 font-weight-bold">Agregar</h4>
+              <h4 class="modal-title w-100 font-weight-bold">Agregar </h4>
               <button
                 type="button"
                 class="close"
@@ -311,7 +311,7 @@ export default {
             return { text: f.label, value: f.key }
           })
       },
-    ...mapState(["dark", "alerts", "server"]),
+    ...mapState(["dark", "alerts", "server", "token"]),
   },
   data() {
     return {
@@ -473,7 +473,7 @@ export default {
    
     async addProveedores() {
       const { data } = await axios.post(
-        `${this.server}/proveedores/post`,
+        `${this.server}/proveedores/post/${this.token}`,
         this.formAdd
       );
       this.alert(data);

@@ -27,7 +27,7 @@
     <b-badge variant="primary" pill>{{infoEmpresa.dolar | formatNumber}}</b-badge>
   </b-list-group-item>
 </b-list-group>
-<div class="card-header">dolar</div>
+
 <div>
   <div class="btn color-secondary text-white c-hand" v-b-toggle.collapse-1 >editar dolar </div>
   <b-collapse id="collapse-1" class="mt-2">
@@ -44,13 +44,23 @@
   
 </div>
               </b-col>
-              <b-col md="8">
+              <b-col md="4">
                 <div class="card"><div class="card-header">Información del Negocio</div>
                 <div class="card-body">
                 {{this.infoEmpresa.nombre}}
                 <hr>
-                {{this.infoEmpresa.telefono}}
-                {{this.infoEmpresa.rif}}
+               telefono: {{this.infoEmpresa.telefono}}
+               registro: {{this.infoEmpresa.rif}}
+                </div>
+                </div>
+              </b-col>
+              <b-col md="4">
+                <div class="card"><div class="card-header">Información de usuario</div>
+                <div class="card-body">
+                {{this.infoEmpresa.nombre}}
+                <hr>
+               telefono: {{this.infoEmpresa.telefono}}
+               registro: {{this.infoEmpresa.rif}}
                 </div>
                 </div>
               </b-col>
@@ -63,11 +73,11 @@
           <div class="row ml-2">
             <div class=" col-4">
               <b-form class="text-center card">
-                <div class="card-header">categorias</div>
+                <div class="card-header">Categorias</div>
                 <div class="card-body">
                   <b-form-input
                     class="mt-2"
-                    placeholder="categoria"
+                    placeholder="Nombre"
                     v-model="nuevaCategoria.nombre"
                   ></b-form-input>
                   <div
@@ -107,7 +117,7 @@
                 <div class="card-body">
                   <b-form-input
                     class="mt-2"
-                    placeholder="categoria"
+                    placeholder="Nombre"
                     v-model="nuevaUnidad.nombre"
                   ></b-form-input>
                   <b-form-input

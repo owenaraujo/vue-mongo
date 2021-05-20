@@ -49,7 +49,31 @@
           </div>
           <b-container fluid='true' class="mx-3">
             <router-view></router-view>
-           
+           <div>
+    <!-- Button trigger modal -->
+
+<div :class="{'modal-backdrop fade show': modalShow, 'dark-primary': !dark}"></div>
+<!-- Modal -->
+<div :class="{ 'show' : modalShow}" class="modal text-center" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">inicio de sesion</h5>
+        
+      </div>
+      <div class="modal-body">
+        <div>
+          <b-form-input placeholder="nombre de usuario" class="mt-3"  v-model="user.username"></b-form-input>
+          <b-form-input placeholder="contraseña" class="mt-3" v-model="user.password"></b-form-input>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div @click="sigin()" type="button" class="btn color-primary c-hand text-white" data-dismiss="modal">iniciar</div>
+      </div>
+    </div>
+  </div>
+</div>
+  </div>
           </b-container>
         </main>
       </div>
@@ -61,17 +85,18 @@
 import { mapState,mapMutations } from "vuex";
 import Nav from "./components/nav.vue";
 import Links from "./components/links.vue";
-
+import axios from 'axios'
 
 export default {
   name: "App",
   data() {
     return {
+      user:{username: null, password: null}
     
     };
   },
   computed: {
-    ...mapState(["dark", 'alerts']),
+    ...mapState(["dark", 'alerts', 'modalShow', 'server',"token"]),
   },
   components: {
     Nav,
@@ -79,9 +104,26 @@ export default {
   },
   created() {
     this.getStorage()
+    this.getLogin()
   },
    methods: {
-    ...mapMutations(['getStorage'])
+     async sigin(){
+       const {data} = await axios.post(`${this.server}/auth/signin`, this.user)
+       console.log(data);
+       this.alerts.push(data)
+       if(data.value == null ) return
+       if(data.value == false ) return
+       sessionStorage.token = data.token
+       //this.token.push(data)
+       this.cambiarLogin()
+       },
+    ...mapMutations(['getStorage', 'getLogin', 'cambiarLogin', 'saveToken'])
   },
 }
 </script>
+<style scoped>
+.modal-backdrop.show {
+    opacity: 1;
+}
+
+</style>
