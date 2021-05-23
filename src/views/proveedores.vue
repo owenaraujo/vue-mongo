@@ -458,8 +458,10 @@ export default {
 
     },
     FormEditSend(data){
+      if(this.formVisibilityEDit == false)this.intercambioEdit()
+      this.FormEdit= null
       this.FormEdit= data
-      this.intercambioEdit()
+      //this.intercambioEdit()
     },
     
     

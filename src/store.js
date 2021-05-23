@@ -1,21 +1,35 @@
 import Vue from 'vue'
+import axios from 'axios'
 import Vuex from 'vuex'
 Vue.use(Vuex)
 export default new Vuex.Store({
 
 state:{
-    server :'http://192.168.0.103:3000',
+    server :'http://192.168.0.100:3000',
     dark : false,
     modalShow: true,
-    token: null ,
+    token: 1234 ,
+    id: null ,
+    infoEmpresa: {},
+
     usuario:{
-username : 'owen',
-password : '1234'
+username : 'usuario',
+
     },
     alerts: []
 },
 mutations:{
-    getStorage(state){
+    async getInfoEmpresa(state) {
+        const {data} = await axios.get(`${state.server}/system/empresa`);
+        state.infoEmpresa = data;
+      },
+   async getUser(state){
+        let id = localStorage.id
+        const {data} = await axios.get(`${state.server}/auth/getUser/${id}`)
+        state.usuario = data
+    },
+    async getStorage(state){
+        
         if (localStorage.dark) {
             if (localStorage.dark === 'true') {
                 state.dark = true
@@ -28,27 +42,44 @@ if (localStorage.dark === 'false') {
                 
 }
            
-        } if (sessionStorage.token) {
-        state.token = sessionStorage.token
+        } if (localStorage.token) {
+        state.token = localStorage.token
     }
+    const {data} = await axios.get(`${state.server}/auth/authToken/${state.token}`)
+     if(data.value === null){
+         state.alerts.push(data)
+         state.modalShow = true
+         localStorage.modalShow = state.modalShow
+         return 
+        }
+     if(data.value === false){
+         state.alerts.push(data)
+         state.modalShow = true
+         localStorage.modalShow = state.modalShow
+         return 
+        }
+      if (!sessionStorage.usuario) {
+        state.alerts.push(data) 
+      }  
+         if (localStorage.id) {
+        state.id = localStorage.id
+    }
+    
     },
    
     
-    saveToken(datos){
-        console.log(datos);
-        //this.state.token = token
-    },
+    
     getLogin(state){
-        if (!sessionStorage.modalShow) {
+        if (!localStorage.modalShow) {
             state.modalShow = true
         }
-        if (sessionStorage.modalShow) {
-            if (sessionStorage.modalShow === 'true') {
-                state.dark = true
+        if (localStorage.modalShow) {
+            if (localStorage.modalShow === 'true') {
+                state.modalShow = true
                 
                 return
             }
-if (sessionStorage.modalShow === 'false') {
+if (localStorage.modalShow === 'false') {
     state.modalShow = false
                 
                 
@@ -65,7 +96,7 @@ cambiar(state){
 },
 cambiarLogin(state){
     state.modalShow = !state.modalShow
-    sessionStorage.modalShow = state.modalShow
+    localStorage.modalShow = state.modalShow
      
 }
 },

@@ -2,7 +2,7 @@
   <div>
     <div class="mt-2">
       <b-tabs content-class="mt-3" align="center">
-        <b-tab title="General" active
+        <b-tab title="General" 
           >
           <b-container fluid>
          <b-row>
@@ -55,12 +55,11 @@
                 </div>
               </b-col>
               <b-col md="4">
-                <div class="card"><div class="card-header">Información de usuario</div>
+                <div class="card"><div class="card-header">Información de {{this.usuario.roles.name}}</div>
                 <div class="card-body">
-                {{this.infoEmpresa.nombre}}
+                {{this.usuario.nombre}}
                 <hr>
-               telefono: {{this.infoEmpresa.telefono}}
-               registro: {{this.infoEmpresa.rif}}
+               cedula: {{this.usuario.cedula}}
                 </div>
                 </div>
               </b-col>
@@ -70,8 +69,8 @@
           </b-tab
         >
         <b-tab title="Productos">
-          <div class="row ml-2">
-            <div class=" col-4">
+          <b-row class="ml-2">
+            <b-col md="4" class=" mt-2">
               <b-form class="text-center card">
                 <div class="card-header">Categorias</div>
                 <div class="card-body">
@@ -88,8 +87,8 @@
                   </div>
                 </div>
               </b-form>
-            </div>
-            <div class="col-8 ">
+            </b-col>
+            <b-col md="8" class="mt-2">
               <b-table 
                 style="height:34vh"
                 sticky-header="true"
@@ -108,10 +107,10 @@
                   </div>
                 </template>
               </b-table>
-            </div>
-          </div>
-          <div class="row ml-2 mt-2">
-            <div class=" col-4">
+            </b-col>
+          </b-row>
+          <b-row class=" ml-2 mt-2">
+            <b-col md="4" class="mt-2">
               <b-form class="text-center card">
                 <div class="card-header">unidades de medida</div>
                 <div class="card-body">
@@ -130,8 +129,8 @@
                   </div>
                 </div>
               </b-form>
-            </div>
-            <div class="col-8">
+            </b-col>
+            <b-col md="8" class="mt-2">
               <b-table
                 style="height:34vh"
                 sticky-header="true"
@@ -150,18 +149,213 @@
                   </div>
                 </template>
               </b-table>
-            </div>
-          </div>
+            </b-col>
+          </b-row>
         </b-tab>
 
-        <b-tab title="Administración"><p>I'm the 5 tab</p></b-tab>
+        
+          <b-tab active v-if="usuario.roles.name === 'administrador'" title="Administración">
+            <b-row>
+      <b-col>
+        <div class="d-flex">
+          <div
+            class="text-center boton-cuadrado quinto c-hand text-white mt-3"
+            data-toggle="modal"
+            data-target="#modalAdd"
+          >
+            <i class="fas fa-plus"></i> <br />
+            nuevo
+          </div>
+          
+          <div
+            class=" d-none text-center boton-cuadrado yellow-danger c-hand text-white mt-3 ml-3"
+            data-toggle="modal"
+            data-target="#modalEdit"
+          >
+            <i class="fas fa-pencil-alt"></i> <br />
+            editar
+          </div>
+          <div
+            class="text-center boton-cuadrado color-primary c-hand text-white mt-3 ml-3"
+           
+          >
+           <i>{{usuarios.length}}</i> <br>
+Usuarios
+          </div>
+          <div
+            class="d-none text-center boton-cuadrado color-primary c-hand text-white mt-3 ml-3"
+            data-toggle="modal"
+            data-target="#modalSearch"
+          >
+            <i class="fas fa-search"></i> <br />
+            buscar
+          </div>
+           <div class="d-flex align-items-center" >
+            <b-form-input
+            class="w-75 ml-3"
+              id="filter-input"
+              v-model="filter"
+              type="search"
+              placeholder="Type to Search"
+            ></b-form-input>
+
+            
+             
+            
+          </div>
+          
+              
+          
+        </div>
+      </b-col>
+    </b-row>
+            <b-row>
+      <b-col sm="12">
+        <div class="">
+          <div class="text-center">
+            <div>
+             
+    <b-table  :filter="filter" class="card mt-3 list-scroll scrollbar-light-blue" :sticky-header="true" striped  hover  :items="usuarios" :fields="fieldsUsuarios">
+<template #cell(funciones)="">
+        <div class="btn red-alert text-white mt-0 c-hand" size="sm" >
+         <i class="fas fa-trash-alt"></i>
+        </div>
+        <div class="btn yellow-danger text-white mt-0 c-hand" size="sm" data-toggle="modal"
+            data-target="#modalEdit" >
+          <i class="fas fa-pencil-alt"></i>
+        </div>
+
+        <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->
+        
+      </template>
+
+    </b-table>
+  </div>
+            
+          </div>
+        </div>
+      </b-col>
+    </b-row>
+            
+            </b-tab>
       </b-tabs>
+        
     </div>
+
+<!-- modal add  -->
+      <div
+        class="modal fade show"
+        id="modalAdd"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="myModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-md" role="document">
+          <div class="modal-content" :class="{ 'dark-secondary': dark }">
+            <div
+              class="modal-header text-center"
+              :class="{ 'color-secondary text-white': dark }"
+            >
+              <h4 class="modal-title w-100 font-weight-bold">Agregar </h4>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body" :class="{ 'dark-secondary': dark }">
+              <form id="formAdd" class="mx-3">
+                <div class="form-group mb-2">
+                  <b-form-input
+                    required
+                    type="text"
+                    onkeyup="validateNombre(this)"
+                    id="nombre"
+                    v-model="formAdd.nombre"
+                    placeholder="nombre y apellido"
+                    class="mt-3"
+                    autocomplete="off"
+                  />
+                  <b-form-select class="mt-3" v-model="formAdd.roles" :options="roles"></b-form-select>
+                  <b-form-input
+                    required
+                    type="text"
+                    v-model="formAdd.username"
+                    placeholder="usuario de acceso"
+                    class="form-control mt-3"
+                    autocomplete="off"
+                  />
+                  <b-form-input
+                    required
+                    type="password"
+                    v-model="formAdd.password"
+                    placeholder="contraseña"
+                    class="form-control mt-3"
+                    autocomplete="off"
+                  />
+                  
+                  <b-form-input
+                    required
+                    type="password"
+                    :state='validacion'
+                    v-model="formAdd.verifyPassword"
+                    placeholder="verificar contraseña"
+                    class="form-control mt-3"
+                    autocomplete="off"
+                  />
+                  
+                 
+                  <div class="d-flex">
+                    
+                    <b-form-input
+                      required
+                      type="text"
+                      id="telefono"
+                      v-model="formAdd.documento"
+                      placeholder="documento de identidad"
+                      class="form-control mt-3  w-50"
+                      autocomplete="off"
+                    />
+                    <b-form-input
+                    required
+                    type="text"
+                    id="rif"
+                    v-model="formAdd.correo"
+                    placeholder="correo electronico"
+                    class="form-control mt-3 ml-2 w-50"
+                    autocomplete="off"
+                  />
+                  </div>
+                 
+                  
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer d-flex justify-content-center">
+             
+              <div
+                id="btnPost"
+                class="text-white mt-3 btn btn-block color-primary mr-4 ml-4 c-hand"
+              >
+                guardar
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- modal add  -->
+   
+     
   </div>
 </template>
 <script>
 import axios from "axios";
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import Vue from 'vue'
 import numeral from 'numeral'
 Vue.filter("formatNumber", function (value) {
@@ -169,10 +363,53 @@ Vue.filter("formatNumber", function (value) {
   });
 export default {
   computed: {
-    ...mapState(["server", "dark", "usuario", "alerts"]),
+    validacion(){
+return this.formAdd.password === this.formAdd.verifyPassword     },
+    sortOptions() {
+        // Create an options list from our fields
+        return this.fields
+          .filter(f => f.sortable)
+          .map(f => {
+            return { text: f.label, value: f.key }
+          })
+      },
+    ...mapState(["server", "dark", "usuario", "alerts",'infoEmpresa']),
   },
   data() {
     return {
+      roles:[],
+      filter: null,
+formAdd:{
+  username: null, 
+  nombre: null, 
+  documento: null, 
+  roles: null, 
+  correo: null, 
+  password: null, 
+  verifyPassword: null, 
+  
+  },
+      fieldsUsuarios: [
+          {
+            key: 'nombre',
+            sortable: true
+          },
+          {
+            key: 'pregunta',
+            sortable: true
+          },
+          {
+            key: 'respuesta',
+            sortable: true
+          },
+          {
+            key: 'roles.name',
+            label: 'rol',
+            sortable: true
+          },
+        'funciones',
+
+        ],
       fields: [
         {
           key: "nombre",
@@ -193,9 +430,7 @@ export default {
       ],
       nuevaCategoria: { nombre: null },
       nuevaUnidad: { nombre: null, abreviacion: null },
-
-      infoEmpresa: {},
-      infoUsuario: {},
+usuarios: [],
       categoriasProductos: [],
       unidades: [],
      
@@ -212,9 +447,19 @@ export default {
       this.getUnidades()
       this.CountProveedores()
       this.countProductos()
+      this.getUsers()
+      this.getRoles()
 
   },
   methods: {
+    async getRoles(){
+    let {data} = await axios.get(`${this.server}/auth/get/roles`)
+    data.forEach(rol => {
+      data ={value: rol._id, text: rol.name}
+this.roles.push(data)
+    });
+    console.log(data);
+    },
   async  putDolar (){
     let json = {dolar: this.infoEmpresa.dolar}
     const {data} = await axios.put(`${this.server}/system/empresa/dolar/${this.infoEmpresa._id}`, json)
@@ -231,6 +476,12 @@ export default {
 
       this.getCategoriasProductos();
     },
+    async getUsers() {
+      const { data } = await axios.get(
+        `${this.server}/auth/getUsers/`
+      );
+      this.usuarios= data
+    },
     async deleteUnidad(id) {
       const { data } = await axios.delete(
         `${this.server}/system/unidades/${id}`
@@ -241,10 +492,7 @@ export default {
 
       this.getCategoriasProductos();
     },
-    async getInfoEmpresa() {
-      const {data} = await axios.get(`${this.server}/system/empresa`);
-      this.infoEmpresa = data;
-    },
+    
     async CountProveedores() {
       const {data} = await axios.get(`${this.server}/proveedores/get/count`);
       this.ProveedoresCount = data;
@@ -304,6 +552,8 @@ export default {
     CambiarEstadoSearcEdit() {},
     prinDataEdit() {},
     prinDataDelete() {},
+    ...mapMutations(['getStorage', 'getLogin', 'cambiarLogin', 'saveToken', 'getUser','getInfoEmpresa'])
+
   },
 };
 </script>

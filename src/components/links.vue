@@ -5,7 +5,9 @@
           >
             <header class="demo-drawer-header">
               
-              <img src="/cssl/images/user.jpg" class="demo-avatar mx-auto" />
+              <div @click="salir()" class="demo-avatar mx-auto quinto c-hand btn text-white d-flex align-items-center" :class="{'color-primary' : dark, 'quinto': !dark}">
+                 <i class="fas fa-sign-out-alt w-100"></i>
+                 </div>
               <div class="demo-avatar-dropdown">
                 <span class="mx-auto text-white mt-4">
                   {{usuario.username}}
@@ -232,7 +234,7 @@
           </div>
 </template>
 <script>
-import{mapState} from 'vuex'
+import{mapState, mapMutations} from 'vuex'
 
 export default {
     name: 'Links',
@@ -241,10 +243,22 @@ export default {
        
       }
     },
+    mounted(){this.getUser()},
+    methods:{
+    ...mapMutations(['getStorage', 'getLogin', 'cambiarLogin', 'saveToken', 'getUser']),
+
+salir(){
+  sessionStorage.clear()
+  this.alerts.push({value: true, message:'hasta pronto !!!'})
+  localStorage.removeItem('token')
+  this.cambiarLogin()
+}
+    },
     computed:{
-    ...mapState(['dark', 'usuario'])
+    ...mapState(['dark', 'usuario', 'modalShow','alerts'])
   },
 }
+
 </script>
 <style>
 
@@ -252,6 +266,16 @@ export default {
 .text-dark {
   color: #000000 !important;
   text-decoration: none
+} .hijo{
+   position: absolute;
+    top: 0;
+    
+    left: 0;
+    right: 0;
+    
+    
+    margin: auto;
+    color: white;
 }
 .text-dark:hover {
   color: #636262 !important;

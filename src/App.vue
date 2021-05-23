@@ -28,7 +28,7 @@
           <div >
             <div class="text-center NotificationIndex"  style="position: absolute ; z-index:1080" >
               <div v-for="alert of alerts" v-bind:key="alert.id">
-<div   role="alert" class="alert" :class="{'alert_success': alert.value , 'alert_danger': !alert.value, 'alert_warning': alert.value === null}" >
+<div   role="alert" class="alert alert-dismissible " :class="{'alert_success': alert.value , 'alert_danger': !alert.value, 'alert_warning': alert.value === null}" >
     <div class="alert--icon">
     <i class="fas fa-bell"></i>
     </div>
@@ -96,7 +96,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["dark", 'alerts', 'modalShow', 'server',"token"]),
+    ...mapState(["dark", 'alerts', 'modalShow', 'server',"token", 'id']),
   },
   components: {
     Nav,
@@ -109,15 +109,21 @@ export default {
    methods: {
      async sigin(){
        const {data} = await axios.post(`${this.server}/auth/signin`, this.user)
-       console.log(data);
+      
        this.alerts.push(data)
        if(data.value == null ) return
        if(data.value == false ) return
-       sessionStorage.token = data.token
-       //this.token.push(data)
+       localStorage.token = data.token
+       localStorage.id = data.id
+       sessionStorage.usuario= true
+      
+       
+       this.getUser()
+      this.user.username= null
+      this.user.password= null
        this.cambiarLogin()
        },
-    ...mapMutations(['getStorage', 'getLogin', 'cambiarLogin', 'saveToken'])
+    ...mapMutations(['getStorage', 'getLogin', 'cambiarLogin', 'saveToken', 'getUser'])
   },
 }
 </script>
