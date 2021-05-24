@@ -10,7 +10,7 @@
                  </div>
               <div class="demo-avatar-dropdown">
                 <span class="mx-auto text-white mt-4">
-                  {{usuario.username}}
+                  {{usuario.username || null}}
                 </span>
               </div>
               <div class="demo-avatar-dropdown">
@@ -251,6 +251,7 @@ salir(){
   sessionStorage.clear()
   this.alerts.push({value: true, message:'hasta pronto !!!'})
   localStorage.removeItem('token')
+  localStorage.removeItem('id')
   this.cambiarLogin()
 }
     },

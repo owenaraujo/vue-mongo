@@ -25,9 +25,9 @@
             'bg-white': !dark,
           }"
         >
-          <div >
+          <div>
             <div class="text-center NotificationIndex"  style="position: absolute ; z-index:1080" >
-              <div v-for="alert of alerts" v-bind:key="alert.id">
+              <div v-for="(alert, index) in alerts" v-bind:key="index">
 <div   role="alert" class="alert alert-dismissible " :class="{'alert_success': alert.value , 'alert_danger': !alert.value, 'alert_warning': alert.value === null}" >
     <div class="alert--icon">
     <i class="fas fa-bell"></i>
@@ -114,6 +114,7 @@ export default {
        if(data.value == null ) return
        if(data.value == false ) return
        localStorage.token = data.token
+      
        localStorage.id = data.id
        sessionStorage.usuario= true
       

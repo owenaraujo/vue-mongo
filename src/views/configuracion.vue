@@ -2,72 +2,98 @@
   <div>
     <div class="mt-2">
       <b-tabs content-class="mt-3" align="center">
-        <b-tab title="General" 
-          >
+        <b-tab title="General">
           <b-container fluid>
-         <b-row>
-              <b-col md='4'>
+            <b-row>
+              <b-col md="4">
                 <b-list-group>
-  <b-list-group-item class="d-flex justify-content-between align-items-center">
-    proveedores registrados
-    <b-badge variant="primary" pill>{{ProveedoresCount}}</b-badge>
-  </b-list-group-item>
+                  <b-list-group-item
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    proveedores registrados
+                    <b-badge variant="primary" pill>{{
+                      ProveedoresCount
+                    }}</b-badge>
+                  </b-list-group-item>
 
-  <b-list-group-item class="d-flex justify-content-between align-items-center">
-    productos registrados
-    <b-badge variant="primary" pill>{{productosCount}}</b-badge>
-  </b-list-group-item>
+                  <b-list-group-item
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    productos registrados
+                    <b-badge variant="primary" pill>{{
+                      productosCount
+                    }}</b-badge>
+                  </b-list-group-item>
 
-  <b-list-group-item class="d-flex justify-content-between align-items-center">
-   total de ventas
-    <b-badge variant="primary" pill>1</b-badge>
-  </b-list-group-item>
-  <b-list-group-item class="d-flex justify-content-between align-items-center">
-   dolar
-    <b-badge variant="primary" pill>{{infoEmpresa.dolar | formatNumber}}</b-badge>
-  </b-list-group-item>
-</b-list-group>
+                  <b-list-group-item
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    total de ventas
+                    <b-badge variant="primary" pill>1</b-badge>
+                  </b-list-group-item>
+                  <b-list-group-item
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    dolar
+                    <b-badge variant="primary" pill>{{
+                      infoEmpresa.dolar | formatNumber
+                    }}</b-badge>
+                  </b-list-group-item>
+                </b-list-group>
 
-<div>
-  <div class="btn color-secondary text-white c-hand" v-b-toggle.collapse-1 >editar dolar </div>
-  <b-collapse id="collapse-1" class="mt-2">
-    <b-card>
-      <div class="card-body d-flex">
-<b-form-input class="w-75" v-model="infoEmpresa.dolar"></b-form-input>
-  <div @click="putDolar()"  class="btn color-primary text-white c-hand " style="margin-top: 0px"><i class="fas fa-pencil-alt"></i></div>
-      </div>
-    </b-card>
-  </b-collapse>
-</div>
-<div class="mt-4 d-flex">
-  
-  
-</div>
+                <div>
+                  <div
+                    class="btn color-secondary text-white c-hand"
+                    v-b-toggle.collapse-1
+                  >
+                    editar dolar
+                  </div>
+                  <b-collapse id="collapse-1" class="mt-2">
+                    <b-card>
+                      <div class="card-body d-flex">
+                        <b-form-input
+                          class="w-75"
+                          v-model="infoEmpresa.dolar"
+                        ></b-form-input>
+                        <div
+                          @click="putDolar()"
+                          class="btn color-primary text-white c-hand "
+                          style="margin-top: 0px"
+                        >
+                          <i class="fas fa-pencil-alt"></i>
+                        </div>
+                      </div>
+                    </b-card>
+                  </b-collapse>
+                </div>
+                <div class="mt-4 d-flex"></div>
               </b-col>
               <b-col md="4">
-                <div class="card"><div class="card-header">Información del Negocio</div>
-                <div class="card-body">
-                {{this.infoEmpresa.nombre}}
-                <hr>
-               telefono: {{this.infoEmpresa.telefono}}
-               registro: {{this.infoEmpresa.rif}}
-                </div>
+                <div class="card">
+                  <div class="card-header">Información del Negocio</div>
+                  <div class="card-body">
+                    {{ this.infoEmpresa.nombre }}
+                    <hr />
+                    telefono: {{ this.infoEmpresa.telefono }} registro:
+                    {{ this.infoEmpresa.rif }}
+                  </div>
                 </div>
               </b-col>
               <b-col md="4">
-                <div class="card"><div class="card-header">Información de {{this.usuario.roles.name}}</div>
-                <div class="card-body">
-                {{this.usuario.nombre}}
-                <hr>
-               cedula: {{this.usuario.cedula}}
-                </div>
+                <div class="card">
+                  <div class="card-header">
+                    Información de {{ this.usuario.roles.name }}
+                  </div>
+                  <div class="card-body">
+                    {{ this.usuario.nombre }}
+                    <hr />
+                    cedula: {{ this.usuario.cedula }}
+                  </div>
                 </div>
               </b-col>
-         </b-row>
+            </b-row>
           </b-container>
-          
-          </b-tab
-        >
+        </b-tab>
         <b-tab title="Productos">
           <b-row class="ml-2">
             <b-col md="4" class=" mt-2">
@@ -89,7 +115,7 @@
               </b-form>
             </b-col>
             <b-col md="8" class="mt-2">
-              <b-table 
+              <b-table
                 style="height:34vh"
                 sticky-header="true"
                 class=" text-center card  scrollbar-light-blue"
@@ -124,7 +150,10 @@
                     placeholder="abreviacion"
                     v-model="nuevaUnidad.abreviacion"
                   ></b-form-input>
-                  <div @click="sendUnidad()" class="btn text-white btn-lg color-primary c-hand">
+                  <div
+                    @click="sendUnidad()"
+                    class="btn text-white btn-lg color-primary c-hand"
+                  >
                     guardar
                   </div>
                 </div>
@@ -140,7 +169,7 @@
                 :fields="colunnmasUnidades"
                 :items="unidades"
               >
-              <template #cell(Acciones)="row">
+                <template #cell(Acciones)="row">
                   <div
                     class=" btn c-hand text-white  red-alert"
                     @click="deleteUnidad(row.item._id)"
@@ -153,138 +182,262 @@
           </b-row>
         </b-tab>
 
-        
-          <b-tab active v-if="usuario.roles.name === 'administrador'" title="Administración">
-            <b-row>
-      <b-col>
-        <div class="d-flex">
-          <div
-            class="text-center boton-cuadrado quinto c-hand text-white mt-3"
-            data-toggle="modal"
-            data-target="#modalAdd"
-          >
-            <i class="fas fa-plus"></i> <br />
-            nuevo
-          </div>
-          
-          <div
-            class=" d-none text-center boton-cuadrado yellow-danger c-hand text-white mt-3 ml-3"
-            data-toggle="modal"
-            data-target="#modalEdit"
-          >
-            <i class="fas fa-pencil-alt"></i> <br />
-            editar
-          </div>
-          <div
-            class="text-center boton-cuadrado color-primary c-hand text-white mt-3 ml-3"
-           
-          >
-           <i>{{usuarios.length}}</i> <br>
-Usuarios
-          </div>
-          <div
-            class="d-none text-center boton-cuadrado color-primary c-hand text-white mt-3 ml-3"
-            data-toggle="modal"
-            data-target="#modalSearch"
-          >
-            <i class="fas fa-search"></i> <br />
-            buscar
-          </div>
-           <div class="d-flex align-items-center" >
-            <b-form-input
-            class="w-75 ml-3"
-              id="filter-input"
-              v-model="filter"
-              type="search"
-              placeholder="Type to Search"
-            ></b-form-input>
+        <b-tab
+          active
+          v-if="usuario.roles.name === 'administrador'"
+          title="Administración"
+        >
+          <b-row>
+            <b-col>
+              <div class="d-flex">
+                <div
+                  class="text-center boton-cuadrado quinto c-hand text-white mt-3"
+                  data-toggle="modal"
+                  data-target="#modalAdd"
+                >
+                  <i class="fas fa-plus"></i> <br />
+                  nuevo
+                </div>
 
-            
-             
-            
-          </div>
-          
-              
-          
-        </div>
-      </b-col>
-    </b-row>
-            <b-row>
-      <b-col sm="12">
-        <div class="">
-          <div class="text-center">
-            <div>
-             
-    <b-table  :filter="filter" class="card mt-3 list-scroll scrollbar-light-blue" :sticky-header="true" striped  hover  :items="usuarios" :fields="fieldsUsuarios">
-<template #cell(funciones)="">
-        <div class="btn red-alert text-white mt-0 c-hand" size="sm" >
-         <i class="fas fa-trash-alt"></i>
-        </div>
-        <div class="btn yellow-danger text-white mt-0 c-hand" size="sm" data-toggle="modal"
-            data-target="#modalEdit" >
-          <i class="fas fa-pencil-alt"></i>
-        </div>
+                <div
+                  class=" d-none text-center boton-cuadrado yellow-danger c-hand text-white mt-3 ml-3"
+                  data-toggle="modal"
+                  data-target="#modalEdit"
+                >
+                  <i class="fas fa-pencil-alt"></i> <br />
+                  editar
+                </div>
+                <div
+                  class="text-center boton-cuadrado color-primary c-hand text-white mt-3 ml-3"
+                >
+                  <i>{{ usuarios.length }}</i> <br />
+                  Usuarios
+                </div>
+                <div
+                  class="d-none text-center boton-cuadrado color-primary c-hand text-white mt-3 ml-3"
+                  data-toggle="modal"
+                  data-target="#modalSearch"
+                >
+                  <i class="fas fa-search"></i> <br />
+                  buscar
+                </div>
+                <div class="d-flex align-items-center">
+                  <b-form-input
+                    class="w-75 ml-3"
+                    id="filter-input"
+                    v-model="filter"
+                    type="search"
+                    placeholder="Type to Search"
+                  ></b-form-input>
+                </div>
+              </div>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col sm="12">
+              <div class="">
+                <div class="text-center">
+                  <div>
+                    <b-table
+                      :filter="filter"
+                      class="card mt-3 list-scroll scrollbar-light-blue"
+                      :sticky-header="true"
+                      striped
+                      hover
+                      :items="usuarios"
+                      :fields="fieldsUsuarios"
+                    >
+                      <template #cell(funciones)="row">
+                        <div
+                          :class="{ 'd-none': row.item.status == false }"
+                          @click="deleteUser(row.item)"
+                          class="btn red-alert text-white mt-0 c-hand"
+                          size="sm"
+                        >
+                          <i class="fas fa-trash-alt"></i>
+                        </div>
+                        <div
+                          v-if="row.item.status == false"
+                          @click="activateUser(row.item)"
+                          class="btn color-primary text-white mt-0 c-hand"
+                          size="sm"
+                        >
+                          <i class="fas fa-check"></i>
+                        </div>
+                        <div
+                          @click="editUser(row.item)"
+                          class="btn yellow-danger text-white mt-0 c-hand"
+                          size="sm"
+                          data-toggle="modal"
+                          data-target="#modalEdit"
+                        >
+                          <i class="fas fa-pencil-alt"></i>
+                        </div>
 
-        <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->
-        
-      </template>
-
-    </b-table>
-  </div>
-            
-          </div>
-        </div>
-      </b-col>
-    </b-row>
-            
-            </b-tab>
+                        <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->
+                      </template>
+                    </b-table>
+                  </div>
+                </div>
+              </div>
+            </b-col>
+          </b-row>
+        </b-tab>
       </b-tabs>
-        
     </div>
 
-<!-- modal add  -->
-      <div
-        class="modal fade show"
-        id="modalAdd"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="myModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-md" role="document">
-          <div class="modal-content" :class="{ 'dark-secondary': dark }">
-            <div
-              class="modal-header text-center"
-              :class="{ 'color-secondary text-white': dark }"
+    <!-- modal add  -->
+    <div
+      class="modal fade"
+      id="modalAdd"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="myModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content" :class="{ 'dark-secondary': dark }">
+          <div
+            class="modal-header text-center"
+            :class="{ 'color-secondary text-white': dark }"
+          >
+            <h4 class="modal-title w-100 font-weight-bold">Agregar</h4>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
             >
-              <h4 class="modal-title w-100 font-weight-bold">Agregar </h4>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" :class="{ 'dark-secondary': dark }">
+            <form id="formAdd" class="mx-3">
+              <div class="form-group mb-2">
+                <b-form-input
+                  required
+                  type="text"
+                  onkeyup="validateNombre(this)"
+                  id="nombre"
+                  v-model="formAdd.nombre"
+                  placeholder="nombre y apellido"
+                  class="mt-3"
+                  autocomplete="off"
+                />
+                <b-form-select
+                  class="mt-3"
+                  v-model="formAdd.roles"
+                  :options="roles"
+                ></b-form-select>
+                <b-form-input
+                  required
+                  type="text"
+                  v-model="formAdd.username"
+                  placeholder="usuario de acceso"
+                  class="form-control mt-3"
+                  autocomplete="off"
+                />
+                {{ formAdd.username }}
+                <b-form-input
+                  required
+                  type="password"
+                  v-model="formAdd.password"
+                  placeholder="contraseña"
+                  class="form-control mt-3"
+                  autocomplete="off"
+                />
+
+                <b-form-input
+                  required
+                  type="password"
+                  :state="validacion"
+                  v-model="verifyPassword"
+                  placeholder="verificar contraseña"
+                  class="form-control mt-3"
+                  autocomplete="off"
+                />
+
+                <div class="d-flex">
+                  <b-form-input
+                    required
+                    type="text"
+                    id="telefono"
+                    v-model="formAdd.documento"
+                    placeholder="documento de identidad"
+                    class="form-control mt-3  w-50"
+                    autocomplete="off"
+                  />
+                  <b-form-input
+                    required
+                    type="email"
+                    v-model="formAdd.correo"
+                    placeholder="correo electronico"
+                    class="form-control mt-3 ml-2 w-50"
+                    autocomplete="off"
+                  />
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer d-flex justify-content-center">
+            <div
+              @click="saveUser()"
+              class="text-white mt-3 btn btn-block color-primary mr-4 ml-4 c-hand"
+            >
+              guardar
             </div>
-            <div class="modal-body" :class="{ 'dark-secondary': dark }">
-              <form id="formAdd" class="mx-3">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- modal add  -->
+    <!-- modal edit -->
+
+    <div
+      data-bs-backdrop="static"
+      data-bs-keyboard="false"
+      tabindex="-1"
+      aria-labelledby="staticBackdropLabel"
+      aria-hidden="true"
+      class="modal fade"
+      id="modalEdit"
+      role="dialog"
+    >
+      <div class="modal-dialog modal-md">
+        <div class="modal-content" :class="{ 'dark-secondary ': dark }">
+          <div
+            class="modal-header text-center"
+            :class="{ 'color-secondary text-white': dark }"
+          >
+            <h4 class="modal-title w-100 font-weight-bold">Editar</h4>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body mx-3">
+            <!-- form editar -->
+            <div :class="{ 'd-none': !formVisibilityEDit }">
+              <form id="formEdit" class="mx-3">
                 <div class="form-group mb-2">
                   <b-form-input
                     required
                     type="text"
                     onkeyup="validateNombre(this)"
-                    id="nombre"
-                    v-model="formAdd.nombre"
+                    v-model="formEditUser.nombre"
                     placeholder="nombre y apellido"
                     class="mt-3"
                     autocomplete="off"
                   />
-                  <b-form-select class="mt-3" v-model="formAdd.roles" :options="roles"></b-form-select>
                   <b-form-input
                     required
                     type="text"
-                    v-model="formAdd.username"
+                    v-model="formEditUser.username"
                     placeholder="usuario de acceso"
                     class="form-control mt-3"
                     autocomplete="off"
@@ -292,124 +445,136 @@ Usuarios
                   <b-form-input
                     required
                     type="password"
-                    v-model="formAdd.password"
+                    v-model="formEditUser.password"
                     placeholder="contraseña"
                     class="form-control mt-3"
                     autocomplete="off"
                   />
-                  
+
                   <b-form-input
                     required
                     type="password"
-                    :state='validacion'
-                    v-model="formAdd.verifyPassword"
+                    :state="validacionEdit"
+                    v-model="verifyPassword"
                     placeholder="verificar contraseña"
                     class="form-control mt-3"
                     autocomplete="off"
                   />
-                  
-                 
+
                   <div class="d-flex">
-                    
                     <b-form-input
                       required
                       type="text"
-                      id="telefono"
-                      v-model="formAdd.documento"
+                      v-model="formEditUser.documento"
                       placeholder="documento de identidad"
                       class="form-control mt-3  w-50"
                       autocomplete="off"
                     />
                     <b-form-input
-                    required
-                    type="text"
-                    id="rif"
-                    v-model="formAdd.correo"
-                    placeholder="correo electronico"
-                    class="form-control mt-3 ml-2 w-50"
-                    autocomplete="off"
-                  />
+                      required
+                      type="email"
+                      v-model="formEditUser.correo"
+                      placeholder="correo electronico"
+                      class="form-control mt-3 ml-2 w-50"
+                      autocomplete="off"
+                    />
                   </div>
-                 
-                  
                 </div>
               </form>
-            </div>
-            <div class="modal-footer d-flex justify-content-center">
-             
-              <div
-                id="btnPost"
-                class="text-white mt-3 btn btn-block color-primary mr-4 ml-4 c-hand"
-              >
-                guardar
+
+              <div class="d-flex text-white">
+                <div class="btn btn-block color-primary mr-2 text-white c-hand">
+                  guardar
+                </div>
+                <div
+                  style="width: 50px; height: 40px; border-radius: 2px"
+                  class="c-hand red-alert d-flex align-items-center justify-content-center"
+                >
+                  <i class="fas fa-trash-alt"></i>
+                </div>
               </div>
             </div>
+            <!-- form editar  -->
           </div>
+          <div
+            class="modal-footer d-flex justify-content-center mr-4 ml-4"
+          ></div>
         </div>
       </div>
+    </div>
 
-      <!-- modal add  -->
-   
-     
+    <!-- modal edit -->
   </div>
 </template>
 <script>
 import axios from "axios";
 import { mapState, mapMutations } from "vuex";
-import Vue from 'vue'
-import numeral from 'numeral'
-Vue.filter("formatNumber", function (value) {
-    return numeral(value).format("0,0"); // displaying other groupings/separators is possible, look at the docs
-  });
+import Vue from "vue";
+import numeral from "numeral";
+Vue.filter("formatNumber", function(value) {
+  return numeral(value).format("0,0"); // displaying other groupings/separators is possible, look at the docs
+});
 export default {
   computed: {
-    validacion(){
-return this.formAdd.password === this.formAdd.verifyPassword     },
+    validacionEdit() {
+      return this.formEditUser.password === this.verifyPassword;
+    },
+    validacion() {
+      return this.formAdd.password === this.verifyPassword;
+    },
     sortOptions() {
-        // Create an options list from our fields
-        return this.fields
-          .filter(f => f.sortable)
-          .map(f => {
-            return { text: f.label, value: f.key }
-          })
-      },
-    ...mapState(["server", "dark", "usuario", "alerts",'infoEmpresa']),
+      // Create an options list from our fields
+      return this.fields
+        .filter((f) => f.sortable)
+        .map((f) => {
+          return { text: f.label, value: f.key };
+        });
+    },
+    ...mapState(["server", "dark", "usuario", "alerts", "infoEmpresa"]),
   },
   data() {
     return {
-      roles:[],
+      formEditUser: {
+        username: null,
+        password: null,
+        correo: null,
+        documento: null,
+        nombre: null,
+        roles: null,
+      },
+      formVisibilityEDit: true,
+      roles: [],
       filter: null,
-formAdd:{
-  username: null, 
-  nombre: null, 
-  documento: null, 
-  roles: null, 
-  correo: null, 
-  password: null, 
-  verifyPassword: null, 
-  
-  },
-      fieldsUsuarios: [
-          {
-            key: 'nombre',
-            sortable: true
-          },
-          {
-            key: 'pregunta',
-            sortable: true
-          },
-          {
-            key: 'respuesta',
-            sortable: true
-          },
-          {
-            key: 'roles.name',
-            label: 'rol',
-            sortable: true
-          },
-        'funciones',
+      verifyPassword: null,
 
-        ],
+      formAdd: {
+        username: null,
+        nombre: null,
+        documento: null,
+        roles: null,
+        correo: null,
+        password: null,
+      },
+      fieldsUsuarios: [
+        {
+          key: "nombre",
+          sortable: true,
+        },
+        {
+          key: "correo",
+          sortable: true,
+        },
+        {
+          key: "documento",
+          sortable: true,
+        },
+        {
+          key: "roles.name",
+          label: "Rol",
+          sortable: true,
+        },
+        "funciones",
+      ],
       fields: [
         {
           key: "nombre",
@@ -430,10 +595,10 @@ formAdd:{
       ],
       nuevaCategoria: { nombre: null },
       nuevaUnidad: { nombre: null, abreviacion: null },
-usuarios: [],
+      usuarios: [],
       categoriasProductos: [],
       unidades: [],
-     
+
       tipoEquipo: {},
       tipoHerramienta: {},
       subsistemaPiezas: {},
@@ -443,27 +608,81 @@ usuarios: [],
   },
   created() {
     this.getCategoriasProductos();
-    this.getInfoEmpresa()
-      this.getUnidades()
-      this.CountProveedores()
-      this.countProductos()
-      this.getUsers()
-      this.getRoles()
-
+    this.getInfoEmpresa();
+    this.getUnidades();
+    this.CountProveedores();
+    this.countProductos();
+    this.getUsers();
+    this.getRoles();
   },
   methods: {
-    async getRoles(){
-    let {data} = await axios.get(`${this.server}/auth/get/roles`)
-    data.forEach(rol => {
-      data ={value: rol._id, text: rol.name}
-this.roles.push(data)
-    });
-    console.log(data);
+    editUser(data) {
+      data.password = null;
+
+      this.formEditUser = data;
     },
-  async  putDolar (){
-    let json = {dolar: this.infoEmpresa.dolar}
-    const {data} = await axios.put(`${this.server}/system/empresa/dolar/${this.infoEmpresa._id}`, json)
-    this.alert(data)
+    async deleteUser(item) {
+      const { data } = await axios.delete(
+        `${this.server}/auth/user/${item._id}&&${item.roles._id}`
+      );
+      this.alerts.push(data);
+      this.getUsers();
+    },
+    async activateUser(item) {
+      const { data } = await axios.put(
+        `${this.server}/auth/user/${item._id}&&${item.roles._id}`
+      );
+      this.alerts.push(data);
+      this.getUsers();
+    },
+    async saveUser() {
+      if (this.formAdd.roles == null) {
+        return;
+      }
+      if (this.formAdd.password != this.verifyPassword) {
+        return console.log("clave incorrecta");
+      }
+      const { data } = await axios.post(
+        `${this.server}/auth/signup`,
+        this.formAdd
+      );
+      if (data.value === false || null) {
+        this.alerts.push(data);
+        return;
+      }
+      this.alerts.push(data);
+      this.formAdd.password = null;
+      this.formAdd.username = null;
+      this.formAdd.nombre = null;
+      this.verifyPassword = null;
+      this.formAdd.documento = null;
+      this.formAdd.roles = null;
+      this.formAdd.correo = null;
+      this.getUsers();
+    },
+    async getRoles() {
+      this.roles = [];
+      let { data } = await axios.get(`${this.server}/auth/get/roles`);
+      data.forEach((rol) => {
+        data = { value: rol._id, text: rol.name };
+
+        this.roles.push(data);
+      });
+      let defaultSelect = {
+        value: null,
+        text: "seleccione una opcion",
+        disabled: true,
+      };
+      this.roles.push(defaultSelect);
+      console.log(data);
+    },
+    async putDolar() {
+      let json = { dolar: this.infoEmpresa.dolar };
+      const { data } = await axios.put(
+        `${this.server}/system/empresa/dolar/${this.infoEmpresa._id}`,
+        json
+      );
+      this.alert(data);
     },
     alert(data) {
       this.alerts.push(data);
@@ -477,28 +696,25 @@ this.roles.push(data)
       this.getCategoriasProductos();
     },
     async getUsers() {
-      const { data } = await axios.get(
-        `${this.server}/auth/getUsers/`
-      );
-      this.usuarios= data
+      const { data } = await axios.get(`${this.server}/auth/getUsers/`);
+      this.usuarios = data;
     },
     async deleteUnidad(id) {
       const { data } = await axios.delete(
         `${this.server}/system/unidades/${id}`
       );
       this.alert(data);
-      this.getUnidades()
-      
+      this.getUnidades();
 
       this.getCategoriasProductos();
     },
-    
+
     async CountProveedores() {
-      const {data} = await axios.get(`${this.server}/proveedores/get/count`);
+      const { data } = await axios.get(`${this.server}/proveedores/get/count`);
       this.ProveedoresCount = data;
     },
     async countProductos() {
-      const {data} = await axios.get(`${this.server}/productos/get/count`);
+      const { data } = await axios.get(`${this.server}/productos/get/count`);
       this.productosCount = data;
     },
     async getInfoUsuario() {
@@ -506,11 +722,8 @@ this.roles.push(data)
       this.infoUsuario = data;
     },
     async getUnidades() {
-      const { data } = await axios.get(
-        `${this.server}/system/unidades`
-      );
+      const { data } = await axios.get(`${this.server}/system/unidades`);
       this.unidades = data;
-      
     },
     async getCategoriasProductos() {
       const { data } = await axios.get(
@@ -518,14 +731,16 @@ this.roles.push(data)
       );
       this.categoriasProductos = data;
     },
-    async sendUnidad (){
-      const {data}= await axios.post(`${this.server}/system/unidades`,
+    async sendUnidad() {
+      const { data } = await axios.post(
+        `${this.server}/system/unidades`,
 
-      this.nuevaUnidad)
+        this.nuevaUnidad
+      );
       this.alert(data);
-      this.nuevaUnidad.nombre = null
-      this.nuevaUnidad.abreviacion = null
-      this.getUnidades()
+      this.nuevaUnidad.nombre = null;
+      this.nuevaUnidad.abreviacion = null;
+      this.getUnidades();
     },
     async sendCategoria() {
       const { data } = await axios.post(
@@ -552,11 +767,19 @@ this.roles.push(data)
     CambiarEstadoSearcEdit() {},
     prinDataEdit() {},
     prinDataDelete() {},
-    ...mapMutations(['getStorage', 'getLogin', 'cambiarLogin', 'saveToken', 'getUser','getInfoEmpresa'])
-
+    ...mapMutations([
+      "getStorage",
+      "getLogin",
+      "cambiarLogin",
+      "saveToken",
+      "getUser",
+      "getInfoEmpresa",
+    ]),
   },
 };
 </script>
 <style scoped>
-.btn{ border-radius: 0.25rem;}
+.btn {
+  border-radius: 0.25rem;
+}
 </style>

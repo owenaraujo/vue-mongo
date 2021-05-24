@@ -33,7 +33,7 @@
   /* max-width: 250px; */
   width: auto;
   /* max-height: 90vh; */
-  height: auto;
+  max-height: auto;
   overflow-y: hidden;
   /* top: 1%; */
   bottom: 5px;

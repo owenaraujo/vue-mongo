@@ -5,7 +5,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
 
 state:{
-    server :'http://192.168.0.100:3000',
+    server :'http://192.168.0.101:3000',
     dark : false,
     modalShow: true,
     token: 1234 ,
@@ -13,7 +13,7 @@ state:{
     infoEmpresa: {},
 
     usuario:{
-username : 'usuario',
+username : null,
 
     },
     alerts: []
@@ -25,7 +25,10 @@ mutations:{
       },
    async getUser(state){
         let id = localStorage.id
+        let token = localStorage.token
+        state.token= token
         const {data} = await axios.get(`${state.server}/auth/getUser/${id}`)
+        state.usuario= null
         state.usuario = data
     },
     async getStorage(state){
