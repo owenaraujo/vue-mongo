@@ -117,8 +117,14 @@ const validateCod2 = (el) => {
   msg.classList.remove("is-invalid");
   msg.classList.add("is-valid");
 };
+
+
+const data = {
+  _id: null,
+  prodcutos:[{_id: null, producto_id:[null], cantidad: null}],
+  precio_total:null 
+}
 const validateCod = (el) => {
-  let msg = document.querySelector("#codigo");
   let str = el.value;
   el.value = str
     .replace(/^([a-z]{2})([0-9]{2})/i, "$1-$2")
@@ -126,18 +132,8 @@ const validateCod = (el) => {
     .replace(/^([0-9]{1})/, "")
     .toUpperCase();
 
-  if (el.value === "") {
-    msg.classList.remove("is-invalid");
-    msg.classList.remove("is-valid");
-    return;
-  }
+  
 
-  if (!expresiones.cod.test(el.value)) {
-    msg.classList.add("is-invalid");
-    return;
-  }
-  msg.classList.remove("is-invalid");
-  msg.classList.add("is-valid");
 };
 // validate codificacion
 const validateSer = (el) => {

@@ -1,5 +1,5 @@
 <template>
-<div>
+  <div>
     <b-row>
       <b-col>
         <div class="d-flex">
@@ -13,153 +13,146 @@
           </div>
 
           <div
-            class="text-center boton-cuadrado yellow-danger c-hand text-white mt-3 ml-3"
-            data-toggle="modal"
-            data-target="#modalEdit"
-          >
-            <i class="fas fa-pencil-alt"></i> <br />
-            editar
-          </div>
-          <div
             class="text-center boton-cuadrado color-primary c-hand text-white mt-3 ml-3"
             data-toggle="modal"
             data-target="#modalSearch"
           >
-            <i class="fas fa-search"></i> <br />
-            buscar
+          {{productos.length}}
+            <br>
+            <div v-if="productos.length === 1">producto</div>
+            <div v-if="productos.length > 1">productos</div>
+            
           </div>
-          
-              
-          <div
-            style="position: absolute; right: 15px"
-            class="text-center boton-cuadrado red-alert c-hand text-white mt-3 ml-3"
-            data-toggle="modal"
-            data-target="#modalDelete"
-          >
-            <i class="fas fa-trash-alt"></i> <br />
-            borrar
+          <div class="d-flex align-items-center">
+            <b-form-input
+              class="w-75 ml-3"
+              id="filter-input"
+              v-model="filter"
+              type="search"
+              placeholder="Type to Search"
+            ></b-form-input>
           </div>
         </div>
       </b-col>
     </b-row>
     <b-row>
       <b-col sm="12">
-        <div class="card mt-3 list-scroll scrollbar-light-blue">
+        <div class="">
           <div class="text-center">
-            <table
-              class="table table-striped table-hover"
-              :class="{ 'table-dark': dark }"
+            <b-table
+              class="card mt-3 list-scroll scrollbar-light-blue"
+              :sticky-header="true"
+              striped
+              hover
+              :filter="filter"
+              :items="productos"
+              :fields="fields"
             >
-              <thead class="table-dark">
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">producto</th>
-                  <th scope="col">codigo</th>
-                  <th scope="col">categoria</th>
-                  <th scope="col">precio $</th>
-                  <th scope="col">precio Bs.</th>
-                  <th scope="col">en existencia</th>
-                </tr>
-              </thead>
-              <tbody>
+              <template #cell(precioBs)="row">
+                {{ infoEmpresa.dolar * row.item.precio | formatNumber }}
+              </template>
+              <template #cell(funciones)="row">
+                <div
+                  class="btn red-alert text-white mt-0 c-hand"
+                  size="sm"
+                  @click="deleteProducto(row.item._id)"
+                >
+                  <i class="fas fa-trash-alt"></i>
+                </div>
 
+                <div
+                  @click="formData(row.item._id)"
+                  class="btn yellow-danger text-white mt-0 c-hand"
+                  size="sm"
+                  data-toggle="modal"
+                  data-target="#modalEdit"
+                >
+                  <i class="fas fa-pencil-alt"></i>
+                </div>
 
-                  <tr class="table-active" v-for="(producto, key) in productos" v-bind:key="key">
-   
-                      <th scope="row">{{ key +1}}</th>
-                      <td>{{producto.nombre}}</td>
-                      <td>{{producto.codigo}}</td>
-                      <td>{{producto.categoria}}</td>
-                      <td>{{producto.precioDolar}}</td>
-                      <td>{{producto.precioDolar}}</td>
-                      <td>{{producto.cantidad}}</td>
-
-                      
-                    </tr>
-
-              
-              </tbody>
-              <tfoot class="table-dark">
-                <tr>
-                  <th scope="col">#</th>
-                  <th scope="col">producto</th>
-                  <th scope="col">codigo</th>
-                  <th scope="col">categoria</th>
-                  <th scope="col">precio $</th>
-                  <th scope="col">precio Bs.</th>
-                  <th scope="col">en existencia</th>
-                </tr>
-              </tfoot>
-            </table>
+                <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->
+              </template>
+            </b-table>
           </div>
         </div>
       </b-col>
     </b-row>
     <!-- modales  -->
-     <!-- modal add  -->
-      <div
-        class="modal fade show"
-        id="modalAdd"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="myModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-md" role="document">
-          <div class="modal-content" :class="{ 'dark-secondary': dark }">
-            <div
-              class="modal-header text-center"
-              :class="{ 'color-secondary text-white': dark }"
+    <!-- modal add  -->
+    <div
+      class="modal fade"
+      id="modalAdd"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="myModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content" :class="{ 'dark-secondary': dark }">
+          <div
+            class="modal-header text-center"
+            :class="{ 'color-secondary text-white': dark }"
+          >
+            <h4 class="modal-title w-100 font-weight-bold">Agregar</h4>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
             >
-              <h4 class="modal-title w-100 font-weight-bold">Agregar</h4>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body" :class="{ 'dark-secondary': dark }">
-              <form id="formAdd" class="mx-3">
-                <div class="form-group mb-2">
-                  <b-form-select class="mt-3" v-model="nuevoProducto.categoria" :options="categorias"></b-form-select>
-                  <b-form-select class="mt-3" v-model="nuevoProducto.unidadMedida" :options="unidadesMedida"></b-form-select>
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body" :class="{ 'dark-secondary': dark }">
+            <form id="formAdd" class="mx-3">
+              <div class="form-group mb-2">
+                <b-form-select
+                  class="mt-3"
+                  v-model="nuevoProducto.categoria"
+                  :options="categorias"
+                ></b-form-select>
+                <b-form-select
+                  class="mt-3"
+                  v-model="nuevoProducto.unidadMedida"
+                  :options="unidadesMedida"
+                ></b-form-select>
+                <b-form-select
+                  class="mt-3"
+                  v-model="nuevoProducto.proveedor_id"
+                  :options="proveedores"
+                ></b-form-select>
+                <b-form-input
+                  required
+                  type="text"
+                  onkeyup="validateNombre(this)"
+                  id="nombre"
+                  v-model="nuevoProducto.nombre"
+                  placeholder="nombre"
+                  class="mt-3"
+                  autocomplete="off"
+                />
+                <b-form-input
+                  required
+                  type="text"
+                  onkeyup="validateCod(this)"
+                  style="text-transform: uppercase"
+                  v-model="nuevoProducto.codigo"
+                  placeholder="codigo"
+                  class="form-control mt-3"
+                  autocomplete="off"
+                />
+
+                <div class="d-flex">
                   <b-form-input
                     required
-                    type="text"
-                    onkeyup="validateNombre(this)"
-                    id="nombre"
-                    v-model="nuevoProducto.nombre"
-                    placeholder="nombre"
-                    class="mt-3"
+                    type="number"
+                    v-model="nuevoProducto.cantidad"
+                    placeholder="cantidad"
+                    class="form-control mt-3  w-50"
                     autocomplete="off"
                   />
+
                   <b-form-input
-                    required
-                    type="text"
-                    onkeyup="validateCod(this)"
-                    style="text-transform: uppercase"
-                    id="codigo"
-                    v-model="nuevoProducto.codigo"
-                    placeholder="codigo"
-                    class="form-control mt-3"
-                    autocomplete="off"
-                  />
-                 
-                  <div class="d-flex">
-                    
-                    <b-form-input
-                      required
-                      type="number"
-                      v-model="nuevoProducto.cantidad"
-                      placeholder="cantidad"
-                      class="form-control mt-3  w-50"
-                      autocomplete="off"
-                    />
-                   
-                    <b-form-input
                     required
                     type="number"
                     v-model="nuevoProducto.stock"
@@ -167,7 +160,7 @@
                     class="form-control mt-3 ml-2 w-50"
                     autocomplete="off"
                   />
-                   <b-form-input
+                  <b-form-input
                     required
                     type="number"
                     v-model="nuevoProducto.precio"
@@ -175,601 +168,353 @@
                     class="form-control mt-3 ml-2 w-50"
                     autocomplete="off"
                   />
-                  </div>
-                    <b-form-textarea
-                    required
-                    type="text"
-                    v-model="nuevoProducto.descripcion"
-                    placeholder="stock"
-                    class="form-control mt-3 ml-2"
-                    autocomplete="off"
-                    style="  border-radius: 0.25rem;
+                </div>
+                <b-form-textarea
+                  required
+                  type="text"
+                  v-model="nuevoProducto.descripcion"
+                  placeholder="descripcion"
+                  class="form-control mt-3 ml-2"
+                  autocomplete="off"
+                  style="  border-radius: 0.25rem;
 "
-                  />
-                 
-                  
-                </div>
-              </form>
-            </div>
-            <div class="modal-footer d-flex justify-content-center">
-             
-              <div
-              @click="sendProduct"
-                id="btnPost"
-                class="text-white mt-3 btn btn-block color-primary mr-4 ml-4 c-hand"
-              >
-                guardar
+                />
               </div>
-            </div>
+            </form>
           </div>
-        </div>
-      </div>
-
-      <!-- modal add  -->
-    <div>
-      <!-- modal edit -->
-
-      <div
-        class="modal fade"
-        id="modalEdit"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="myModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-md" role="document">
-          <div class="modal-content" :class="{ 'dark-secondary ': dark }">
+          <div class="modal-footer d-flex justify-content-center">
             <div
-              class="modal-header text-center"
-              :class="{ 'color-secondary text-white': dark }"
+              @click="sendProduct()"
+              id="btnPost"
+              class="text-white mt-3 btn btn-block color-primary mr-4 ml-4 c-hand"
             >
-              <h4 class="modal-title w-100 font-weight-bold">Editar</h4>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
+              guardar
             </div>
-            <div class="modal-body mx-3">
-              <div
-                id="busquedaEdit"
-                :class="{ 'd-none': !inputEditVisibilyty }"
-              >
-                <div class="md-form mb-4 d-flex">
-                  <i class="fas fa-search prefix grey-text"></i>
-                  <b-form-input
-                    autocomplete="off"
-                    @keyup="getByParamsEdit"
-                    v-model="params.InputEdit"
-                    
-                    :class="{ 'text-white': dark }"
-                  >
-                  </b-form-input>
-                  <b-form-select
-                    style="
-                      
-                      border-left: 0px;
-                      border-right: 0px;
-
-                      border-top: 0px;
-                      padding-left: 10px;
-                    "
-                    :options="optionsSearch"
-                    @change="getByParamsEdit"
-                    v-model="params.paramEdit"
-                    class="form-control custom-select ml-3"
-                    :class="{ 'text-white dark-secondary': dark }"
-                  >
-                    
-                  </b-form-select>
-                  <label
-                    data-error="wrong"
-                    :class="{ 'text-white': dark }"
-                    data-success="right"
-                    for="defaultForm-pass"
-                    >buscar</label
-                  >
-                </div>
-
-                <div
-                  id="resultadoEdit"
-                  class="list-scroll scrollbar-light-blue"
-                  style="max-height: 50vh"
-                >
-                  <div
-                    v-for="resultado of resultados"
-                    v-bind:key="resultado._id"
-                  >
-                    <div class="c-hand div-search mb-3">
-                      <div
-                        @click="formData(resultado._id)"
-                        class="text-center w-100"
-                      >
-                        {{ resultado.nombre }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- form editar -->
-              <div :class="{ 'd-none': !formVisibilityEDit }">
-                <form id="formEdit" class="">
-                  <div class="form-group mb-2">
-                    <b-form-input
-                      required
-                      type="text"
-                      v-model="FormEdit.nombre"
-                      onkeyup="validateNombre(this)"
-                      id="nombreEdit"
-                      name="nombre"
-                      placeholder="nombre"
-                      class="mt-3"
-                      autocomplete="off"
-                    ></b-form-input>
-                    <b-form-input
-                      required
-                      v-model="FormEdit.codigo"
-                      type="text"
-                      onkeyup="validateCod(this)"
-                      style="text-transform: uppercase"
-                      id="codigoEdit"
-                      name="codigo"
-                      placeholder="codigo"
-                      class="form-control mt-3"
-                      autocomplete="off"
-                    ></b-form-input>
-                    
-                    <div class="d-flex">
-                     
-                      <b-form-input
-                        v-model="FormEdit.telefono"
-                        required
-                        type="number"
-                        onkeyup="validateTelefono(this)"
-                        id="telefonoEdit"
-                        name="telefono"
-                        placeholder="telefono"
-                        class="form-control mt-3  w-50"
-                        autocomplete="off"
-                      ></b-form-input>
-                      <b-form-input
-                        v-model="FormEdit.rif"
-                        
-                
-                       
-                        
-                        placeholder="rif"
-                        class="form-control mt-3 ml-2 w-50"
-                        autocomplete="off"
-                      ></b-form-input>
-                    </div>
-                    
-                  </div>
-                </form>
-                <div class="d-flex text-white">
-                  <div
-                    @click="sendEdit(FormEdit._id)"
-                    class="btn btn-block color-primary mr-2 text-white c-hand"
-                  >
-                    guardar
-                  </div>
-                  <div
-                  @click="intercambioEdit"
-                    style="width: 50px; height: 40px; border-radius: 2px"
-                    class="c-hand red-alert d-flex align-items-center justify-content-center"
-                  >
-                    <i class="fas fa-trash-alt"></i>
-                  </div>
-                </div>
-              </div>
-              <!-- form editar  -->
-            </div>
-            <div
-              class="modal-footer d-flex justify-content-center mr-4 ml-4"
-            ></div>
           </div>
         </div>
       </div>
-
-      <!-- modal edit -->
-     
-      <!-- modal delete  -->
-      <div
-        class="modal fade"
-        id="modalDelete"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="myModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-md" role="document">
-          <div class="modal-content" :class="{ 'dark-secondary ': dark }">
-            <div
-              class="modal-header text-center"
-              :class="{ 'color-secondary text-white': dark }"
-            >
-              <h4 class="modal-title w-100 font-weight-bold">Borrar</h4>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body mx-3">
-              <div id="busqueda" :class="{'d-none' : !inputDeleteVisibilyty}">
-                <div class="md-form mb-4 d-flex" id="formSearchDelete">
-                  <i class="fas fa-search prefix grey-text"></i>
-
-                  <b-form-input
-                    v-model="params.InputDelete"
-                    
-                    autocomplete="off"
-                    :class="{ 'text-white': dark }"
-                    type="text"
-                    @keyup="getByParamsDelete"
-                  >
-                  </b-form-input>
-
-                  <b-form-select
-                    v-model="params.paramDelete"
-                    :options="optionsSearch"
-                    @change="getByParamsDelete"
-                    style="
-                      
-                      border-left: 0px;
-                      border-right: 0px;
-
-                      border-top: 0px;
-                      padding-left: 10px;
-                    "
-                    name=""
-                    id="parametroDelete"
-                    class="form-control  custom-select ml-3"
-                    :class="{ 'text-white dark-secondary': dark }"
-                  >
-                  </b-form-select>
-                  <label
-                    data-error="wrong"
-                    :class="{ 'text-white': dark }"
-                    data-success="right"
-                    for="defaultForm-pass"
-                    >buscar</label
-                  >
-                </div>
-
-                <div
-                  id="resultadoDelete"
-                  class="list-scroll scrollbar-light-blue"
-                  style="max-height: 50vh"
-                >
-                  <div
-                    v-for="resultado of resultadosDelete"
-                    v-bind:key="resultado._id"
-                  >
-                    <div class="c-hand div-search mb-3">
-                      <div
-                        @click="infoData(resultado._id)"
-                        class="text-center w-100"
-                      >
-                        {{ resultado.nombre }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div id="informacionDelete" :class="{'d-none': inputDeleteVisibilyty}">
-                <div id="contenedorDelete">
-                  <h4>{{infoDelete.nombre}}</h4>
-                  
-                  <div class="d-flex justify-content-center">
-                   
-                    <p class="h5 ml-3">{{infoDelete.telefono}}</p>
-                  </div>
-                  <div class="d-flex justify-content-center">
-                    <div
-                      @click="deleteProveedor(infoDelete._id)"
-                      class="text-center boton-cuadrado color-primary c-hand text-white mt-3 mr-5"
-                    >
-                      <i class="fas fa-check"></i> <br />
-                      borrar
-                    </div>
-                    <div
-                      @click="cancelDelete"
-                      class="text-center boton-cuadrado red-alert c-hand text-white mt-3 ml-5"
-                    >
-                      <i class="fas fa-times"></i> <br />
-                      cancelar
-                    </div>
-                    
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="modal-footer d-flex justify-content-center mr-4 ml-4"
-            ></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- modal delete  -->
-      <!-- modal search  -->
-      <div
-        class="modal fade"
-        id="modalSearch"
-        tabindex="-1"
-        role="dialog"
-        aria-labelledby="myModalLabel"
-        aria-hidden="true"
-      >
-        <div class="modal-dialog modal-md" role="document">
-          <div class="modal-content" :class="{ 'dark-secondary ': dark }">
-            <div
-              class="modal-header text-center"
-              :class="{ 'color-secondary text-white': dark }"
-            >
-              <h4 class="modal-title w-100 font-weight-bold">Borrar</h4>
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body mx-3">
-              <div id="busqueda" :class="{'d-none' : !inputSearchVisibilyty}">
-                <div class="md-form mb-4 d-flex" id="formSearch">
-                  <i class="fas fa-search prefix grey-text"></i>
-
-                  <b-form-input
-                    v-model="params.InputSearch"
-                    
-                    autocomplete="off"
-                    :class="{ 'text-white': dark }"
-                    type="text"
-                    @keyup="getByParamsSearch"
-                  >
-                  </b-form-input>
-
-                  <b-form-select
-                    v-model="params.paramSearch"
-                    :options="optionsSearch"
-                    @change="getByParamsSearch"
-                    style="
-                      
-                      border-left: 0px;
-                      border-right: 0px;
-
-                      border-top: 0px;
-                      padding-left: 10px;
-                    "
-                    name=""
-                    id="parametroSearch"
-                    class="form-control  custom-select ml-3"
-                    :class="{ 'text-white dark-secondary': dark }"
-                  >
-                  </b-form-select>
-                  <label
-                    data-error="wrong"
-                    :class="{ 'text-white': dark }"
-                    data-success="right"
-                    for="defaultForm-pass"
-                    >buscar</label
-                  >
-                </div>
-
-                <div
-                  id="resultadoSearch"
-                  class="list-scroll scrollbar-light-blue"
-                  style="max-height: 50vh"
-                >
-                  <div
-                    v-for="resultado of resultadoSearch"
-                    v-bind:key="resultado._id"
-                  >
-                    <div class="c-hand div-search mb-3">
-                      <div
-                        @click="infoDataSearch(resultado._id)"
-                        class="text-center w-100"
-                      >
-                        {{ resultado.nombre }}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div id="informacionSearch" :class="{'d-none': inputSearchVisibilyty}">
-                <div id="contenedorSearch" class="text-capitalize">
-                  <p class="h4 text-center mb-5">{{infoSearch.nombre}}</p>
-                   <p class=" h5">RIF N°: {{infoSearch.rif}}</p>
-                  
-                    <p class="h5">telefono: {{infoSearch.telefono}}</p>
-                    <p class="h5">codigo: {{infoSearch.codigo}}</p>
-                  <div class="d-flex justify-content-center">
-                   
-                  </div>
-                  <div class="d-flex justify-content-center">
-                    <div
-                      @click="intercambioSearch"
-                      class="text-center boton-cuadrado color-primary c-hand text-white mt-3 mr-5"
-                    >
-                      <i class="fas fa-check"></i> <br />
-                      
-                    </div>
-                    
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="modal-footer d-flex justify-content-center mr-4 ml-4"
-            ></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- modal search  -->
-      
     </div>
-    <!-- modales  -->
-    
-  </div>
 
-    
+    <!-- modal add  -->
+
+    <!-- modal edit -->
+
+    <div
+      class="modal fade"
+      id="modalEdit"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="myModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-md" role="document">
+        <div class="modal-content" :class="{ 'dark-secondary ': dark }">
+          <div
+            class="modal-header text-center"
+            :class="{ 'color-secondary text-white': dark }"
+          >
+            <h4 class="modal-title w-100 font-weight-bold">Editar</h4>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body mx-3">
+            <form
+              id="formEdit
+             "
+              class="mx-3"
+            >
+              <div class="form-group mb-2" v-if="formVisibilityEDit === true">
+                <b-form-select
+                  class="mt-3"
+                  v-model="formEdit.categoria"
+                  :options="categorias"
+                ></b-form-select>
+                <b-form-select
+                  class="mt-3"
+                  v-model="formEdit.unidadMedida"
+                  :options="unidadesMedida"
+                ></b-form-select>
+                <b-form-select
+                  class="mt-3"
+                  v-model="formEdit.proveedor_id"
+                  :options="proveedores"
+                ></b-form-select>
+                <b-form-input
+                  required
+                  type="text"
+                  v-model="formEdit.nombre"
+                  placeholder="nombre"
+                  class="mt-3"
+                  autocomplete="off"
+                />
+                <b-form-input
+                  required
+                  type="text"
+                  onkeyup="validateCod(this)"
+                  style="text-transform: uppercase"
+                  v-model="formEdit.codigo"
+                  placeholder="codigo"
+                  class="form-control mt-3"
+                  autocomplete="off"
+                />
+
+                <div class="d-flex">
+                  <b-form-input
+                    required
+                    type="number"
+                    v-model="formEdit.cantidad"
+                    placeholder="cantidad"
+                    class="form-control mt-3  w-50"
+                    autocomplete="off"
+                  />
+                  <b-form-input
+                    required
+                    type="number"
+                    v-model="formEdit.stock"
+                    placeholder="stock"
+                    class="form-control mt-3 ml-2 w-50"
+                    autocomplete="off"
+                  />
+                  <b-form-input
+                    required
+                    type="number"
+                    v-model="formEdit.precio"
+                    placeholder="precio"
+                    class="form-control mt-3 ml-2 w-50"
+                    autocomplete="off"
+                  />
+                </div>
+                <b-form-textarea
+                  required
+                  type="text"
+                  v-model="formEdit.descripcion"
+                  placeholder="descripcion"
+                  class="form-control mt-3 ml-2"
+                  autocomplete="off"
+                  style="  border-radius: 0.25rem;
+"
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer d-flex justify-content-center mr-4 ml-4">
+            <div
+              @click="sendEdit(formEdit._id)"
+              class="text-white mt-3 btn btn-block color-primary mr-4 ml-4 c-hand"
+            >
+              guardar
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- modal edit -->
+
+    <!-- modales  -->
+  </div>
 </template>
 
 <script>
-import numeral from 'numeral'
-    import { mapState } from "vuex";
+import numeral from "numeral";
+import { mapState } from "vuex";
 import axios from "axios";
 
-import Vue from 'vue'
-  Vue.filter("formatNumber", function (value) {
-    return numeral(value).format("0,0"); // displaying other groupings/separators is possible, look at the docs
-  });
+import Vue from "vue";
+Vue.filter("formatNumber", function(value) {
+  return numeral(value).format("0,0"); // displaying other groupings/separators is possible, look at the docs
+});
 export default {
-created(){
-  this.getCategorias()
-},
-    methods:{
-      //solicitudes inmediatas
-     async getCategorias(){
-        const data = await axios.get(`${this.server}/system/categoriaProducto`)
-        console.log(data);
-      } ,
-      //solicitudes inmediatas 
-      alert(data) {
-      this.alerts.push(data);
+  created() {
+    this.getCategorias();
+    this.getUnidades();
+    this.getProveedores();
+    this.getProductos();
+  },
+  methods: {
+    //solicitudes inmediatas
+    async getUnidades() {
+      const { data } = await axios.get(`${this.server}/system/unidades`);
+      data.forEach((item) => {
+        let data = { value: item._id, text: item.nombre };
+        this.unidadesMedida.push(data);
+      });
+      let defaultItem = {
+        value: null,
+        text: "seleccione una unidad",
+        disabled: true,
+      };
+      this.unidadesMedida.push(defaultItem);
     },
+    async getCategorias() {
+      const { data } = await axios.get(
+        `${this.server}/system/categoriaProducto`
+      );
+      data.forEach((item) => {
+        let data = { value: item._id, text: item.nombre };
+        this.categorias.push(data);
+      });
+      let defaultItem = {
+        value: null,
+        text: "seleccione una categoria",
+        disabled: true,
+      };
+      this.categorias.push(defaultItem);
+    },
+    async getProductos() {
+      const { data } = await axios.get(`${this.server}/productos/get`);
+      this.productos = data;
+    },
+    //solicitudes inmediatas
+
     async sendEdit(id) {
       const { data } = await axios.put(
-        `${this.server}/proveedores/put/${id}`,
-        {
-          nombre: this.FormEdit.nombre,
-          codigo: this.FormEdit.codigo,
-          rif: this.FormEdit.rif,
-          
-          telefono: this.FormEdit.telefono,
-         
-          
-        }
+        `${this.server}/productos/${id}`,
+        this.formEdit
       );
-    this.getting()
-      
-      this.intercambioEdit();
       this.alert(data);
+      if (data.value == true) return;
+      if (data.value == false) return;
+      this.formVisibilityEDit = false;
+      this.formEdit.nombre = null;
+      this.formEdit.codigo = null;
+      this.formEdit.cantidad = null;
+      this.formEdit.stock = null;
+      this.formEdit.precio = null;
+      this.formEdit.categoria = null;
+      this.formEdit.unidadMedida = null;
+      this.formEdit.proveedor_id = null;
+      this.formEdit.unidadMedida = null;
+      this.formEdit.descripcion = null;
+      this.formEdit._id = null;
+      this.getProductos();
     },
-    cancelDelete(){
-      
-      this.intercambioDelete()
+
+    async getProveedores() {
+      const { data } = await axios.get(`${this.server}/proveedores/get`);
+      data.forEach((item) => {
+        let data = { value: item._id, text: item.nombre };
+        this.proveedores.push(data);
+      });
+      let defaultItem = {
+        value: null,
+        text: "seleccione un proveedor",
+        disabled: true,
+      };
+      this.proveedores.push(defaultItem);
     },
-    async deleteProveedor(id){
-   const {data}= await  axios
-        .delete(
-          `${this.server}/proveedores/delete/${id}`
-        )
+    async deleteProducto(id) {
+      const { data } = await axios.delete(`${this.server}/productos/${id}`);
       this.alert(data);
-    this.getting()
-
-      this.intercambioDelete()
-
-    },
-    getByParamsSearch() {
-      // if (this.params.InputEdit === "") return (this.resultados = []);
-      axios
-        .get(
-          `${this.server}/proveedores/get/${this.params.InputSearch}/${this.params.paramSearch}`
-        )
-        .then((response) => (this.resultadoSearch = response.data, console.log(response.data)),
-        
-        
-        );
-      
-    },
-    getByParamsEdit() {
-      // if (this.params.InputEdit === "") return (this.resultados = []);
-      axios
-        .get(
-          `${this.server}/proveedores/get/${this.params.InputEdit}/${this.params.paramEdit}`
-        )
-        .then((response) => (this.resultados = response.data));
-      // this.resultados = data;
-    },
-    getByParamsDelete() {
-      axios
-        .get(
-          `${this.server}/proveedores/get/${this.params.InputDelete}/${this.params.paramDelete}`
-        )
-        .then((response) => (this.resultadosDelete = response.data));
-    },
-    intercambioDelete() {
-      
-      this.inputDeleteVisibilyty = !this.inputDeleteVisibilyty;
-      this.params.InputDelete = null;
-    },
-    intercambioSearch() {
-      
-      this.inputSearchVisibilyty = !this.inputSearchVisibilyty;
-      this.params.InputSearch = null;
-    },
-    intercambioEdit() {
-      this.formVisibilityEDit = !this.formVisibilityEDit;
-      this.inputEditVisibilyty = !this.inputEditVisibilyty;
-      this.params.InputEdit = null;
+      if (data.value == false) {
+        return;
+      }
+      this.getProductos();
     },
     async formData(id) {
-      const { data } = await axios.get(
-        `${this.server}/proveedores/get/${id}`
+      const { data } = await axios.get(`${this.server}/productos/${id}`);
+      this.formVisibilityEDit = true;
+      this.formEdit = data;
+    },
+
+    async sendProduct() {
+      const { data } = await axios.post(
+        `${this.server}/productos/`,
+        this.nuevoProducto
       );
-      this.FormEdit = data;
-      this.resultados = [];
-      this.intercambioEdit();
+      this.alert(data);
+      if (data.value == null) return;
+      if (data.value == false) return;
+      this.nuevoProducto.nombre = null;
+      this.nuevoProducto.codigo = null;
+      this.nuevoProducto.cantidad = null;
+      this.nuevoProducto.stock = null;
+      this.nuevoProducto.precio = null;
+      this.nuevoProducto.categoria = null;
+      this.nuevoProducto.unidadMedida = null;
+      this.nuevoProducto.proveedor_id = null;
+      this.nuevoProducto.unidadMedida = null;
+      this.nuevoProducto.descripcion = null;
+      this.getProductos();
     },
-    async infoData(id) {
-      const { data } = await axios.get(
-        `${this.server}/proveedores/get/${id}`
-      );
-      this.infoDelete = data;
-      this.resultadosDelete = [];
-      this.intercambioDelete();
+    alert(data) {
+      if (data.value === true) {
+        this.$toastr.success(data.message, "productos", this.options);
+      }
+      if (data.value === false) {
+        this.$toastr.error(data.message, "productos", this.options);
+      }
+      if (data.value === null) {
+        this.$toastr.warning(data.message, "productos", this.options);
+      }
     },
-    async infoDataSearch(id) {
-      const { data } = await axios.get(
-        `${this.server}/proveedores/get/${id}`
-      );
-      this.infoSearch = data;
-      this.resultadoSearch = [];
-      this.intercambioSearch();
-    },
-        sendProduct(){
-            console.log(this.nuevoProducto);
-        }
-    },
-     computed: {
-    ...mapState(["dark", "alerts", "server"]),
   },
-    data(){ return{
-      optionsSearch: [
+
+  computed: {
+    sortOptions() {
+      // Create an options list from our fields
+      return this.fields
+        .filter((f) => f.sortable)
+        .map((f) => {
+          return { text: f.label, value: f.key };
+        });
+    },
+    ...mapState(["dark", "options", "server", "infoEmpresa"]),
+  },
+  data() {
+    return {
+      proveedores: [],
+      filter: null,
+      filterOn: [],
+      fields: [
         {
-          value: null,
-          text: "parametro de busqueda",
-          disabled: true,
-          selected: true,
+          key: "nombre",
+          sortable: true,
         },
-        { value: "nombre", text: "nombre" },
-        { value: "codigo", text: "codigo" },
-        
-        
+        {
+          key: "codigo",
+          sortable: true,
+        },
+        {
+          key: "proveedor_id.nombre",
+          sortable: true,
+          label: "proveedor",
+        },
+        {
+          key: "categoria.nombre",
+          label: "categoria",
+          sortable: true,
+        },
+        {
+          key: "precio",
+          label: "precio",
+          sortable: true,
+        },
+        {
+          key: "categoria.nombre",
+          label: "categoria",
+          sortable: true,
+        },
+        {
+          key: "unidadMedida.nombre",
+          label: "unidad",
+          sortable: true,
+        },
+        {
+          key: "cantidad",
+          label: "cantidad",
+          sortable: true,
+        },
+        "precioBs",
+        "funciones",
       ],
+
       inputEditVisibilyty: true,
       inputSearchVisibilyty: true,
       formVisibilityEDit: false,
@@ -777,103 +522,39 @@ created(){
       infoVisibilityEdit: false,
       inputDeleteVisibilyty: true,
 
-      FormEdit: {
-        codigo: null,
-        
-        createdAt: null,
-        
-        
+      formEdit: {
         nombre: null,
-        status: null,
-        telefono: null,
+        codigo: null,
+        stock: null,
+        descripcion: null,
+        categoria: null,
+        unidadMedida: null,
+        precio: null,
+        proveedor_id: null,
+        cantidad: null,
+        createdAt: null,
+
         updatedAt: null,
         _id: null,
-        rif: null
-
       },
-      infoDelete: {
-        codigo: null,
-        
-        createdAt: null,
-       
-        rif: null,
+
+      categorias: [],
+
+      unidadesMedida: [],
+
+      nuevoProducto: {
         nombre: null,
-        status: null,
-        telefono: null,
-        updatedAt: null,
-        _id: null
-        
-
-      },
-      infoSearch: {
         codigo: null,
-        
-        createdAt: null,
-       
-        rif: null,
-        nombre: null,
-        status: null,
-        telefono: null,
-        updatedAt: null,
-        _id: null
-        
-
+        stock: null,
+        descripcion: null,
+        categoria: null,
+        unidadMedida: null,
+        precio: null,
+        proveedor_id: null,
+        cantidad: null,
       },
-      resultadosDelete: [],
-      resultadosEdit: [],
-      resultados: [],
-      resultadoSearch: [],
-
-      params: {
-        InputDelete: null,
-        InputEdit: null,
-        InputSearch: null,
-        paramDelete: null,
-        paramEdit: null,
-        paramSearch: null,
-      },
-     
-      categorias:[
-
-        { value: null, text: 'categoria', disabled: true },
-          { value: 'b', text: 'no precederos' },
-          { value: 'd', text: 'precederos' }
-      ]
-      
-      
-      ,
-      unidadesMedida:[
-
-        { value: null, text: 'unidad de medida' ,disabled: true },
-          { value: 'L', text: 'litros' },
-          { value: 'Kg', text: 'kilos' },
-      ]
-      
-      
-      ,
-
-        nuevoProducto:
-            {nombre: null,
-      codigo: null,
-      stock: null,
-      descripcion: null,
-      categoria: null,
-      unidadMedida: null,
-      precio: null,
-      proveedor_id: null,
-      cantidad: null, }
-        ,
-precioDolar: 2204000, 
-        productos:[
-            {nombre: 'mayonesa',precio: 2 },
-            {nombre: 'mayonesa',precio: 3 },
-            {nombre: 'mayonesa',precio: 4 },
-            {nombre: 'mayonesa',precio: 5 },
-            {nombre: 'mayonesa',precio: 7 },
-            
-            ]
-    }}
-
-    
-}
+      productos: [],
+    };
+  },
+};
 </script>

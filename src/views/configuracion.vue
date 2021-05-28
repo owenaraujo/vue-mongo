@@ -50,10 +50,12 @@
                   </div>
                   <b-collapse id="collapse-1" class="mt-2">
                     <b-card>
+                     
                       <div class="card-body d-flex">
                         <b-form-input
+                        type="number"
                           class="w-75"
-                          v-model="infoEmpresa.dolar"
+                          v-model.number="infoEmpresa.dolar"
                         ></b-form-input>
                         <div
                           @click="putDolar()"
@@ -483,7 +485,7 @@
               </form>
 
               <div class="d-flex text-white">
-                <div class="btn btn-block color-primary mr-2 text-white c-hand">
+                <div @click="sendEditUser()" class="btn btn-block color-primary mr-2 text-white c-hand">
                   guardar
                 </div>
                 <div
@@ -530,7 +532,7 @@ export default {
           return { text: f.label, value: f.key };
         });
     },
-    ...mapState(["server", "dark", "usuario", "alerts", "infoEmpresa"]),
+    ...mapState(["server", "dark", "usuario", "options", "infoEmpresa", 'token']),
   },
   data() {
     return {
@@ -604,7 +606,9 @@ export default {
       subsistemaPiezas: {},
       ProveedoresCount: null,
       productosCount: null,
+     
     };
+    
   },
   created() {
     this.getCategoriasProductos();
@@ -618,21 +622,32 @@ export default {
   methods: {
     editUser(data) {
       data.password = null;
-
+if (this.formVisibilityEDit === false) {
+  this.formVisibilityEDit = true
+}
       this.formEditUser = data;
+    },
+   async sendEditUser(){
+const {data}= await axios.put(`${this.server}/auth/edit/${this.token}`,this.formEditUser)
+this.alert(data)
+if (data.value == true) {
+  this.formVisibilityEDit = false
+
+this.getUsers()
+}
     },
     async deleteUser(item) {
       const { data } = await axios.delete(
-        `${this.server}/auth/user/${item._id}&&${item.roles._id}`
+        `${this.server}/auth/user/${item._id}/${item.roles._id}`
       );
-      this.alerts.push(data);
       this.getUsers();
+      this.alert(data)
     },
     async activateUser(item) {
       const { data } = await axios.put(
-        `${this.server}/auth/user/${item._id}&&${item.roles._id}`
+        `${this.server}/auth/user/${item._id}/${item.roles._id}`
       );
-      this.alerts.push(data);
+      this.alert(data);
       this.getUsers();
     },
     async saveUser() {
@@ -640,17 +655,17 @@ export default {
         return;
       }
       if (this.formAdd.password != this.verifyPassword) {
-        return console.log("clave incorrecta");
+        return
       }
       const { data } = await axios.post(
         `${this.server}/auth/signup`,
         this.formAdd
       );
       if (data.value === false || null) {
-        this.alerts.push(data);
+        this.alert(data);
         return;
       }
-      this.alerts.push(data);
+      this.alert(data);
       this.formAdd.password = null;
       this.formAdd.username = null;
       this.formAdd.nombre = null;
@@ -674,7 +689,6 @@ export default {
         disabled: true,
       };
       this.roles.push(defaultSelect);
-      console.log(data);
     },
     async putDolar() {
       let json = { dolar: this.infoEmpresa.dolar };
@@ -685,7 +699,18 @@ export default {
       this.alert(data);
     },
     alert(data) {
-      this.alerts.push(data);
+if (data.value === true) {
+      this.$toastr.success(data.message,'configuracion', this.options);
+  
+}      
+if (data.value === false) {
+      this.$toastr.error(data.message,'configuracion', this.options);
+  
+}      
+if (data.value === null) {
+      this.$toastr.warning(data.message,'configuracion', this.options);
+  
+}      
     },
     async deleteCategoria(id) {
       const { data } = await axios.delete(

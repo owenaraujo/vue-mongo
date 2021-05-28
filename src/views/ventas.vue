@@ -16,13 +16,13 @@
               <b-form-input
                 type="number"
                 v-model="producto.venta"
-                @keyup="verifyStock(producto)"
+                @keyup="verifyStock(index)"
               >
               </b-form-input>
               <div class="text-center">
                 <b-button
                   class="btn color-primary mr-2 text-white c-hand w-50"
-                  @click="saveStore(producto)"
+                  @click="saveStore(index)"
                   :disabled="
                     producto.venta > producto.cantidad ||
                       producto.cantidad === 0
@@ -43,13 +43,17 @@
         </div>
         <div class="card-body list-scroll scrollbar-light-blue">
           <div v-for="(productos, index) in store" v-bind:key="index">
-            <p>{{ productos.producto }} cantidad: {{ productos.cantidad }}</p>
-            <p class="text-right">total: {{ productos.total }}</p>
+            <div>{{ productos.producto }} cantidad:
+               <div class="btn" @click="productos.cantidad++">+</div> 
+               {{ productos.cantidad }} 
+               <div class="btn" @click="productos.cantidad--">-</div>
+               </div>
+            <p class="text-right">total: {{ productos.cantidad*productos.precio }}</p>
             <hr />
           </div>
         </div>
         <div class="card-footer d-flex">
-          <div class="btn color-primary mr-2 text-white c-hand w-50">
+          <div class="btn color-primary mr-2 text-white c-hand w-50" @click="enviar">
             <i class="fas fa-check"></i>
           </div>
           <div
@@ -65,9 +69,12 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-
+import { mapState, mapMutations } from "vuex";
+import axios from "axios";
 export default {
+  created() {
+    this.getProductos();
+  },
   name: "Links",
   data() {
     return {
@@ -128,16 +135,65 @@ export default {
     };
   },
   computed: {
-    ...mapState(["dark"]),
+    ...mapState(["dark", "server", "infoEmpresa", "usuario",'token']),
     total() {
-      return this.store.reduce((sum, item) => sum + item.total, 0);
+      return this.store.reduce((sum, item) => sum + parseFloat(item.cantidad*item.precio), 0);
     },
   },
   methods: {
+    ...mapMutations([
+      "getStorage",
+      "getLogin",
+      "cambiarLogin",
+      "saveToken",
+      "getUser",
+      "getInfoEmpresa",
+    ]),
+    async getProductos() {
+      const { data } = await axios.get(`${this.server}/productos/get`);
+      this.productos = data;
+    },
     deleteStore() {
       this.store = [];
+      this.getProductos()
+    }, obtener() {
+      return this.store.reduce((sum, item) => sum + parseFloat(item.cantidad*item.precio), 0);
+    },
+    async enviar(){
+     
+    const value = this.obtener()
+    const valores = {
+      dolar: this.infoEmpresa.dolar ,
+      total: value,
+      productos: this.store
+      }
+      console.log(this.token);
+      const {data}= await axios.post(`${this.server}/ventas/token`, valores,{headers:{xtoken: this.token}})
+      return console.log(data);
+      //this.alert(data);
+
+      
+      
     },
     verifyStock(index) {
+    for (let i = 0; i < this.productos.length; i++) {
+       const element = this.productos[index];
+       let param =element.cantidad - element.stock;
+      if (element.cantidad <element.venta) {
+        element.alerta = "stock no disponible";
+      }
+      if ((param <= element.venta) & (element.venta < element.cantidad)) {
+        element.alerta = "limite de stock";
+      }
+      if (param > element.venta) {
+        element.alerta = null;
+      }
+
+      if (element.cantidad == element.venta) element.alerta = "stock en 0";
+     }
+    },
+    save() {
+      var index = null;
       let param = index.cantidad - index.stock;
 
       if (index.cantidad < index.venta) {
@@ -152,24 +208,30 @@ export default {
 
       if (index.cantidad == index.venta) index.alerta = "stock en 0";
     },
-    saveStore(index) {
-        if (index.venta == 0|| index.venta==null) return
-      if (index.cantidad - index.stock < index.venta) {
-        index.alerta = "limite de stock disponible";
 
+    saveStore(index) {
+      console.log(index);
+      for (let i = 0; i < this.productos.length; i++) {
+        const element = this.productos[index];
+        console.log(element);
+        if (element.venta == 0 || element.venta == null) return;
+      if (element.cantidad - element.stock < element.venta) {
+        element.alerta = "limite de stock disponible";
       } else {
-        
-        index.cantidad = index.cantidad - index.venta;
-        let total = index.precio * index.venta;
+        element.cantidad = element.cantidad - element.venta;
         this.store.push({
-          producto: index.nombre,
-          cantidad: index.venta,
-          precio: index.precio,
-          total: total,
+          producto: element.nombre,
+          cantidad: element.venta,
+          precio: element.precio,
+          id_producto: element._id,
+          
         });
-        index.venta = null;
-        index.alerta = null;
+
+        element.venta = null;
+        element.alerta = null;
       }
+      }
+      
     },
   },
 };

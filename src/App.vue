@@ -26,26 +26,8 @@
           }"
         >
           <div>
-            <div class="text-center NotificationIndex"  style="position: absolute ; z-index:1080" >
-              <div v-for="(alert, index) in alerts" v-bind:key="index">
-<div   role="alert" class="alert alert-dismissible " :class="{'alert_success': alert.value , 'alert_danger': !alert.value, 'alert_warning': alert.value === null}" >
-    <div class="alert--icon">
-    <i class="fas fa-bell"></i>
-    </div>
-    <div class="alert--content text-center">
-    {{alert.message}}
-    </div>
-    <div data-dismiss="alert"
-    aria-label="Close" class="alert--close">
-    <i class="far fa-times-circle"></i>
-    </div>
-    </div>
-
-              </div>
-
-
-
-            </div>
+           
+           
           </div>
           <b-container fluid='true' class="mx-3">
             <router-view></router-view>
@@ -96,7 +78,7 @@ export default {
     };
   },
   computed: {
-    ...mapState(["dark", 'alerts', 'modalShow', 'server',"token", 'id']),
+    ...mapState(["dark", 'options', 'modalShow', 'server',"token", 'id']),
   },
   components: {
     Nav,
@@ -105,12 +87,27 @@ export default {
   created() {
     this.getStorage()
     this.getLogin()
+    this.getInfoEmpresa()
   },
    methods: {
+      alert(data) {
+if (data.value === true) {
+      this.$toastr.success(data.message,'inicio', this.options);
+  
+}      
+if (data.value === false) {
+      this.$toastr.error(data.message,'inicio', this.options);
+  
+}      
+if (data.value === null) {
+      this.$toastr.warning(data.message,'inicio', this.options);
+  
+}      
+    },
      async sigin(){
        const {data} = await axios.post(`${this.server}/auth/signin`, this.user)
       
-       this.alerts.push(data)
+       this.alert(data)
        if(data.value == null ) return
        if(data.value == false ) return
        localStorage.token = data.token
@@ -124,7 +121,7 @@ export default {
       this.user.password= null
        this.cambiarLogin()
        },
-    ...mapMutations(['getStorage', 'getLogin', 'cambiarLogin', 'saveToken', 'getUser'])
+    ...mapMutations(['getStorage', 'getLogin', 'cambiarLogin', 'saveToken', 'getUser','getInfoEmpresa'])
   },
 }
 </script>

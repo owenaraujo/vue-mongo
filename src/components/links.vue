@@ -249,14 +249,27 @@ export default {
 
 salir(){
   sessionStorage.clear()
-  this.alerts.push({value: true, message:'hasta pronto !!!'})
+  this.alert({value: true, message:'hasta pronto !!!'})
   localStorage.removeItem('token')
   localStorage.removeItem('id')
   this.cambiarLogin()
-}
+}, alert(data) {
+if (data.value === true) {
+      this.$toastr.success(data.message,'inicio', this.options);
+  
+}      
+if (data.value === false) {
+      this.$toastr.error(data.message,'inicio', this.options);
+  
+}      
+if (data.value === null) {
+      this.$toastr.warning(data.message,'inicio', this.options);
+  
+}      
+    },
     },
     computed:{
-    ...mapState(['dark', 'usuario', 'modalShow','alerts'])
+    ...mapState(['dark', 'usuario', 'modalShow','options'])
   },
 }
 

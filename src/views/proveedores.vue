@@ -311,7 +311,7 @@ export default {
             return { text: f.label, value: f.key }
           })
       },
-    ...mapState(["dark", "alerts", "server", "token"]),
+    ...mapState(["dark", "options", "server", "token"]),
   },
   data() {
     return {
@@ -427,11 +427,22 @@ export default {
   methods: {
     anonimo(data){console.log(data);},
     alert(data) {
-      this.alerts.push(data);
+if (data.value === true) {
+      this.$toastr.success(data.message,'proveedores', this.options);
+  
+}      
+if (data.value === false) {
+      this.$toastr.error(data.message,'proveedores', this.options);
+  
+}      
+if (data.value === null) {
+      this.$toastr.warning(data.message,'proveedores', this.options);
+  
+}      
     },
     async sendEdit(id) {
       const { data } = await axios.put(
-        `${this.server}/proveedores/put/${id}`,
+        `${this.server}/proveedores/put/${id}/${this.token}`,
         {
           nombre: this.FormEdit.nombre,
           codigo: this.FormEdit.codigo,
@@ -451,7 +462,7 @@ export default {
     async deleteProveedor(id){
    const {data}= await  axios
         .delete(
-          `${this.server}/proveedores/delete/${id}`
+          `${this.server}/proveedores/delete/${id}/${this.token}`
         )
       this.alert(data);
     this.getting()

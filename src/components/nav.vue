@@ -1,6 +1,6 @@
 <template>
  <div class="mdl-layout__header-row d-flex">
-              <span class="mdl-layout-title">S.A.R.M.</span>
+              <span class="mdl-layout-title">{{infoEmpresa.nombre}}</span>
               <div class="mdl-layout-spacer"></div>
               
               <button
@@ -25,7 +25,7 @@ export default {
     
    }
  },computed:{
-    ...mapState(['dark'])
+    ...mapState(['dark', 'infoEmpresa'])
   },
   methods: {
     ...mapMutations(['cambiar'])

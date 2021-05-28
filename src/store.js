@@ -5,7 +5,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
 
 state:{
-    server :'http://192.168.0.101:3000',
+    server :'http://192.168.0.100:3000',
     dark : false,
     modalShow: true,
     token: 1234 ,
@@ -16,6 +16,15 @@ state:{
 username : null,
 
     },
+    options:{
+        showMethod : 'slideDown',
+        closeButton: true,
+        newestOnTop: true,
+        closeMethod : 'fadeOut',
+        timeOut: 1000
+         
+        
+      },
     alerts: []
 },
 mutations:{
@@ -31,6 +40,7 @@ mutations:{
         state.usuario= null
         state.usuario = data
     },
+    
     async getStorage(state){
         
         if (localStorage.dark) {
