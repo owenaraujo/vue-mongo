@@ -14,6 +14,7 @@ state:{
 
     usuario:{
 username : null,
+roles:{name: null}
 
     },
     options:{
@@ -58,7 +59,8 @@ if (localStorage.dark === 'false') {
         } if (localStorage.token) {
         state.token = localStorage.token
     }
-    const {data} = await axios.get(`${state.server}/auth/authToken/${state.token}`)
+    const {data} = await axios.get(`${state.server}/auth/authToken/`,{headers:{xtoken: state.token}})
+    
      if(data.value === null){
          state.alerts.push(data)
          state.modalShow = true

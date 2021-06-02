@@ -1,9 +1,11 @@
 <template>
   <div>
+
+    <div>
     <b-row>
       <b-col>
         <div class="d-flex">
-          <div
+          <div v-if="usuario.roles.name !== 'usuario'"
             class="text-center boton-cuadrado quinto c-hand text-white mt-3"
             data-toggle="modal"
             data-target="#modalAdd"
@@ -51,7 +53,7 @@
               <template #cell(precioBs)="row">
                 {{ infoEmpresa.dolar * row.item.precio | formatNumber }}
               </template>
-              <template #cell(funciones)="row">
+              <template #cell(funciones)="row" v-if="usuario.roles.name !== 'usuario'">
                 <div
                   class="btn red-alert text-white mt-0 c-hand"
                   size="sm"
@@ -319,13 +321,13 @@
 
     <!-- modales  -->
   </div>
+  </div>
 </template>
 
 <script>
 import numeral from "numeral";
 import { mapState } from "vuex";
 import axios from "axios";
-
 import Vue from "vue";
 Vue.filter("formatNumber", function(value) {
   return numeral(value).format("0,0"); // displaying other groupings/separators is possible, look at the docs
@@ -376,7 +378,7 @@ export default {
     async sendEdit(id) {
       const { data } = await axios.put(
         `${this.server}/productos/${id}`,
-        this.formEdit
+        this.formEdit,{headers:{xtoken: this.token}}
       );
       this.alert(data);
       if (data.value == true) return;
@@ -410,7 +412,7 @@ export default {
       this.proveedores.push(defaultItem);
     },
     async deleteProducto(id) {
-      const { data } = await axios.delete(`${this.server}/productos/${id}`);
+      const { data } = await axios.delete(`${this.server}/productos/${id}`,{headers:{xtoken: this.token}});
       this.alert(data);
       if (data.value == false) {
         return;
@@ -426,7 +428,7 @@ export default {
     async sendProduct() {
       const { data } = await axios.post(
         `${this.server}/productos/`,
-        this.nuevoProducto
+        this.nuevoProducto,{headers:{xtoken: this.token}}
       );
       this.alert(data);
       if (data.value == null) return;
@@ -465,8 +467,9 @@ export default {
           return { text: f.label, value: f.key };
         });
     },
-    ...mapState(["dark", "options", "server", "infoEmpresa"]),
+    ...mapState(["dark", "options", "server", "infoEmpresa",'token','usuario']),
   },
+
   data() {
     return {
       proveedores: [],

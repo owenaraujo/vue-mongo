@@ -110,6 +110,7 @@ if (data.value === null) {
        this.alert(data)
        if(data.value == null ) return
        if(data.value == false ) return
+      
        localStorage.token = data.token
       
        localStorage.id = data.id

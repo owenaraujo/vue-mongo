@@ -105,7 +105,7 @@
               class="demo-navigation mdl-navigation"
               :class="{'dark-secondary' : dark, 'bg-white text-dark': !dark}"
             >
-              <router-link
+              <router-link v-if="usuario.roles.name !== 'usuario'"
                 class="mdl-navigation__link"
                 :class="{'text-white' : dark, 'text-dark': !dark}"
                 to="ventas"
@@ -116,7 +116,7 @@
                   >dashboard</i
                 >Ventas</router-link
               >
-            
+              
               <router-link
                 class="mdl-navigation__link"
                 :class="{'text-white' : dark, 'text-dark': !dark}"
@@ -141,7 +141,7 @@
                 >proveedores</router-link
               >
               
-              <router-link
+              <router-link v-if="usuario.roles.name === 'administrador'"
                 class="mdl-navigation__link"
                 :class="{'text-white' : dark, ' text-dark': !dark}"
                 to="configuracion"

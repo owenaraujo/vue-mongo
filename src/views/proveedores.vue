@@ -5,7 +5,7 @@
     <b-row>
       <b-col>
         <div class="d-flex">
-          <div
+          <div v-if="usuario.roles.name !== 'usuario' "
             class="text-center boton-cuadrado quinto c-hand text-white mt-3"
             data-toggle="modal"
             data-target="#modalAdd"
@@ -63,7 +63,7 @@ proveedores
             <div>
              
     <b-table class="card mt-3 list-scroll scrollbar-light-blue" :sticky-header="true" striped  hover :filter="filter" :items="proveedores" :fields="fields">
-<template #cell(funciones)="row">
+<template #cell(funciones)="row" v-if="usuario.roles.name !== 'usuario'">
         <div class="btn red-alert text-white mt-0 c-hand" size="sm" @click="deleteProveedor(row.item._id)" >
          <i class="fas fa-trash-alt"></i>
         </div>
@@ -311,7 +311,7 @@ export default {
             return { text: f.label, value: f.key }
           })
       },
-    ...mapState(["dark", "options", "server", "token"]),
+    ...mapState(['usuario',"dark", "options", "server", "token"]),
   },
   data() {
     return {
@@ -442,7 +442,7 @@ if (data.value === null) {
     },
     async sendEdit(id) {
       const { data } = await axios.put(
-        `${this.server}/proveedores/put/${id}/${this.token}`,
+        `${this.server}/proveedores/put/${id}`,
         {
           nombre: this.FormEdit.nombre,
           codigo: this.FormEdit.codigo,
@@ -451,7 +451,7 @@ if (data.value === null) {
           telefono: this.FormEdit.telefono,
          
           
-        }
+        },{headers:{xtoken: this.token}}
       );
     this.getting()
       
@@ -462,7 +462,7 @@ if (data.value === null) {
     async deleteProveedor(id){
    const {data}= await  axios
         .delete(
-          `${this.server}/proveedores/delete/${id}/${this.token}`
+          `${this.server}/proveedores/delete/${id}/`,{headers:{xtoken: this.token}}
         )
       this.alert(data);
     this.getting()
@@ -486,8 +486,8 @@ if (data.value === null) {
    
     async addProveedores() {
       const { data } = await axios.post(
-        `${this.server}/proveedores/post/${this.token}`,
-        this.formAdd
+        `${this.server}/proveedores/post`,
+        this.formAdd,{headers:{xtoken: this.token}}
       );
       this.alert(data);
 if (data.value == false) return

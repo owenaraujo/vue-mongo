@@ -1,13 +1,14 @@
 <template>
   <div>
+    <div v-if="usuario.roles.name !== 'usuario' ">
     <div class="mt-2">
       <b-tabs content-class="mt-3" align="center">
         <b-tab title="General">
           <b-container fluid>
             <b-row>
               <b-col md="4">
-                <b-list-group>
-                  <b-list-group-item
+                <b-list-group :class="{'text-white' : dark}">
+                  <b-list-group-item  :class="{'dark-secondary' : dark}"
                     class="d-flex justify-content-between align-items-center"
                   >
                     proveedores registrados
@@ -16,7 +17,7 @@
                     }}</b-badge>
                   </b-list-group-item>
 
-                  <b-list-group-item
+                  <b-list-group-item :class="{'dark-secondary' : dark}"
                     class="d-flex justify-content-between align-items-center"
                   >
                     productos registrados
@@ -25,13 +26,13 @@
                     }}</b-badge>
                   </b-list-group-item>
 
-                  <b-list-group-item
+                  <b-list-group-item :class="{'dark-secondary' : dark}"
                     class="d-flex justify-content-between align-items-center"
                   >
                     total de ventas
                     <b-badge variant="primary" pill>1</b-badge>
                   </b-list-group-item>
-                  <b-list-group-item
+                  <b-list-group-item :class="{'dark-secondary' : dark}"
                     class="d-flex justify-content-between align-items-center"
                   >
                     dolar
@@ -42,18 +43,22 @@
                 </b-list-group>
 
                 <div>
-                  <div
+                  <div 
+          v-if="usuario.roles.name === 'administrador'"
+
                     class="btn color-secondary text-white c-hand"
                     v-b-toggle.collapse-1
                   >
                     editar dolar
                   </div>
-                  <b-collapse id="collapse-1" class="mt-2">
-                    <b-card>
-                     
+                  <b-collapse id="collapse-1" class="mt-2" 
+          v-if="usuario.roles.name === 'administrador'"
+                  
+                  >
+                    <b-card :class="{'dark-secondary' : dark}" >
                       <div class="card-body d-flex">
                         <b-form-input
-                        type="number"
+                          type="number"
                           class="w-75"
                           v-model.number="infoEmpresa.dolar"
                         ></b-form-input>
@@ -71,36 +76,43 @@
                 <div class="mt-4 d-flex"></div>
               </b-col>
               <b-col md="4">
-                <div class="card">
-                  <div class="card-header">Información del Negocio</div>
+                <div class="card"   :class="{'dark-secondary' : dark}">
+                  <div class="card-header" :class="{'color-secondary' : dark}">Información del Negocio</div>
                   <div class="card-body">
-                    {{ this.infoEmpresa.nombre }}
+                    {{ infoEmpresa.nombre }}
                     <hr />
-                    telefono: {{ this.infoEmpresa.telefono }} registro:
-                    {{ this.infoEmpresa.rif }}
+                    telefono: {{infoEmpresa.telefono }} 
+                    <hr>
+                    registro:
+                    {{ infoEmpresa.rif }}
                   </div>
                 </div>
               </b-col>
               <b-col md="4">
-                <div class="card">
-                  <div class="card-header">
-                    Información de {{ this.usuario.roles.name }}
+                <div class="card" :class="{'dark-secondary' : dark}">
+                  <div class="card-header" :class="{'color-secondary' : dark}">
+                    Información de {{ usuario.roles.name }}
                   </div>
+                  
                   <div class="card-body">
-                    {{ this.usuario.nombre }}
+                     nombre : {{ usuario.nombre }}
                     <hr />
-                    cedula: {{ this.usuario.cedula }}
+                    documento : {{ usuario.documento }}
                   </div>
                 </div>
               </b-col>
             </b-row>
           </b-container>
         </b-tab>
-        <b-tab title="Productos">
+        <b-tab v-if="usuario.roles.name === 'administrador' " title="Productos">
           <b-row class="ml-2">
-            <b-col md="4" class=" mt-2">
-              <b-form class="text-center card">
-                <div class="card-header">Categorias</div>
+            <b-col 
+            md="4" 
+          v-if="usuario.roles.name === 'administrador'"
+
+            class=" mt-2">
+              <b-form class="text-center card"  :class="{'dark-secondary' : dark}">
+                <div class="card-header" :class="{'color-secondary' : dark}">Categorias</div>
                 <div class="card-body">
                   <b-form-input
                     class="mt-2"
@@ -116,7 +128,7 @@
                 </div>
               </b-form>
             </b-col>
-            <b-col md="8" class="mt-2">
+            <b-col class="mt-2">
               <b-table
                 style="height:34vh"
                 sticky-header="true"
@@ -138,9 +150,12 @@
             </b-col>
           </b-row>
           <b-row class=" ml-2 mt-2">
-            <b-col md="4" class="mt-2">
-              <b-form class="text-center card">
-                <div class="card-header">unidades de medida</div>
+            <b-col 
+          v-if="usuario.roles.name === 'administrador'"
+            
+            md="4" class="mt-2">
+              <b-form class="text-center card" :class="{'dark-secondary' : dark}">
+                <div class="card-header" :class="{'color-secondary' : dark}">unidades de medida</div>
                 <div class="card-body">
                   <b-form-input
                     class="mt-2"
@@ -161,7 +176,7 @@
                 </div>
               </b-form>
             </b-col>
-            <b-col md="8" class="mt-2">
+            <b-col  class="mt-2">
               <b-table
                 style="height:34vh"
                 sticky-header="true"
@@ -485,7 +500,10 @@
               </form>
 
               <div class="d-flex text-white">
-                <div @click="sendEditUser()" class="btn btn-block color-primary mr-2 text-white c-hand">
+                <div
+                  @click="sendEditUser()"
+                  class="btn btn-block color-primary mr-2 text-white c-hand"
+                >
                   guardar
                 </div>
                 <div
@@ -507,8 +525,11 @@
 
     <!-- modal edit -->
   </div>
+  <Err/>
+  </div>
 </template>
 <script>
+import Err from '../components/404.vue'
 import axios from "axios";
 import { mapState, mapMutations } from "vuex";
 import Vue from "vue";
@@ -517,6 +538,7 @@ Vue.filter("formatNumber", function(value) {
   return numeral(value).format("0,0"); // displaying other groupings/separators is possible, look at the docs
 });
 export default {
+  components:{Err},
   computed: {
     validacionEdit() {
       return this.formEditUser.password === this.verifyPassword;
@@ -532,7 +554,14 @@ export default {
           return { text: f.label, value: f.key };
         });
     },
-    ...mapState(["server", "dark", "usuario", "options", "infoEmpresa", 'token']),
+    ...mapState([
+      "server",
+      "dark",
+      "usuario",
+      "options",
+      "infoEmpresa",
+      "token",
+    ]),
   },
   data() {
     return {
@@ -606,9 +635,7 @@ export default {
       subsistemaPiezas: {},
       ProveedoresCount: null,
       productosCount: null,
-     
     };
-    
   },
   created() {
     this.getCategoriasProductos();
@@ -622,30 +649,33 @@ export default {
   methods: {
     editUser(data) {
       data.password = null;
-if (this.formVisibilityEDit === false) {
-  this.formVisibilityEDit = true
-}
+      if (this.formVisibilityEDit === false) {
+        this.formVisibilityEDit = true;
+      }
       this.formEditUser = data;
     },
-   async sendEditUser(){
-const {data}= await axios.put(`${this.server}/auth/edit/${this.token}`,this.formEditUser)
-this.alert(data)
-if (data.value == true) {
-  this.formVisibilityEDit = false
+    async sendEditUser() {
+      const { data } = await axios.put(
+        `${this.server}/auth/edit`,
+        this.formEditUser,{headers:{xtoken: this.token}}
+      );
+      this.alert(data);
+      if (data.value == true) {
+        this.formVisibilityEDit = false;
 
-this.getUsers()
-}
+        this.getUsers();
+      }
     },
     async deleteUser(item) {
       const { data } = await axios.delete(
-        `${this.server}/auth/user/${item._id}/${item.roles._id}`
+        `${this.server}/auth/user/${item._id}/${item.roles._id}`,{headers:{xtoken: this.token}}
       );
       this.getUsers();
-      this.alert(data)
+      this.alert(data);
     },
     async activateUser(item) {
       const { data } = await axios.put(
-        `${this.server}/auth/user/${item._id}/${item.roles._id}`
+        `${this.server}/auth/user/${item._id}/${item.roles._id}`,{headers:{xtoken: this.token}}
       );
       this.alert(data);
       this.getUsers();
@@ -655,11 +685,11 @@ this.getUsers()
         return;
       }
       if (this.formAdd.password != this.verifyPassword) {
-        return
+        return;
       }
       const { data } = await axios.post(
         `${this.server}/auth/signup`,
-        this.formAdd
+        this.formAdd,{headers:{xtoken: this.token}}
       );
       if (data.value === false || null) {
         this.alert(data);
@@ -694,27 +724,24 @@ this.getUsers()
       let json = { dolar: this.infoEmpresa.dolar };
       const { data } = await axios.put(
         `${this.server}/system/empresa/dolar/${this.infoEmpresa._id}`,
-        json
+        json,{headers:{xtoken: this.token}}
       );
       this.alert(data);
     },
     alert(data) {
-if (data.value === true) {
-      this.$toastr.success(data.message,'configuracion', this.options);
-  
-}      
-if (data.value === false) {
-      this.$toastr.error(data.message,'configuracion', this.options);
-  
-}      
-if (data.value === null) {
-      this.$toastr.warning(data.message,'configuracion', this.options);
-  
-}      
+      if (data.value === true) {
+        this.$toastr.success(data.message, "configuracion", this.options);
+      }
+      if (data.value === false) {
+        this.$toastr.error(data.message, "configuracion", this.options);
+      }
+      if (data.value === null) {
+        this.$toastr.warning(data.message, "configuracion", this.options);
+      }
     },
     async deleteCategoria(id) {
       const { data } = await axios.delete(
-        `${this.server}/system/categoriaProducto/${id}`
+        `${this.server}/system/categoriaProducto/${id}`,{headers:{xtoken: this.token}}
       );
       this.alert(data);
 
@@ -726,7 +753,7 @@ if (data.value === null) {
     },
     async deleteUnidad(id) {
       const { data } = await axios.delete(
-        `${this.server}/system/unidades/${id}`
+        `${this.server}/system/unidades/${id}`,{headers:{xtoken: this.token}}
       );
       this.alert(data);
       this.getUnidades();
@@ -760,7 +787,7 @@ if (data.value === null) {
       const { data } = await axios.post(
         `${this.server}/system/unidades`,
 
-        this.nuevaUnidad
+        this.nuevaUnidad,{headers:{xtoken: this.token}}
       );
       this.alert(data);
       this.nuevaUnidad.nombre = null;
@@ -770,7 +797,7 @@ if (data.value === null) {
     async sendCategoria() {
       const { data } = await axios.post(
         `${this.server}/system/categoriaProducto`,
-        this.nuevaCategoria
+        this.nuevaCategoria,{headers:{xtoken: this.token}}
       );
       this.getCategoriasProductos();
       this.nuevaCategoria.nombre = null;
