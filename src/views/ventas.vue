@@ -2,7 +2,7 @@
   <div>
     <div v-if="usuario.roles.name !== 'usuario'">
       <div
-        style="position: fixed; z-index: 1500; right: 15px; bottom: 10px"
+        style="position: fixed; z-index: 1500; right: 70px; bottom: 10px"
         @click="visible = !visible"
         class="c-hand"
         :class="visible ? null : 'collapsed'"
@@ -60,12 +60,13 @@
               </div>
             </div>
             <div class="card-footer d-flex">
-              <div
+              <button
+              :disabled="btnEnviar "
                 class="btn color-primary mr-2 text-white c-hand w-50"
                 @click="enviar"
               >
                 <i class="fas fa-check"></i>
-              </div>
+              </button>
               <div
                 @click="deleteStore"
                 class="btn color-danger mr-2 text-white c-hand w-50"
@@ -107,17 +108,11 @@
               </div>
               <div class="card-body">
                 disponible: {{ producto.cantidad }}
-                <b-form-input
-                  type="number"
-                  autocomplete="off"
-                  v-model="producto.venta"
-                  @keyup="verifyStock(index)"
-                >
-                </b-form-input>
+                
                 <div class="text-center">
                   <b-button
                     class="btn color-primary mr-2 text-white c-hand w-50"
-                    @click="saveStore(index)"
+                    @click="saveStore(index ,producto._id)"
                     :disabled="
                       producto.venta > producto.cantidad ||
                         producto.cantidad === 0
@@ -145,7 +140,6 @@ import numeral from "numeral";
 import axios from "axios";
 import Vue from "vue";
 import Err from "../components/404.vue";
-
 Vue.filter("formatNumber", function(value) {
   return numeral(value).format("0,0"); // displaying other groupings/separators is possible, look at the docs
 });
@@ -159,6 +153,7 @@ export default {
   name: "Links",
   data() {
     return {
+      btnEnviar: false,
       fields: ["producto", "opciones"],
       visible: false,
       busqueda: "",
@@ -235,6 +230,7 @@ export default {
     },
   },
   methods: {
+    
     filter() {
       const text = this.id;
       console.log(text);
@@ -303,6 +299,7 @@ export default {
       if (this.store.length == 0) {
         return;
       }
+      this.btnEnviar = true
       const value = this.obtener();
       const valores = {
         dolar: this.infoEmpresa.dolar,
@@ -314,6 +311,8 @@ export default {
       });
 
       this.alert(data);
+      this.btnEnviar = false
+
       if (data.value === true) {
         this.store = [];
       }
@@ -352,16 +351,17 @@ export default {
       if (index.cantidad == index.venta) index.alerta = "stock en 0";
     },
 
-    saveStore(index) {
-      for (let i = 0; i < this.productos.length; i++) {
-        const element = this.productos[index];
+    saveStore(index, id) {
+      this.productos.map(element=>{
+if (element._id === id) {
+  element.venta= 1
         if (element.venta == 0 || element.venta == null) return;
         if (element.cantidad - element.stock < element.venta) {
-          element.alerta = "limite de stock disponible";
+          element.alerta = "limite de stock";
         } else {
           element.cantidad = element.cantidad - element.venta;
           let data = this.store.map(function(item) {
-            if (item.id_producto == element._id) {
+            if (item.id_producto === element._id) {
               const ventaActual = parseFloat(element.venta);
               const ventaAnterior = parseFloat(item.cantidad);
               //element.cantidad = element.cantidad - ventaActual
@@ -371,8 +371,8 @@ export default {
               return false;
             }
           });
-          if (data[0] === true) {
-            element.venta = null;
+          if (data.indexOf(true) !== -1) {
+            
             element.alerta = null;
 
             return;
@@ -387,7 +387,9 @@ export default {
           element.venta = null;
           element.alerta = null;
         }
-      }
+}
+      })
+      
     },
     alert(data) {
       if (data.value === true) {

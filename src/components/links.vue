@@ -144,6 +144,18 @@
               <router-link v-if="usuario.roles.name === 'administrador'"
                 class="mdl-navigation__link"
                 :class="{'text-white' : dark, ' text-dark': !dark}"
+                to="reportes"
+              >
+                <i
+                  class="material-icons"
+                  :class="{'text-white' : dark, ' text-dark': !dark}"
+                  role="presentation"
+                  >add_business</i
+                >Reportes</router-link
+              >
+              <router-link v-if="usuario.roles.name === 'administrador'"
+                class="mdl-navigation__link"
+                :class="{'text-white' : dark, ' text-dark': !dark}"
                 to="configuracion"
               >
                 <i

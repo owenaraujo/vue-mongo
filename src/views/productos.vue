@@ -31,7 +31,7 @@
               id="filter-input"
               v-model="filter"
               type="search"
-              placeholder="Type to Search"
+              placeholder="Buscar"
             ></b-form-input>
           </div>
         </div>

@@ -244,7 +244,7 @@
                     id="filter-input"
                     v-model="filter"
                     type="search"
-                    placeholder="Type to Search"
+                    placeholder="buscar"
                   ></b-form-input>
                 </div>
               </div>
