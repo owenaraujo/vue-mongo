@@ -263,8 +263,18 @@ if (data.value === null) {
        const {data} = await axios.post(`${this.server}/auth/signin`, this.user)
       this.btnSignin = true
        this.alert(data)
-       if(data.value == null ) return
-       if(data.value == false ) return
+       if(data.value == null ) {
+this.user.username = null
+      this.btnSignin = false
+
+return
+       }
+       if(data.value == false )  {
+this.user.password = null
+      this.btnSignin = false
+
+return
+       }
       
        localStorage.token = data.token
       
@@ -351,4 +361,19 @@ if (data.value === null) {
 .card {
   max-height: 90vh;
 }
+</style>
+<style >
+  .toast-sucess{
+    background: rgb(128, 188, 0);
+  }
+  .toast-error{
+
+    background: rgb(243, 79, 29);
+
+  }
+  .toast-warning{
+
+    background: rgb(255, 187, 0);
+
+  }
 </style>

@@ -6,10 +6,11 @@ export default new Vuex.Store({
 
 state:{
     server :'http://localhost:3000',
+    server2 :'http://localhost:3000',
     dark : false,
     modalShow: true,
     token: 1234 ,
-    id: null ,
+    id: 1234 ,
     infoEmpresa: {},
 
     usuario:{
@@ -22,7 +23,7 @@ roles:{name: null}
         closeButton: true,
         newestOnTop: true,
         closeMethod : 'fadeOut',
-        timeOut: 1000
+        timeOut: 2000
          
         
       },

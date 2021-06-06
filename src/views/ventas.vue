@@ -252,7 +252,7 @@ export default {
       });
     },
     resCantidad(index, id) {
-      const self = this;
+      const heredado = this;
       this.store.map((element) => {
         if (element.id_producto === id) {
           this.productos.map(function(item) {
@@ -263,7 +263,7 @@ export default {
               item.cantidad++;
               element.cantidad--;
               if (element.cantidad == 0) {
-                self.deleteFromStore(index);
+                heredado.deleteFromStore(index);
               }
             }
           });
@@ -272,7 +272,7 @@ export default {
     },
     deleteFromStore(index) {
       console.log(index);
-      this.store.pul(index);
+      this.store.splice(index, 1);
     },
     ...mapMutations([
       "getStorage",
