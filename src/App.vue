@@ -19,8 +19,8 @@
       >
         <b-collapse id="collapse-4" v-model="visible" class="mt-2">
           <div id="app" style="z-index: 1500">
-      <div class="container" style="position:relative">
-        <div class="calculator">
+      <div class="container " style="position:relative">
+        <div class="calculator list-scroll scrollbar-light-blue">
           <div class="answer scrollbar-light-blue" style="overflow-x:auto" >{{ answer }}</div>
           <div class="display">{{ logList + current }}</div>
           <div @click="clear" id="clear" class="btn operator">C</div>
@@ -121,6 +121,7 @@
 </template>
 
 <script>
+
 import { mapState,mapMutations } from "vuex";
 import Nav from "./components/nav.vue";
 import Links from "./components/links.vue";
@@ -295,7 +296,6 @@ if (data.value === null) {
   grid-template-rows: repeat(7, minmax(60px, auto));
   grid-gap: 5px;
   padding: 5px;
-  font-family: "Poppins";
   font-weight: 300;
   font-size: 18px;
   background-color: #ffffff;
@@ -349,6 +349,6 @@ if (data.value === null) {
 }
 
 .card {
-  max-height: 80vh;
+  max-height: 90vh;
 }
 </style>

@@ -15,7 +15,7 @@
         <div class=" iconC red-alert text-white">{{ store.length }}</div>
       </div>
       <div
-        style="position: fixed; z-index: 1000; right: 10px ; bottom: 65px; width: 390px"
+        style="position: fixed; z-index: 1000; right: 10px ; bottom: 65px; width: 340px"
       >
         <b-collapse id="collapse-4" v-model="visible" class="mt-2">
           <div class=" card " :class="{ 'dark-secondary': dark }">
@@ -271,7 +271,8 @@ export default {
       });
     },
     deleteFromStore(index) {
-      this.store.splice(index);
+      console.log(index);
+      this.store.pul(index);
     },
     ...mapMutations([
       "getStorage",

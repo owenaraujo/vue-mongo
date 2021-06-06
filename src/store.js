@@ -5,7 +5,7 @@ Vue.use(Vuex)
 export default new Vuex.Store({
 
 state:{
-    server :'http://192.168.0.100:3000',
+    server :'http://localhost:3000',
     dark : false,
     modalShow: true,
     token: 1234 ,

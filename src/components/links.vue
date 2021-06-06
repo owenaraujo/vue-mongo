@@ -165,6 +165,18 @@
                   >add_business</i
                 >configuracion</router-link
               >
+              <router-link v-if="usuario.roles.name === 'administrador'"
+                class="mdl-navigation__link"
+                :class="{'text-white' : dark, ' text-dark': !dark}"
+                to="baul"
+              >
+                <i
+                  class="material-icons"
+                  :class="{'text-white' : dark, ' text-dark': !dark}"
+                  role="presentation"
+                  >add_business</i
+                >baul</router-link
+              >
               
               <div class="d-none">
                 <router-link

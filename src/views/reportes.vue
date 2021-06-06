@@ -62,10 +62,10 @@
         </b-table>
       </b-col>
       <b-col md="6">
-        <div class="card mt-3" ref="content">
+        <div class="card mt-3 text-dark" ref="content">
           <div class="card-header">informacion</div>
           <div class="card-body">
-            <button @click="createPdf()"></button>
+            <div class="btn c-hand" @click="createPdf()">guardar</div>
             <p>
               
               cotizacion del dia de venta : {{ infoVenta.dolar | formatNumber }}
@@ -91,8 +91,8 @@
 </template>
 
 <script>
-import jspdf from 'jspdf'
-
+//import jspdf from 'jspdf'
+//import html2canvas from 'html2canvas'
 import { mapState, mapMutations } from "vuex";
 import numeral from "numeral";
 import axios from "axios";
@@ -179,15 +179,8 @@ export default {
   },
   methods: {
     createPdf(){
-let pdfName = 'pdf'
- var doc = new jspdf();
- const contentHtml = this.$refs.content.innerHTML;
-  doc.fromHTML(contentHtml, 15, 15, {
-    width: 170
-  });
-  
-    doc.save(pdfName + '.pdf');
-
+    print()
+    
     },
     ventaInfo(data) {
       this.infoVenta = data;

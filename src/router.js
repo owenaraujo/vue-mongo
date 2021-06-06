@@ -7,9 +7,13 @@ export default new Router({
 mode: 'history',
 base: process.env.BASE_URL,
 routes:[
-{path:'/home',
-name:'home',
-component: ()=> import('@/views/home.vue')
+{path:'/baul',
+name:'baul',
+component: ()=> import('@/views/baul.vue')
+},
+{path:'/',
+name:'index',
+component: ()=> import('@/views/index.vue')
 },
 {path:'/ventas',
 name:'ventas',

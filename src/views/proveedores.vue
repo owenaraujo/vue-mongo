@@ -27,7 +27,9 @@
            
           >
            <i>{{proveedores.length}}</i> <br>
-proveedores
+  <div v-if="proveedores.length === 1">proveedor</div>
+            <div v-if="proveedores.length > 1">proveedores</div>
+            <div v-if="proveedores.length ===0">proveedores</div>
           </div>
           <div
             class="d-none text-center boton-cuadrado color-primary c-hand text-white mt-3 ml-3"

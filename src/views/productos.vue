@@ -23,6 +23,7 @@
             <br>
             <div v-if="productos.length === 1">producto</div>
             <div v-if="productos.length > 1">productos</div>
+            <div v-if="productos.length ===0">productos</div>
             
           </div>
           <div class="d-flex align-items-center">
