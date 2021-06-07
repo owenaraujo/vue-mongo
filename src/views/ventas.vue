@@ -56,12 +56,11 @@
                     </p>
                   </div>
                 </div>
-
               </div>
             </div>
             <div class="card-footer d-flex">
               <button
-              :disabled="btnEnviar "
+                :disabled="btnEnviar"
                 class="btn color-primary mr-2 text-white c-hand w-50"
                 @click="enviar"
               >
@@ -89,11 +88,10 @@
         </b-col>
       </b-row>
 
-      <b-row>
+      <div class="row row-cols-1 row-cols-md-3">
         <div v-for="(producto, index) in productos" v-bind:key="index">
-          <b-col
-            sm="12"
-            md="12"
+          <div
+            class="p-2"
             v-if="
               producto.nombre.toLowerCase().indexOf(busqueda.toLowerCase()) !==
                 -1 ||
@@ -102,23 +100,33 @@
                   .indexOf(busqueda.toLowerCase()) !== -1
             "
           >
-            <div class="card  mt-2"  :class="{'dark-secondary': dark}">
-              <div class="card-header" :class="{'color-secondary': dark}">
-                {{ producto.nombre }}
-              </div>
-              <div class="card-body">
+            <div
+              class="card  mt-2"
+              style="width:100%"
+              :class="{ 'dark-secondary': dark }"
+            >
+              <div class="card-body d-flex">
+               <div class="w-50">
+ <div>
+                  {{ producto.nombre }}
+                </div>
                 disponible: {{ producto.cantidad }}
-                
-                <div class="text-center">
-                  <b-button
-                    class="btn color-primary mr-2 text-white c-hand w-50"
-                    @click="saveStore(index ,producto._id)"
+
+
+               </div>
+                <div  class=" w-50 text-right">
+                  <b-button style="border-radius: 0.6rem;
+    text-transform: lowercase;
+    padding: 2%;
+    margin: 0;"
+                    class="d-flex boton-cuadrado w-100 color-primary mr-2 text-white c-hand w-50"
+                    @click="saveStore(index, producto._id)"
                     :disabled="
                       producto.venta > producto.cantidad ||
                         producto.cantidad === 0
                     "
                   >
-                    +
+                    <div class="mr-4">agregar</div><i class="material-icons">add_shopping_cart</i>
                   </b-button>
                   <div>
                     {{ producto.alerta }}
@@ -126,9 +134,9 @@
                 </div>
               </div>
             </div>
-          </b-col>
+          </div>
         </div>
-      </b-row>
+      </div>
     </div>
     <Err />
   </div>
@@ -230,7 +238,6 @@ export default {
     },
   },
   methods: {
-    
     filter() {
       const text = this.id;
       console.log(text);
@@ -300,7 +307,7 @@ export default {
       if (this.store.length == 0) {
         return;
       }
-      this.btnEnviar = true
+      this.btnEnviar = true;
       const value = this.obtener();
       const valores = {
         dolar: this.infoEmpresa.dolar,
@@ -312,7 +319,7 @@ export default {
       });
 
       this.alert(data);
-      this.btnEnviar = false
+      this.btnEnviar = false;
 
       if (data.value === true) {
         this.store = [];
@@ -353,44 +360,42 @@ export default {
     },
 
     saveStore(index, id) {
-      this.productos.map(element=>{
-if (element._id === id) {
-  element.venta= 1
-        if (element.venta == 0 || element.venta == null) return;
-        if (element.cantidad - element.stock < element.venta) {
-          element.alerta = "limite de stock";
-        } else {
-          element.cantidad = element.cantidad - element.venta;
-          let data = this.store.map(function(item) {
-            if (item.id_producto === element._id) {
-              const ventaActual = parseFloat(element.venta);
-              const ventaAnterior = parseFloat(item.cantidad);
-              //element.cantidad = element.cantidad - ventaActual
-              item.cantidad = ventaActual + ventaAnterior;
-              return true;
-            } else {
-              return false;
+      this.productos.map((element) => {
+        if (element._id === id) {
+          element.venta = 1;
+          if (element.venta == 0 || element.venta == null) return;
+          if (element.cantidad - element.stock < element.venta) {
+            element.alerta = "limite de stock";
+          } else {
+            element.cantidad = element.cantidad - element.venta;
+            let data = this.store.map(function(item) {
+              if (item.id_producto === element._id) {
+                const ventaActual = parseFloat(element.venta);
+                const ventaAnterior = parseFloat(item.cantidad);
+                //element.cantidad = element.cantidad - ventaActual
+                item.cantidad = ventaActual + ventaAnterior;
+                return true;
+              } else {
+                return false;
+              }
+            });
+            if (data.indexOf(true) !== -1) {
+              element.alerta = null;
+
+              return;
             }
-          });
-          if (data.indexOf(true) !== -1) {
-            
+            this.store.push({
+              producto: element.nombre,
+              cantidad: element.venta,
+              precio: element.precio,
+              id_producto: element._id,
+            });
+
+            element.venta = null;
             element.alerta = null;
-
-            return;
           }
-          this.store.push({
-            producto: element.nombre,
-            cantidad: element.venta,
-            precio: element.precio,
-            id_producto: element._id,
-          });
-
-          element.venta = null;
-          element.alerta = null;
         }
-}
-      })
-      
+      });
     },
     alert(data) {
       if (data.value === true) {
@@ -407,11 +412,13 @@ if (element._id === id) {
 };
 </script>
 <style scoped>
-.border-white{
-  border:0.2px solid white;
-padding: 5px;
+.border-white {
+  border: 0.2px solid white;
+  padding: 5px;
 }
-
+.btn[data-v-0668eac1] {
+    
+}
 .iconC {
   top: -5px;
   width: 23px;

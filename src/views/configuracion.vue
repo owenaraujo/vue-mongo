@@ -372,13 +372,16 @@
                         :fields="fieldsUsuarios"
                       >
                         <template #cell(funciones)="row">
+                          
                           <div
                             :class="{ 'd-none': row.item.status == false }"
                             @click="deleteUser(row.item)"
                             class="btn red-alert text-white mt-0 c-hand"
                             size="sm"
                           >
-                            <i class="fas fa-trash-alt"></i>
+                           <span class="material-icons d-flex">
+toggle_on
+</span>
                           </div>
                           <div
                             v-if="row.item.status == false"
@@ -386,7 +389,9 @@
                             class="btn color-primary text-white mt-0 c-hand"
                             size="sm"
                           >
-                            <i class="fas fa-check"></i>
+                            <span class="material-icons d-flex">
+toggle_off
+</span>
                           </div>
                           <div
                             @click="editUser(row.item)"
@@ -395,7 +400,9 @@
                             data-toggle="modal"
                             data-target="#modalEdit"
                           >
-                            <i class="fas fa-pencil-alt"></i>
+                            <span class="material-icons">
+border_color
+</span>
                           </div>
 
                           <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->

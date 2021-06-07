@@ -113,7 +113,7 @@
                   class="material-icons"
                   :class="{'text-white' : dark, ' text-dark': !dark}"
                   role="presentation"
-                  >dashboard</i
+                  >local_mall</i
                 >Ventas</router-link
               >
               
@@ -125,7 +125,7 @@
                   class="material-icons"
                   :class="{'text-white' : dark, ' text-dark': !dark}"
                   role="presentation"
-                  >dashboard</i
+                  >inventory_2</i
                 >Productos</router-link
               >
               <router-link
@@ -137,7 +137,7 @@
                   class="material-icons"
                   :class="{'text-white' : dark, ' text-dark': !dark}"
                   role="presentation"
-                  >add_business</i
+                  >local_shipping</i
                 >proveedores</router-link
               >
               
@@ -150,7 +150,7 @@
                   class="material-icons"
                   :class="{'text-white' : dark, ' text-dark': !dark}"
                   role="presentation"
-                  >add_business</i
+                  >report</i
                 >Reportes</router-link
               >
               <router-link v-if="usuario.roles.name === 'administrador'"
@@ -162,7 +162,7 @@
                   class="material-icons"
                   :class="{'text-white' : dark, ' text-dark': !dark}"
                   role="presentation"
-                  >add_business</i
+                  >settings</i
                 >configuracion</router-link
               >
               <router-link v-if="usuario.roles.name === 'administrador'"
@@ -174,8 +174,8 @@
                   class="material-icons"
                   :class="{'text-white' : dark, ' text-dark': !dark}"
                   role="presentation"
-                  >add_business</i
-                >baul</router-link
+                  >archive</i
+                >Archivado</router-link
               >
               
               <div class="d-none">
