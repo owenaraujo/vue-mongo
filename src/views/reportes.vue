@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="card mt-2 p-2">
+      <div class="card"></div>
       <b-row cols-md="2">
         <b-col>
           <div class="d-flex">
@@ -19,6 +20,7 @@
             <div style="width:15%" class="btn" @click="getProductos">
               <i class="fas fa-search"></i>
             </div>
+            <button @click="pdfCompleto()">generar reporte</button>
           </div>
         </b-col>
         <b-col>
@@ -35,8 +37,23 @@
         </b-col>
       </b-row>
     </div>
-    <b-row>
-      <b-col md="6">
+    <div class="" ref="reporteCompleto">
+      <b-table
+        :sticky-header="true"
+        striped
+        style="max-height: 40vh"
+        hover
+        class="text-center  mt-3 list-scroll scrollbar-light-blue"
+        :fields="reportesField"
+        :items="reporte"
+      >
+        <template #cell(numero)="row">
+          {{ row.index + 1 }}
+        </template>
+      </b-table>
+    </div>
+    <b-row class="">
+      <b-col class="" md="6">
         <b-table
           style="max-height: 70vh"
           :shortable="true"
@@ -53,35 +70,33 @@
 
           <template #cell(acciones)="row">
             <div size="sm" @click="ventaInfo(row.item)" class="mr-2 btn">
-               información
+              información
             </div>
-
-           
           </template>
-
         </b-table>
       </b-col>
       <b-col md="6">
-        <div class="card mt-3 text-dark" ref="content">
+        <div class="card mt-3 text-dark" ref="lista">
           <div class="card-header">informacion</div>
           <div class="card-body">
             <div class="btn c-hand" @click="createPdf()">guardar</div>
             <p>
-              
               cotizacion del dia de venta : {{ infoVenta.dolar | formatNumber }}
             </p>
             <p>total de venta : {{ totalPrecio }}$</p>
             <p>vendidos: {{ totalProductos }} unidades</p>
           </div>
-          <b-table
-            style="max-height: 40vh"
-            :sticky-header="true"
-            striped
-            hover
-            class=" mt-3 list-scroll scrollbar-light-blue"
-            :items="productos"
-            :fields="fieldsInfo"
-          ></b-table>
+          <div class="text-center">
+            <b-table
+              style="max-height: 40vh"
+              :sticky-header="true"
+              striped
+              hover
+              class=" mt-3 list-scroll scrollbar-light-blue"
+              :items="productos"
+              :fields="fieldsInfo"
+            ></b-table>
+          </div>
         </div>
       </b-col>
     </b-row>
@@ -91,8 +106,6 @@
 </template>
 
 <script>
-//import jspdf from 'jspdf'
-//import html2canvas from 'html2canvas'
 import { mapState, mapMutations } from "vuex";
 import numeral from "numeral";
 import axios from "axios";
@@ -112,20 +125,28 @@ export default {
   components: {
     Err,
   },
-  created() {
-    this.getProductos();
+  async created() {
+    await this.getProductos();
+    this.productosAll()
   },
   name: "Links",
   data() {
     return {
+      reporte: [],
       infoVenta: [],
-      fields: [{ key: "createdAt", label: "creacion",
-          sortable: true,
-      
-      
-      }, "acciones"],
+      reportesField: [
+        "numero",
+        "id_producto.nombre",
+        "id_producto.precio",
+        "cantidad",
+        "total",
+      ],
+      fields: [
+        { key: "createdAt", label: "creacion", sortable: true },
+        "acciones",
+      ],
       fieldsInfo: [
-        { key: "id_producto.nombre", label: "producto", sortable: true },
+        { key: "id_producto.nombre", label: "producto" },
         "cantidad",
         { key: "precio", label: "precio de venta" },
         { key: "id_producto.precio", label: "precio actual" },
@@ -178,9 +199,57 @@ export default {
     },
   },
   methods: {
-    createPdf(){
-    print()
-    
+    productosAll() {
+      this.reporte= []
+     this.ventas.map( (item) => {
+        item.productos.map((e) => {
+        const vall =  this.reporte.map((value) => {
+            if (value.id_producto._id === e.id_producto._id) {
+              console.log(e.cantidad);
+              let valor =parseFloat(value.cantidad + e.cantidad)
+              
+              value.cantidad = valor
+              return true;
+            } else {
+              return false;
+            }
+          });
+          if (vall.length === 0) {
+            return this.reporte.push(e);
+          }
+          if (vall.indexOf(true) !== -1) {
+            return;
+          }
+          this.reporte.push(e);
+        });
+      });
+     
+     
+    },
+    pdfCompleto ()
+{
+ const lista = this.$refs.reporteCompleto
+      var ventana = window.open("", "PRINT", "height=400,width=600");
+ventana.document.write(
+        '<link rel="stylesheet" href="/md/bootstrap.min.css" />'
+      );
+      ventana.document.write(lista.innerHTML);
+      
+     
+
+
+},    createPdf() {
+      const lista = this.$refs.lista;
+
+      var ventana = window.open("", "PRINT", "height=400,width=600");
+
+      ventana.document.write(lista.innerHTML);
+      ventana.document.write(
+        '<link rel="stylesheet" href="/md/bootstrap.min.css" />'
+      );
+      ventana.document.close();
+      ventana.focus();
+       ventana.print();
     },
     ventaInfo(data) {
       this.infoVenta = data;
