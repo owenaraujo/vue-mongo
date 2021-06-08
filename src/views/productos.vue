@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div>
     <b-row>
       <b-col>
@@ -43,6 +42,7 @@
         <div class="">
           <div class="text-center">
             <b-table
+            :busy="isBusy"
               class="card mt-3 list-scroll scrollbar-light-blue"
               :sticky-header="true"
               striped
@@ -51,27 +51,88 @@
               :items="productos"
               :fields="fields"
             >
-              <template #cell(precioBs)="row">
-                {{ infoEmpresa.dolar * row.item.precio | formatNumber }}
-              </template>
-              <template #cell(funciones)="row" v-if="usuario.roles.name !== 'usuario'">
-                <div
-                  class="btn red-alert text-white mt-0 c-hand"
-                  size="sm"
-                  @click="deleteProducto(row.item._id)"
-                >
-                  <i class="fas fa-trash-alt"></i>
-                </div>
+             <template #table-busy>
+        <div class="text-center text-primary my-2">
+          <b-spinner class="align-middle"></b-spinner>
+          <strong> Cargando...</strong>
+        </div>
+        te
+      </template>
+      <template #cell(cantidad)='row'>
+    
+             <Popper
+    trigger="hover"
+    
+    :options="{
+      placement: 'top',
+      modifiers: { offset: { offset: '0,10px' } }
+    }">
+    <div class="popper">
+      {{row.item.unidadMedida.nombre}}
+                
+    
+    </div>
+ 
+    <div slot="reference">
+      {{row.item.cantidad}}
+    </div>
+  </Popper>
+      
+      </template>
+              <template #cell(precio)="row">
+                
 
-                <div
-                  @click="formData(row.item._id)"
-                  class="btn yellow-danger text-white mt-0 c-hand"
-                  size="sm"
-                  data-toggle="modal"
-                  data-target="#modalEdit"
-                >
-                  <i class="fas fa-pencil-alt"></i>
-                </div>
+
+                  <Popper
+    trigger="hover"
+    
+    :options="{
+      placement: 'top',
+      modifiers: { offset: { offset: '0,10px' } }
+    }">
+    <div class="popper">
+                {{infoDolar.promedio * row.item.precio | formatNumber }}
+    
+    </div>
+ 
+    <div slot="reference">
+      {{row.item.precio}}
+    </div>
+  </Popper>
+              </template>
+              <template #cell(funciones)="row" v-if="usuario.roles.name === 'administrador'">
+                 <div
+                            :class="{ 'd-none': row.item.status == false }"
+                            @click="deleteProducto(row.item._id)"
+                            class="btn color-primary text-white mt-0 c-hand"
+                            size="sm"
+                          >
+                            <span class="material-icons d-flex">
+                              toggle_on
+                            </span>
+                          </div>
+                          <div
+                            v-if="row.item.status == false"
+                            @click="activateProducto(row.item._id)"
+                            class="btn red-alert text-white mt-0 c-hand"
+                            size="sm"
+                          >
+                            <span class="material-icons d-flex">
+                              toggle_off
+                            </span>
+                          </div>
+                
+<div
+                            style="font-size: 1px"
+                            @click="formData(row.item._id)"
+                            class="btn yellow-danger text-white mt-0 c-hand"
+                            size="sm"
+                            data-toggle="modal"
+                            data-target="#modalEdit"
+                          >
+                            <span class="material-icons"> border_color </span>
+                          </div>
+                
 
                 <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->
               </template>
@@ -327,20 +388,32 @@
 
 <script>
 import numeral from "numeral";
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import axios from "axios";
 import Vue from "vue";
 Vue.filter("formatNumber", function(value) {
   return numeral(value).format("0,0"); // displaying other groupings/separators is possible, look at the docs
 });
+ import Popper from 'vue-popperjs';
 export default {
-  created() {
+  components: {
+       Popper
+    },
+    beforeMount() {
+    this.dolar()
+      
+    },
+  mounted() {
     this.getCategorias();
     this.getUnidades();
     this.getProveedores();
     this.getProductos();
   },
   methods: {
+    ...mapMutations([
+      'dolar',
+
+    ]),
     //solicitudes inmediatas
     async getUnidades() {
       const { data } = await axios.get(`${this.server}/system/unidades`);
@@ -373,6 +446,7 @@ export default {
     async getProductos() {
       const { data } = await axios.get(`${this.server}/productos/get`);
       this.productos = data;
+      this.isBusy = false
     },
     //solicitudes inmediatas
 
@@ -414,6 +488,14 @@ export default {
     },
     async deleteProducto(id) {
       const { data } = await axios.delete(`${this.server}/productos/${id}`,{headers:{xtoken: this.token}});
+      this.alert(data);
+      if (data.value == false) {
+        return;
+      }
+      this.getProductos();
+    },
+       async activateProducto(id) {
+      const { data } = await axios.delete(`${this.server}/productos/activate/${id}`,{headers:{xtoken: this.token}});
       this.alert(data);
       if (data.value == false) {
         return;
@@ -468,11 +550,12 @@ export default {
           return { text: f.label, value: f.key };
         });
     },
-    ...mapState(["dark", "options", "server", "infoEmpresa",'token','usuario']),
+    ...mapState(["dark", "options", "server", "infoEmpresa",'token','usuario', 'infoDolar']),
   },
 
   data() {
     return {
+      isBusy: true,
       proveedores: [],
       filter: null,
       filterOn: [],
@@ -485,37 +568,19 @@ export default {
           key: "codigo",
           sortable: true,
         },
-        {
-          key: "proveedor_id.nombre",
-          sortable: true,
-          label: "proveedor",
-        },
-        {
-          key: "categoria.nombre",
-          label: "categoria",
-          sortable: true,
-        },
+      
         {
           key: "precio",
           label: "precio",
           sortable: true,
         },
-        {
-          key: "categoria.nombre",
-          label: "categoria",
-          sortable: true,
-        },
-        {
-          key: "unidadMedida.nombre",
-          label: "unidad",
-          sortable: true,
-        },
+      
+       
         {
           key: "cantidad",
           label: "cantidad",
           sortable: true,
         },
-        "precioBs",
         "funciones",
       ],
 

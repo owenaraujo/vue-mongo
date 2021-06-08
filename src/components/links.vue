@@ -4,10 +4,27 @@
             :class="{'dark-complement' : dark, 'cuarto': !dark}"
           >
             <header class="demo-drawer-header">
-              
-              <div @click="salir()" class="demo-avatar mx-auto quinto c-hand btn text-white d-flex align-items-center" :class="{'color-primary' : dark, 'quinto': !dark}">
-                 <i class="fas fa-sign-out-alt w-100"></i>
+                 <Popper
+    trigger="hover"
+    
+    :options="{
+      placement: 'right',
+      modifiers: { offset: { offset: '0,10px' } }
+    }">
+    <div class="popper">
+              hola
+    
+    </div>
+ 
+    
+ 
+              <div slot="reference" style="border-radius: 5px" @click="salir()" class="demo-avatar mx-auto quinto c-hand btn text-white d-flex align-items-center" :class="{'color-primary' : dark, 'quinto': !dark}">
+               <span class="material-icons">
+exit_to_app
+</span>
                  </div>
+                 </Popper> 
+                 
               <div class="demo-avatar-dropdown">
                 <span class="mx-auto text-white mt-4">
                   {{usuario.username || null}}
@@ -101,6 +118,7 @@
                 </ul>
               </div>
             </header>
+            
             <nav
               class="demo-navigation mdl-navigation"
               :class="{'dark-secondary' : dark, 'bg-white text-dark': !dark}"
@@ -259,8 +277,9 @@
 </template>
 <script>
 import{mapState, mapMutations} from 'vuex'
-
+import Popper from 'vue-popperjs'
 export default {
+  components: {Popper},
     name: 'Links',
     data() {
       return {
@@ -269,7 +288,7 @@ export default {
     },
     mounted(){this.getUser()},
     methods:{
-    ...mapMutations(['getStorage', 'getLogin', 'cambiarLogin', 'saveToken', 'getUser']),
+    ...mapMutations(['getStorage', 'getLogin', 'cambiarLogin', 'saveToken', 'getUser','cambiar']),
 
 salir(){
   sessionStorage.clear()

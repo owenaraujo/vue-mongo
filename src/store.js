@@ -5,7 +5,11 @@ Vue.use(Vuex)
 export default new Vuex.Store({
 
 state:{
-    server :'http://localhost:3000',
+    infoDolar :{
+        promedio : null,
+        fecha:  null
+    },
+    server :'http://192.168.1.102:3000',
     server2 :'http://localhost:3000',
     dark : false,
     modalShow: true,
@@ -30,6 +34,44 @@ roles:{name: null}
     alerts: []
 },
 mutations:{
+   
+    async editDolar(state) {
+        let json = { dolar: state.infoEmpresa.dolar };
+         await axios.put(
+          `${state.server}/system/empresa/dolar/${state.infoEmpresa._id}`,
+          json,
+          { headers: { xtoken: this.token } }
+        )
+      },
+   
+    async dolar(state) {
+        state.dolar ={}
+        try {
+            let {data}   = await axios.get('https://s3.amazonaws.com/dolartoday/data.json') 
+      
+      state.infoDolar.promedio = data.USD.promedio
+      state.infoDolar.fecha = data._timestamp.fecha
+     
+      data = {}
+      if (state.infoDolar.promedio === state.infoEmpresa.dolar ) {
+     
+      return 
+      }
+
+      let json = { dolar: state.infoDolar.promedio };
+      await axios.put(
+       `${state.server}/system/empresa/dolar/${state.infoEmpresa._id}`,
+       json,
+       { headers: { xtoken: state.token } }
+     )
+     state.infoEmpresa.dolar= state.infoDolar.promedio
+
+        } catch (error) {
+          
+      state.infoDolar.promedio = state.infoEmpresa.dolar
+      state.infoDolar.fecha = 'dolar sin conexion'
+        }
+      },
     async getInfoEmpresa(state) {
         const {data} = await axios.get(`${state.server}/system/empresa`);
         state.infoEmpresa = data;

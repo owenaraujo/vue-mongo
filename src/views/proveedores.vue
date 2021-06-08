@@ -64,15 +64,46 @@
           <div class="text-center">
             <div>
              
-    <b-table class="card mt-3 list-scroll scrollbar-light-blue" :sticky-header="true" striped  hover :filter="filter" :items="proveedores" :fields="fields">
-<template #cell(funciones)="row" v-if="usuario.roles.name !== 'usuario'">
-        <div class="btn red-alert text-white mt-0 c-hand" size="sm" @click="deleteProveedor(row.item._id)" >
-         <i class="fas fa-trash-alt"></i>
+    <b-table :busy="isBusy" class="card mt-3 list-scroll scrollbar-light-blue" :sticky-header="true" striped  hover :filter="filter" :items="proveedores" :fields="fields">
+ <template #table-busy>
+        <div class="text-center text-primary my-2">
+          <b-spinner class="align-middle"></b-spinner>
+          <strong>   Cargando...</strong>
         </div>
-        <div class="btn yellow-danger text-white mt-0 c-hand" size="sm" data-toggle="modal"
-            data-target="#modalEdit" @click="FormEditSend(row.item)" >
-          <i class="fas fa-pencil-alt"></i>
-        </div>
+      </template>
+<template #cell(funciones)="row" v-if="usuario.roles.name === 'adminstrador'">
+  <div
+                            :class="{ 'd-none': row.item.status == false }"
+                            @click="deleteProveedor(row.item._id)"
+                            class="btn color-primary text-white mt-0 c-hand"
+                            size="sm"
+                          >
+                            <span class="material-icons d-flex">
+                              toggle_on
+                            </span>
+                          </div>
+                          <div
+                            v-if="row.item.status == false"
+                            @click="activateProveedor(row.item._id)"
+                            class="btn red-alert text-white mt-0 c-hand"
+                            size="sm"
+                          >
+                            <span class="material-icons d-flex">
+                              toggle_off
+                            </span>
+                          </div>
+                
+<div
+                            style="font-size: 1px"
+                            @click="FormEditSend(row.item)"
+                            class="btn yellow-danger text-white mt-0 c-hand"
+                            size="sm"
+                            data-toggle="modal"
+                            data-target="#modalEdit"
+                          >
+                            <span class="material-icons"> border_color </span>
+                          </div>
+       
 
         <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->
         
@@ -317,6 +348,7 @@ export default {
   },
   data() {
     return {
+      isBusy: true,
       filter: null,
         filterOn: [],
       optionsSearch: [
@@ -470,6 +502,15 @@ if (data.value === null) {
     this.getting()
 
     },
+    async activateProveedor(id){
+   const {data}= await  axios
+        .delete(
+          `${this.server}/proveedores/activate/${id}/`,{headers:{xtoken: this.token}}
+        )
+      this.alert(data);
+    this.getting()
+
+    },
     FormEditSend(data){
       if(this.formVisibilityEDit == false)this.intercambioEdit()
       this.FormEdit= null
@@ -501,6 +542,7 @@ if (data.value == false) return
       const {data} = await axios
         .get(`${this.server}/proveedores/get`)
         this.proveedores = data
+        this.isBusy = false
     },
   },
 };

@@ -24,7 +24,7 @@
               :class="{ 'color-secondary': dark }"
             >
               <p class="text-left w-50">
-                total {{ (total * infoEmpresa.dolar) | formatNumber }}
+                total {{ (total * infoDolar.promedio) | formatNumber }}
               </p>
               <p class="text-right w-50">total {{ total }}</p>
             </div>
@@ -91,7 +91,7 @@
       <div class="row row-cols-1 row-cols-md-3">
         <div v-for="(producto, index) in productos" v-bind:key="index">
           <div
-            class="p-2"
+            class="mr-2 ml-2"
             v-if="
               producto.nombre.toLowerCase().indexOf(busqueda.toLowerCase()) !==
                 -1 ||
@@ -116,7 +116,7 @@
                </div>
                 <div  class=" w-50 text-right">
                   <b-button style="border-radius: 0.6rem;
-    text-transform: lowercase;
+    
     padding: 2%;
     margin: 0;"
                     class="d-flex boton-cuadrado w-100 color-primary mr-2 text-white c-hand w-50"
@@ -126,7 +126,7 @@
                         producto.cantidad === 0
                     "
                   >
-                    <div class="mr-4">agregar</div><i class="material-icons">add_shopping_cart</i>
+                   agregar<i class=" ml-2 material-icons">add_shopping_cart</i>
                   </b-button>
                   <div>
                     {{ producto.alerta }}
@@ -147,6 +147,7 @@ import { mapState, mapMutations } from "vuex";
 import numeral from "numeral";
 import axios from "axios";
 import Vue from "vue";
+
 import Err from "../components/404.vue";
 Vue.filter("formatNumber", function(value) {
   return numeral(value).format("0,0"); // displaying other groupings/separators is possible, look at the docs
@@ -157,6 +158,7 @@ export default {
   },
   created() {
     this.getProductos();
+    this.dolar()
   },
   name: "Links",
   data() {
@@ -229,6 +231,7 @@ export default {
       "infoEmpresa",
       "usuario",
       "token",
+      'infoDolar'
     ]),
     total() {
       return this.store.reduce(
@@ -288,9 +291,10 @@ export default {
       "saveToken",
       "getUser",
       "getInfoEmpresa",
+      'dolar',
     ]),
     async getProductos() {
-      const { data } = await axios.get(`${this.server}/productos/get`);
+      const { data } = await axios.get(`${this.server}/productos/get/activate`);
       this.productos = data;
     },
     deleteStore() {
@@ -310,7 +314,7 @@ export default {
       this.btnEnviar = true;
       const value = this.obtener();
       const valores = {
-        dolar: this.infoEmpresa.dolar,
+        dolar: this.infoDolar.promedio,
         total: value,
         productos: this.store,
       };

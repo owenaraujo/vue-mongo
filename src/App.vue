@@ -363,16 +363,22 @@ return
 }
 </style>
 <style >
+#toast-container>div {
+    
+    opacity: 1;
+   
+}
   .toast-sucess{
+    opacity: 0;
     background: rgb(128, 188, 0);
   }
   .toast-error{
-
+opacity: 1;
     background: rgb(243, 79, 29);
 
   }
   .toast-warning{
-
+opacity: 0;
     background: rgb(255, 187, 0);
 
   }

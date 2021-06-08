@@ -1,5 +1,6 @@
 <template>
   <div>
+  
     <div v-if="usuario.roles.name !== 'usuario'">
       <div class="mt-2">
         <b-tabs content-class="mt-3" align="center">
@@ -198,14 +199,21 @@
               </b-col>
               <b-col class="mt-2">
                 <b-table
-                  style="height: 34vh"
+                  style="max-height: 34vh"
                   sticky-header="true"
                   class="text-center card scrollbar-light-blue"
                   striped
+                  :busy="isBusy"
                   hover
                   :fields="fields"
                   :items="categoriasProductos"
                 >
+                <template #table-busy>
+        <div class="text-center text-primary my-2">
+          <b-spinner class="align-middle"></b-spinner>
+          <strong>   Cargando...</strong>
+        </div>
+      </template>
                   <template #cell(Acciones)="row">
                     <div
                       class="btn c-hand text-white red-alert"
@@ -252,7 +260,9 @@
               </b-col>
               <b-col class="mt-2">
                 <b-table
-                  style="height: 34vh"
+                  :busy="isBusy"
+
+                  style="max-height: 34vh"
                   sticky-header="true"
                   class="card scrollbar-light-blue text-center"
                   striped
@@ -260,6 +270,12 @@
                   :fields="colunnmasUnidades"
                   :items="unidades"
                 >
+                     <template #table-busy>
+        <div class="text-center text-primary my-2">
+          <b-spinner class="align-middle"></b-spinner>
+          <strong>   Cargando...</strong>
+        </div>
+      </template>
                   <template #cell(Acciones)="row">
                     <div
                       class="btn c-hand text-white red-alert"
@@ -276,7 +292,7 @@
           <b-tab
             active
             v-if="usuario.roles.name === 'administrador'"
-            title="Administración"
+            title="Usuarios"
           >
             <b-row>
               <b-col>
@@ -363,6 +379,8 @@
                   <div class="text-center">
                     <div>
                       <b-table
+                  :busy="isBusy"
+
                         :filter="filter"
                         class="card mt-3 list-scroll scrollbar-light-blue"
                         :sticky-header="true"
@@ -371,38 +389,42 @@
                         :items="usuarios"
                         :fields="fieldsUsuarios"
                       >
+                           <template #table-busy>
+        <div class="text-center text-primary my-2">
+          <b-spinner class="align-middle"></b-spinner>
+          <strong>   Cargando...</strong>
+        </div>
+      </template>
                         <template #cell(funciones)="row">
-                          
                           <div
                             :class="{ 'd-none': row.item.status == false }"
                             @click="deleteUser(row.item)"
-                            class="btn red-alert text-white mt-0 c-hand"
-                            size="sm"
-                          >
-                           <span class="material-icons d-flex">
-toggle_on
-</span>
-                          </div>
-                          <div
-                            v-if="row.item.status == false"
-                            @click="activateUser(row.item)"
                             class="btn color-primary text-white mt-0 c-hand"
                             size="sm"
                           >
                             <span class="material-icons d-flex">
-toggle_off
-</span>
+                              toggle_on
+                            </span>
                           </div>
                           <div
+                            v-if="row.item.status == false"
+                            @click="activateUser(row.item)"
+                            class="btn red-alert text-white mt-0 c-hand"
+                            size="sm"
+                          >
+                            <span class="material-icons d-flex">
+                              toggle_off
+                            </span>
+                          </div>
+                          <div
+                            style="font-size: 1px"
                             @click="editUser(row.item)"
                             class="btn yellow-danger text-white mt-0 c-hand"
                             size="sm"
                             data-toggle="modal"
                             data-target="#modalEdit"
                           >
-                            <span class="material-icons">
-border_color
-</span>
+                            <span class="material-icons"> border_color </span>
                           </div>
 
                           <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->
@@ -683,6 +705,7 @@ export default {
         });
     },
     ...mapState([
+      'infoDolar',
       "server",
       "dark",
       "usuario",
@@ -693,6 +716,7 @@ export default {
   },
   data() {
     return {
+      isBusy: true,
       formEditUser: {
         username: null,
         password: null,
@@ -766,6 +790,7 @@ export default {
     };
   },
   created() {
+    this.dolar()
     this.getCategoriasProductos();
     this.getInfoEmpresa();
     this.getUnidades();
@@ -791,7 +816,7 @@ export default {
       this.alert(data);
       if (data.value == true) {
         this.formVisibilityEDit = false;
-this.verifyPassword = null
+        this.verifyPassword = null;
         this.getUsers();
       }
     },
@@ -892,6 +917,7 @@ this.verifyPassword = null
     async getUsers() {
       const { data } = await axios.get(`${this.server}/auth/getUsers/`);
       this.usuarios = data;
+      this.isBusy =false
     },
     async deleteUnidad(id) {
       const { data } = await axios.delete(
@@ -919,12 +945,14 @@ this.verifyPassword = null
     async getUnidades() {
       const { data } = await axios.get(`${this.server}/system/unidades`);
       this.unidades = data;
+      this.isBusy = false
     },
     async getCategoriasProductos() {
       const { data } = await axios.get(
         `${this.server}/system/categoriaProducto`
       );
       this.categoriasProductos = data;
+      this.isBusy = false
     },
     async sendUnidad() {
       const { data } = await axios.post(
@@ -966,6 +994,7 @@ this.verifyPassword = null
     prinDataDelete() {},
     ...mapMutations([
       "getStorage",
+      'dolar',
       "getLogin",
       "cambiarLogin",
       "saveToken",
