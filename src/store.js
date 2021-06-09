@@ -9,7 +9,7 @@ state:{
         promedio : null,
         fecha:  null
     },
-    server :'',
+    server :'http://localhost:3000',
     server2 :'http://localhost:3000',
     dark : false,
     modalShow: true,
@@ -81,7 +81,7 @@ mutations:{
         let token = localStorage.token
         state.token= token
         const {data} = await axios.get(`${state.server}/auth/getUser/${id}`)
-        state.usuario= null
+        
         state.usuario = data
     },
     
@@ -155,7 +155,7 @@ cambiar(state){
 cambiarLogin(state){
     state.modalShow = !state.modalShow
     localStorage.modalShow = state.modalShow
-     
+     return true
 }
 },
 actions:{}

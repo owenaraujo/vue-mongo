@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card mt-2 p-2">
+<div class="card mt-2 p-2">
       <div class="card"></div>
       <b-row cols-md="2">
         <b-col>
@@ -37,11 +37,16 @@
         </b-col>
       </b-row>
     </div>
-    <div class="" ref="reporteCompleto">
+
+    <div>
+  <b-tabs content-class="mt-3">
+    <b-tab title="total de productos vendidos" active>
+      
+      <div class="" ref="reporteCompleto">
       <b-table
         :sticky-header="true"
         striped
-        style="max-height: 40vh"
+        style="max-height: 70vh"
         hover
         class="text-center  mt-3 list-scroll scrollbar-light-blue"
         :fields="reportesField"
@@ -50,9 +55,34 @@
         <template #cell(numero)="row">
           {{ row.index + 1 }}
         </template>
+        <template #cell(total)="row">
+          
+                  <Popper
+    trigger="hover"
+    
+    :options="{
+      placement: 'top',
+      modifiers: { offset: { offset: '0,10px' } }
+    }">
+    <div class="popper">
+                 {{row.item.cantidad * row.item.precio * row.item.dolar  | formatNumber }} Bs
+    
+    </div>
+ 
+    <div slot="reference">
+          {{row.item.cantidad * row.item.precio   | formatNumber }} $
+      
+    </div>
+  </Popper>
+          
+        </template>
       </b-table>
     </div>
-    <b-row class="">
+      
+      
+      </b-tab>
+    <b-tab title="detalles de ventas">
+      <b-row class="">
       <b-col class="" md="6">
         <b-table
           style="max-height: 70vh"
@@ -100,6 +130,15 @@
         </div>
       </b-col>
     </b-row>
+      
+      
+      </b-tab>
+    <b-tab title="Disabled" disabled><p>I'm a disabled tab!</p></b-tab>
+  </b-tabs>
+</div>
+    
+    
+    
 
     <Err />
   </div>
@@ -107,6 +146,7 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
+import Popper from 'vue-popperjs'
 import numeral from "numeral";
 import axios from "axios";
 import Vue from "vue";
@@ -124,6 +164,7 @@ Vue.filter("formatNumber", function(value) {
 export default {
   components: {
     Err,
+    Popper
   },
   async created() {
     await this.getProductos();
@@ -177,8 +218,8 @@ export default {
       );
     },
     totalVentasBs() {
-      return this.ventas.reduce(
-        (sum, item) => sum + parseFloat(item.total * item.dolar),
+      return this.reporte.reduce(
+        (sum, item) => sum + parseFloat(item.cantidad*item.precio * item.dolar),
         0
       );
     },
@@ -202,25 +243,31 @@ export default {
     productosAll() {
       this.reporte= []
      this.ventas.map( (item) => {
+       const dolar = item.dolar
         item.productos.map((e) => {
+          
         const vall =  this.reporte.map((value) => {
             if (value.id_producto._id === e.id_producto._id) {
-              console.log(e.cantidad);
               let valor =parseFloat(value.cantidad + e.cantidad)
-              
+             
               value.cantidad = valor
+       
               return true;
             } else {
               return false;
             }
           });
           if (vall.length === 0) {
+            e.dolar= dolar
             return this.reporte.push(e);
           }
           if (vall.indexOf(true) !== -1) {
             return;
           }
+            e.dolar= dolar
+          
           this.reporte.push(e);
+
         });
       });
      
