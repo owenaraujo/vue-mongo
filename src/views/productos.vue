@@ -13,7 +13,7 @@
             nuevo
           </div>
 
-          <div
+          <div @click="pdfCompleto()"
             class="text-center boton-cuadrado color-primary c-hand text-white mt-3 ml-3"
             data-toggle="modal"
             data-target="#modalSearch"
@@ -43,7 +43,7 @@
           <div class="text-center">
             <b-table
             :busy="isBusy"
-              class="card mt-3 list-scroll scrollbar-light-blue"
+              class=" card mt-3 list-scroll scrollbar-light-blue"
               :sticky-header="true"
               striped
               hover
@@ -141,6 +141,99 @@
         </div>
       </b-col>
     </b-row>
+    
+
+    <!-- pdf -->
+
+
+<div class="d-none">
+<div ref="lista" class="">
+<div class=" container-fluid">
+  
+      <div class=" mt-3">
+        <div class="text-right">
+          {{ fecha | formatDate }}
+        </div>
+        <h1>{{ infoEmpresa.nombre }}</h1>
+        <h4>{{ infoEmpresa.telefono }}</h4>
+        <h5>R.i.F. {{ infoEmpresa.rif }}</h5>
+      </div>
+    </div>
+
+
+<b-table
+            :busy="isBusy"
+              class=" card mt-3 list-scroll scrollbar-light-blue"
+              :sticky-header="true"
+              striped
+              hover
+            
+              :items="productos"
+              :fields="fieldsReporte"
+            >
+            <template #cell(#)='row'>
+            {{row.index +1}}
+                
+              
+            </template>
+            <template  v-slot:custom-foot>
+        <b-tr>
+          <b-th colspan="5"><span class="sr-only"></span></b-th>
+          <b-th variant="warning" colspan="1">  
+          {{totalUnidades}} unidades
+          </b-th>
+          <b-th variant="primary" colspan="1">
+
+     {{total$}} $
+
+          </b-th>
+        </b-tr>
+      </template>
+            <template #cell(total)='row'>
+            {{row.item.cantidad * row.item.precio}} $
+                
+              
+            </template>
+            <template #cell(createdAt)='row'>
+            
+                {{row.item.createdAt | formatDate}}
+              
+            </template>
+             <template #table-busy>
+        <div class="text-center text-primary my-2">
+          <b-spinner class="align-middle"></b-spinner>
+          <strong> Cargando...</strong>
+        </div>
+        te
+      </template>
+      <template #cell(cantidad)='row'>
+    
+    
+      {{row.item.cantidad}}  {{row.item.unidadMedida.nombre}}
+    
+  
+      
+      </template>
+              <template #cell(precio)="row">
+                
+
+
+ 
+    
+      {{row.item.precio}} $
+  
+              </template>
+              
+            </b-table>
+
+</div>
+
+
+
+</div>
+
+    
+    <!-- pdf -->
     <!-- modales  -->
     <!-- modal add  -->
     <div
@@ -345,14 +438,7 @@
                     class="form-control mt-3 ml-2 w-50"
                     autocomplete="off"
                   />
-                  <b-form-input
-                    required
-                    type="number"
-                    v-model="formEdit.precio"
-                    placeholder="precio"
-                    class="form-control mt-3 ml-2 w-50"
-                    autocomplete="off"
-                  />
+                  
                 </div>
                 <b-form-textarea
                   required
@@ -387,6 +473,12 @@
 </template>
 
 <script>
+import moment from "moment";
+Vue.filter("formatDate", function(value) {
+  if (value) {
+    return moment(String(value)).format("DD/MM/YYYY hh:mm a");
+  }
+});
 import numeral from "numeral";
 import { mapState, mapMutations } from "vuex";
 import axios from "axios";
@@ -404,6 +496,7 @@ export default {
       
     },
   mounted() {
+    this.tiempo()
     this.getCategorias();
     this.getUnidades();
     this.getProveedores();
@@ -414,6 +507,32 @@ export default {
       'dolar',
 
     ]),
+    tiempo() {
+      setInterval(() => {
+        this.fecha = new Date();
+      }, 1000);
+    },
+    pdfCompleto ()
+{
+ 
+ const lista = this.$refs.lista
+      var ventana = window.open("", "PRINT", "height=400,width=600");
+ventana.document.write(
+        '<link rel="stylesheet" href="/md/bootstrap.min.css" />'
+      );
+     
+      ventana.document.write(lista.innerHTML);
+   ventana.focus()
+   setTimeout(  
+function() {
+  ventana.print()
+  
+}
+, 2000
+   )
+  
+
+},  
     //solicitudes inmediatas
     async getUnidades() {
       const { data } = await axios.get(`${this.server}/system/unidades`);
@@ -542,6 +661,22 @@ export default {
   },
 
   computed: {
+    totalUnidades() {
+
+
+      return this.productos.reduce(
+        (sum, item) => sum + parseFloat(item.cantidad),
+        0
+      );
+    },
+    total$() {
+
+
+      return this.productos.reduce(
+        (sum, item) => sum + parseFloat(item.cantidad * item.precio),
+        0
+      );
+    },
     sortOptions() {
       // Create an options list from our fields
       return this.fields
@@ -555,10 +690,42 @@ export default {
 
   data() {
     return {
+      fecha: null,
       isBusy: true,
       proveedores: [],
       filter: null,
       filterOn: [],
+      fieldsReporte: [
+         '#',
+         {
+          key: "createdAt",
+          label: "creacion",
+          
+        },
+        {
+          key: "nombre",
+        
+        },
+        {
+          key: "codigo",
+         
+        },
+      
+        {
+          key: "precio",
+          label: "precio",
+        
+        },
+      
+       
+        {
+          key: "cantidad",
+          label: "cantidad",
+         
+        },
+       
+      'total'
+      ],
       fields: [
         {
           key: "nombre",

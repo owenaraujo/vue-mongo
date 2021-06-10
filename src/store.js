@@ -9,7 +9,7 @@ state:{
         promedio : null,
         fecha:  null
     },
-    server :'http://localhost:3000',
+    server :'http://192.168.1.102:3000',
     server2 :'http://localhost:3000',
     dark : false,
     modalShow: true,

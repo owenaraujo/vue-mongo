@@ -1,30 +1,33 @@
 <template>
   <div>
-<div class="card mt-2 p-2">
-      <div class="card"></div>
+    <div class="card mt-2 p-2">
       <b-row cols-md="2">
         <b-col>
-          <div class="d-flex">
+          <div class="d-flex align-items-center">
             <b-form-input
               type="datetime-local"
-              style="width:40%"
-              class=" mr-2"
+              style="width: 40%"
+              class="mr-2"
               v-model="time"
             />
             <b-form-input
               type="datetime-local"
-              style="width:40%"
-              class=" mr-2"
+              style="width: 40%"
+              class="mr-2"
               v-model="time"
             />
-            <div style="width:15%" class="btn" @click="getProductos">
-              <i class="fas fa-search"></i>
+            <div style="width: 15%" class="btn material-icons c-hand color-primary text-white" @click="getProductos">
+search
             </div>
-            <button @click="pdfCompleto()">generar reporte</button>
+            <div class="btn material-icons yellow-danger text-white"  @click="pdfCompleto()" >
+              download
+            </div>
+          
           </div>
+
         </b-col>
         <b-col>
-          <div class="d-flex">
+          <div class="d-flex align-items-center ">
             <div class="w-50">
               <p class="text-center">ventas del dia: {{ totalVentas$ }} $</p>
             </div>
@@ -37,108 +40,111 @@
         </b-col>
       </b-row>
     </div>
-
-    <div>
-  <b-tabs content-class="mt-3">
-    <b-tab title="total de productos vendidos" active>
-      
-      <div class="" ref="reporteCompleto">
-      <b-table
-        :sticky-header="true"
-        striped
-        style="max-height: 70vh"
-        hover
-        class="text-center  mt-3 list-scroll scrollbar-light-blue"
-        :fields="reportesField"
-        :items="reporte"
-      >
-        <template #cell(numero)="row">
-          {{ row.index + 1 }}
-        </template>
-        <template #cell(total)="row">
-          
-                  <Popper
-    trigger="hover"
-    
-    :options="{
-      placement: 'top',
-      modifiers: { offset: { offset: '0,10px' } }
-    }">
-    <div class="popper">
-                 {{row.item.cantidad * row.item.precio * row.item.dolar  | formatNumber }} Bs
-    
-    </div>
- 
-    <div slot="reference">
-          {{row.item.cantidad * row.item.precio   | formatNumber }} $
-      
-    </div>
-  </Popper>
-          
-        </template>
-      </b-table>
-    </div>
-      
-      
-      </b-tab>
-    <b-tab title="detalles de ventas">
-      <b-row class="">
-      <b-col class="" md="6">
-        <b-table
-          style="max-height: 70vh"
-          :shortable="true"
-          :sticky-header="true"
-          :items="ventas"
-          :fields="fields"
-          striped
-          responsive="sm"
-          class="card mt-3 list-scroll scrollbar-light-blue"
-        >
-          <template #cell(createdAt)="row">
-            {{ row.item.createdAt | formatDate }}
-          </template>
-
-          <template #cell(acciones)="row">
-            <div size="sm" @click="ventaInfo(row.item)" class="mr-2 btn">
-              información
-            </div>
-          </template>
-        </b-table>
-      </b-col>
-      <b-col md="6">
-        <div class="card mt-3 text-dark" ref="lista">
-          <div class="card-header">informacion</div>
-          <div class="card-body">
-            <div class="btn c-hand" @click="createPdf()">guardar</div>
-            <p>
-              cotizacion del dia de venta : {{ infoVenta.dolar | formatNumber }}
-            </p>
-            <p>total de venta : {{ totalPrecio }}$</p>
-            <p>vendidos: {{ totalProductos }} unidades</p>
-          </div>
-          <div class="text-center">
-            <b-table
-              style="max-height: 40vh"
-              :sticky-header="true"
-              striped
-              hover
-              class=" mt-3 list-scroll scrollbar-light-blue"
-              :items="productos"
-              :fields="fieldsInfo"
-            ></b-table>
-          </div>
+    <div ref="info" class="d-none container fluid">
+      <div class="container fluid mt-3">
+        <div class="text-right">
+          {{ fecha | formatDate }}
         </div>
-      </b-col>
-    </b-row>
-      
-      
-      </b-tab>
-    <b-tab title="Disabled" disabled><p>I'm a disabled tab!</p></b-tab>
-  </b-tabs>
-</div>
-    
-    
-    
+        <h1>{{ infoEmpresa.nombre }}</h1>
+        <h4>{{ infoEmpresa.telefono }}</h4>
+        <h5>R.i.F. {{ infoEmpresa.rif }}</h5>
+      </div>
+    </div>
+    <div>
+      <b-tabs content-class="mt-3">
+        <b-tab title="total de productos vendidos" active>
+          <div class="container fluid" ref="reporteCompleto">
+            <div class="container fluid">
+              <b-table
+                :sticky-header="true"
+                striped
+                style="max-height: 65vh"
+                hover
+                bordered
+                outlined
+                class="mt-3 list-scroll scrollbar-light-blue text-center"
+                :fields="reportesField"
+                :items="reporte"
+              >
+                <template v-slot:custom-foot>
+                  <b-tr>
+                    <b-th colspan="3"><span class="sr-only"></span></b-th>
+                    <b-th variant="warning" colspan="1">
+                      {{ cantidadReporte }}
+                    </b-th>
+                    <b-th variant="primary" colspan="1">
+                      {{ totalVentas$ }} $
+                    </b-th>
+                  </b-tr>
+                </template>
+                <template #cell(numero)="row">
+                  {{ row.index + 1 }}
+                </template>
+                <template #cell(total)="row">
+                  {{ (row.item.cantidad * row.item.precio) | formatNumber }} $
+                </template>
+              </b-table>
+              <hr />
+            </div>
+          </div>
+        </b-tab>
+        <b-tab title="detalles de ventas">
+          <b-row class="">
+            <b-col class="" md="6">
+              <b-table
+                style="max-height: 70vh"
+                :shortable="true"
+                :sticky-header="true"
+                :items="ventas"
+                :fields="fields"
+                striped
+                responsive="sm"
+                class="card mt-3 list-scroll scrollbar-light-blue"
+              >
+                <template #cell(createdAt)="row">
+                  {{ row.item.createdAt | formatDate }}
+                </template>
+
+                <template #cell(acciones)="row">
+                  <div size="sm" @click="ventaInfo(row.item)" class="mr-2 btn">
+                    información
+                  </div>
+                </template>
+              </b-table>
+            </b-col>
+            <b-col md="6">
+              <div class="card mt-3 text-dark" >
+                <div class="card-header text-center">detalles de venta
+                  <div class="btn c-hand material-icons yellow-danger text-white" @click="createPdf()"> download</div>
+                  
+                   </div>
+                <div  ref="lista">
+                  <div class="card-body">
+                  <p>
+                    cotizacion del dia de venta :
+                    {{ infoVenta.dolar | formatNumber }}
+                  </p>
+                  <p>total de venta : {{ totalPrecio }}$</p>
+                  <p>vendidos: {{ totalProductos }} unidades</p>
+                </div>
+                <div class="text-center container-fluid">
+                  <b-table
+                    style="max-height: 40vh"
+                    :sticky-header="true"
+                    striped
+                    hover
+                    class="mt-3 list-scroll scrollbar-light-blue"
+                    :items="productos"
+                    :fields="fieldsInfo"
+                  ></b-table>
+                </div>
+                </div>
+              </div>
+            </b-col>
+          </b-row>
+        </b-tab>
+      </b-tabs>
+    </div>
 
     <Err />
   </div>
@@ -146,39 +152,39 @@
 
 <script>
 import { mapState, mapMutations } from "vuex";
-import Popper from 'vue-popperjs'
 import numeral from "numeral";
 import axios from "axios";
 import Vue from "vue";
 import Err from "../components/404.vue";
 import moment from "moment";
-
-Vue.filter("formatDate", function(value) {
+Vue.filter("formatDate", function (value) {
   if (value) {
-    return moment(String(value)).format("MM/DD/YYYY hh:mm");
+    return moment(String(value)).format("DD/MM/YYYY hh:mm a");
   }
 });
-Vue.filter("formatNumber", function(value) {
+Vue.filter("formatNumber", function (value) {
   return numeral(value).format("0,0"); // displaying other groupings/separators is possible, look at the docs
 });
 export default {
   components: {
     Err,
-    Popper
   },
   async created() {
     await this.getProductos();
-    this.productosAll()
+    this.productosAll();
+    this.tiempo();
   },
   name: "Links",
   data() {
     return {
+      fecha: null,
       reporte: [],
       infoVenta: [],
       reportesField: [
-        "numero",
-        "id_producto.nombre",
-        "id_producto.precio",
+        { key: "numero", label: "#" },
+        { key: "id_producto.nombre", label: "Nombre" },
+
+        { key: "id_producto.precio", label: "precio" },
         "cantidad",
         "total",
       ],
@@ -211,15 +217,22 @@ export default {
       "usuario",
       "token",
     ]),
+
     total() {
       return this.store.reduce(
         (sum, item) => sum + parseFloat(item.cantidad * item.precio),
         0
       );
     },
-    totalVentasBs() {
+    cantidadReporte() {
       return this.reporte.reduce(
-        (sum, item) => sum + parseFloat(item.cantidad*item.precio * item.dolar),
+        (sum, item) => sum + parseFloat(item.cantidad),
+        0
+      );
+    },
+    totalVentasBs() {
+      return this.ventas.reduce(
+        (sum, item) => sum + parseFloat(item.total * item.dolar),
         0
       );
     },
@@ -240,63 +253,63 @@ export default {
     },
   },
   methods: {
+    tiempo() {
+      setInterval(() => {
+        this.fecha = new Date();
+      }, 1000);
+    },
     productosAll() {
-      this.reporte= []
-     this.ventas.map( (item) => {
-       const dolar = item.dolar
+      this.reporte = [];
+      this.ventas.map((item) => {
         item.productos.map((e) => {
-          
-        const vall =  this.reporte.map((value) => {
+          const vall = this.reporte.map((value) => {
             if (value.id_producto._id === e.id_producto._id) {
-              let valor =parseFloat(value.cantidad + e.cantidad)
-             
-              value.cantidad = valor
-       
+              let valor = parseFloat(value.cantidad + e.cantidad);
+
+              value.cantidad = valor;
+
               return true;
             } else {
               return false;
             }
           });
           if (vall.length === 0) {
-            e.dolar= dolar
             return this.reporte.push(e);
           }
           if (vall.indexOf(true) !== -1) {
             return;
           }
-            e.dolar= dolar
-          
-          this.reporte.push(e);
 
+          this.reporte.push(e);
         });
       });
-     
-     
     },
-    pdfCompleto ()
-{
- const lista = this.$refs.reporteCompleto
+    pdfCompleto() {
+      const info = this.$refs.info;
+      const lista = this.$refs.reporteCompleto;
       var ventana = window.open("", "PRINT", "height=400,width=600");
-ventana.document.write(
+      ventana.document.write(
         '<link rel="stylesheet" href="/md/bootstrap.min.css" />'
       );
+      ventana.document.write(info.innerHTML);
       ventana.document.write(lista.innerHTML);
-      
-     
-
-
-},    createPdf() {
+    },
+    createPdf() {
       const lista = this.$refs.lista;
+      const info = this.$refs.info;
 
       var ventana = window.open("", "PRINT", "height=400,width=600");
 
+      ventana.document.write(info.innerHTML);
       ventana.document.write(lista.innerHTML);
       ventana.document.write(
         '<link rel="stylesheet" href="/md/bootstrap.min.css" />'
       );
       ventana.document.close();
       ventana.focus();
-       ventana.print();
+      setTimeout(function () {
+        ventana.print();
+      }, 2000)
     },
     ventaInfo(data) {
       this.infoVenta = data;
@@ -309,7 +322,7 @@ ventana.document.write(
     sumCantidad(index, id) {
       this.store.map((element) => {
         if (element.id_producto == id) {
-          this.productos.map(function(item) {
+          this.productos.map(function (item) {
             if (item._id === element.id_producto) {
               if (item.cantidad == 0) {
                 return;
@@ -326,7 +339,7 @@ ventana.document.write(
       const self = this;
       this.store.map((element) => {
         if (element.id_producto === id) {
-          this.productos.map(function(item) {
+          this.productos.map(function (item) {
             if (item._id === element.id_producto) {
               if (element.cantidad == 0) {
                 return;
@@ -427,7 +440,7 @@ ventana.document.write(
           element.alerta = "limite de stock disponible";
         } else {
           element.cantidad = element.cantidad - element.venta;
-          let data = this.store.map(function(item) {
+          let data = this.store.map(function (item) {
             if (item.id_producto == element._id) {
               const ventaActual = parseFloat(element.venta);
               const ventaAnterior = parseFloat(item.cantidad);
