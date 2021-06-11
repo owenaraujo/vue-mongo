@@ -157,6 +157,7 @@
         <h1>{{ infoEmpresa.nombre }}</h1>
         <h4>{{ infoEmpresa.telefono }}</h4>
         <h5>R.i.F. {{ infoEmpresa.rif }}</h5>
+        <h5>cotizacion del dolar :  {{ infoDolar.promedio |formatNumber }}--{{infoDolar.fecha |formatDate}}</h5>
       </div>
     </div>
 
@@ -484,7 +485,7 @@ import { mapState, mapMutations } from "vuex";
 import axios from "axios";
 import Vue from "vue";
 Vue.filter("formatNumber", function(value) {
-  return numeral(value).format("0,0"); // displaying other groupings/separators is possible, look at the docs
+  return numeral(value).format("0,0.00"); // displaying other groupings/separators is possible, look at the docs
 });
  import Popper from 'vue-popperjs';
 export default {

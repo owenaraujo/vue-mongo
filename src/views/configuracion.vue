@@ -685,7 +685,7 @@ import { mapState, mapMutations } from "vuex";
 import Vue from "vue";
 import numeral from "numeral";
 Vue.filter("formatNumber", function (value) {
-  return numeral(value).format("0,0"); // displaying other groupings/separators is possible, look at the docs
+  return numeral(value).format("0,0.00"); // displaying other groupings/separators is possible, look at the docs
 });
 export default {
   components: { Err },

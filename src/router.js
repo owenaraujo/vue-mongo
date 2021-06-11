@@ -7,10 +7,7 @@ export default new Router({
 mode: 'history',
 base: process.env.BASE_URL,
 routes:[
-{path:'/baul',
-name:'baul',
-component: ()=> import('@/views/baul.vue')
-},
+
 {path:'/',
 name:'index',
 component: ()=> import('@/views/index.vue')
@@ -39,10 +36,7 @@ component: ()=> import('@/views/pedidos.vue')
 name:'favoritos',
 component: ()=> import('@/views/favoritos.vue')
 },
-{path:'/archivo',
-name:'archivo',
-component: ()=> import('@/views/archivo.vue')
-},
+
 {path:'/productos',
 name:'productos',
 component: ()=> import('@/views/productos.vue')

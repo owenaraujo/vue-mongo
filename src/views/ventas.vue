@@ -106,16 +106,15 @@
               :class="{ 'dark-secondary': dark }"
             >
               <div class="card-body d-flex">
-               <div class="w-50">
- <div>
-                  {{ producto.nombre }}
+                <div class="w-50">
+                  <div>
+                    {{ producto.nombre }}
+                  </div>
+                  disponible: {{ producto.cantidad }}
                 </div>
-                disponible: {{ producto.cantidad }}
-
-
-               </div>
-                <div  class=" w-50 text-right">
-                  <b-button style="border-radius: 0.6rem;
+                <div class=" w-50 text-right">
+                  <b-button
+                    style="border-radius: 0.6rem;
     
     padding: 2%;
     margin: 0;"
@@ -126,7 +125,7 @@
                         producto.cantidad === 0
                     "
                   >
-                   agregar<i class=" ml-2 material-icons">add_shopping_cart</i>
+                    agregar<i class=" ml-2 material-icons">add_shopping_cart</i>
                   </b-button>
                   <div>
                     {{ producto.alerta }}
@@ -138,6 +137,7 @@
         </div>
       </div>
     </div>
+   
     <Err />
   </div>
 </template>
@@ -150,7 +150,7 @@ import Vue from "vue";
 
 import Err from "../components/404.vue";
 Vue.filter("formatNumber", function(value) {
-  return numeral(value).format("0,0"); // displaying other groupings/separators is possible, look at the docs
+  return numeral(value).format("0,0.00"); // displaying other groupings/separators is possible, look at the docs
 });
 export default {
   components: {
@@ -158,7 +158,7 @@ export default {
   },
   created() {
     this.getProductos();
-    this.dolar()
+    this.dolar();
   },
   name: "Links",
   data() {
@@ -231,7 +231,7 @@ export default {
       "infoEmpresa",
       "usuario",
       "token",
-      'infoDolar'
+      "infoDolar",
     ]),
     total() {
       return this.store.reduce(
@@ -291,7 +291,7 @@ export default {
       "saveToken",
       "getUser",
       "getInfoEmpresa",
-      'dolar',
+      "dolar",
     ]),
     async getProductos() {
       const { data } = await axios.get(`${this.server}/productos/get/activate`);
@@ -369,8 +369,8 @@ export default {
           element.venta = 1;
           if (element.venta == 0 || element.venta == null) return;
           if (element.cantidad - element.stock < element.venta) {
-            element.alerta = "limite de stock";
-          } else {
+            element.alerta = "limite de stock"
+          } 
             element.cantidad = element.cantidad - element.venta;
             let data = this.store.map(function(item) {
               if (item.id_producto === element._id) {
@@ -396,10 +396,12 @@ export default {
             });
 
             element.venta = null;
-            element.alerta = null;
+            if (element.cantidad - element.stock < element.venta) {
+            element.alerta = "limite de stock"; return
+          } element.alert = null
           }
         }
-      });
+      );
     },
     alert(data) {
       if (data.value === true) {
@@ -421,7 +423,6 @@ export default {
   padding: 5px;
 }
 .btn[data-v-0668eac1] {
-    
 }
 .iconC {
   top: -5px;

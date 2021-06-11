@@ -49,7 +49,7 @@ light_mode
 import numeral from 'numeral'
 import Vue from 'vue'
 Vue.filter("formatNumber", function (value) {
-  return numeral(value).format("0,0"); // displaying other groupings/separators is possible, look at the docs
+  return numeral(value).format("0,0.00"); // displaying other groupings/separators is possible, look at the docs
 });
 import{mapState, mapMutations} from 'vuex'
 import Popper from 'vue-popperjs'

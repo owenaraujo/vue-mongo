@@ -1,25 +1,24 @@
 <template>
   <div>
     <div class="card mt-2 p-2">
-      <b-row cols-md="2">
+      <b-row cols-md="2" cols="1">
         <b-col>
           <div class="d-flex align-items-center">
-            <b-form-input
-              type="datetime-local"
-              style="width: 40%"
+            <b-form-datepicker
+              type="datetime"
+              style="width: 35% ;height: 40px; font-size: 10px"
               class="mr-2"
               v-model="time"
             />
-            <b-form-input
-              type="datetime-local"
-              style="width: 40%"
+            <b-form-datepicker
+              type="datetime"
+              style="width: 35%; height: 40px; font-size: 10px"
               class="mr-2"
-              v-model="time"
             />
             <div style="width: 15%" class="btn material-icons c-hand color-primary text-white" @click="getProductos">
 search
             </div>
-            <div class="btn material-icons yellow-danger text-white"  @click="pdfCompleto()" >
+            <div style="width: 15%"  class="btn material-icons yellow-danger text-white"  @click="pdfCompleto()" >
               download
             </div>
           
@@ -52,7 +51,7 @@ search
     </div>
     <div>
       <b-tabs content-class="mt-3">
-        <b-tab title="total de productos vendidos" active>
+        <b-tab title="total de productos vendidos">
           <div class="container fluid" ref="reporteCompleto">
             <div class="container fluid">
               <b-table
@@ -67,7 +66,7 @@ search
                 :items="reporte"
               >
                 <template v-slot:custom-foot>
-                  <b-tr>
+                  <b-tr class="d-none">
                     <b-th colspan="3"><span class="sr-only"></span></b-th>
                     <b-th variant="warning" colspan="1">
                       {{ cantidadReporte }}
@@ -81,18 +80,19 @@ search
                   {{ row.index + 1 }}
                 </template>
                 <template #cell(total)="row">
-                  {{ (row.item.cantidad * row.item.precio) | formatNumber }} $
+                  
+                  {{ (row.item.cantidad * row.item.id_producto.precio)  }} $
                 </template>
               </b-table>
               <hr />
             </div>
           </div>
         </b-tab>
-        <b-tab title="detalles de ventas">
+        <b-tab title="detalles de ventas" active>
           <b-row class="">
             <b-col class="" md="6">
               <b-table
-                style="max-height: 70vh"
+                style="max-height: 67.2vh"
                 :shortable="true"
                 :sticky-header="true"
                 :items="ventas"
@@ -114,8 +114,7 @@ search
             </b-col>
             <b-col md="6">
               <div class="card mt-3 text-dark" >
-                <div class="card-header text-center">detalles de venta
-                  <div class="btn c-hand material-icons yellow-danger text-white" @click="createPdf()"> download</div>
+                <div class="card-header text-center c-hand"  @click="createPdf()">detalles de venta
                   
                    </div>
                 <div  ref="lista">
@@ -129,14 +128,19 @@ search
                 </div>
                 <div class="text-center container-fluid">
                   <b-table
-                    style="max-height: 40vh"
+                    style="max-height: 30vh"
                     :sticky-header="true"
                     striped
                     hover
                     class="mt-3 list-scroll scrollbar-light-blue"
                     :items="productos"
                     :fields="fieldsInfo"
-                  ></b-table>
+                  >
+                  <template #cell(total)='row'>
+                  {{row.item.cantidad * row.item.id_producto.precio}}
+                  
+                  </template>
+                  </b-table>
                 </div>
                 </div>
               </div>
@@ -163,7 +167,7 @@ Vue.filter("formatDate", function (value) {
   }
 });
 Vue.filter("formatNumber", function (value) {
-  return numeral(value).format("0,0"); // displaying other groupings/separators is possible, look at the docs
+  return numeral(value).format("0,0.00"); // displaying other groupings/separators is possible, look at the docs
 });
 export default {
   components: {
@@ -173,6 +177,7 @@ export default {
     await this.getProductos();
     this.productosAll();
     this.tiempo();
+    this.dolar()
   },
   name: "Links",
   data() {
@@ -195,8 +200,8 @@ export default {
       fieldsInfo: [
         { key: "id_producto.nombre", label: "producto" },
         "cantidad",
-        { key: "precio", label: "precio de venta" },
-        { key: "id_producto.precio", label: "precio actual" },
+        { key: "id_producto.precio", label: "precio" },
+        { key: "total", label: "total" },
       ],
       time: null,
       ventas: [],
@@ -211,6 +216,7 @@ export default {
   computed: {
     ...mapState([
       "options",
+      'infoDolar',
       "dark",
       "server",
       "infoEmpresa",
@@ -364,6 +370,7 @@ export default {
       "saveToken",
       "getUser",
       "getInfoEmpresa",
+      'dolar',
     ]),
     async getProductos() {
       const { data } = await axios.get(`${this.server}/ventas/get/`);

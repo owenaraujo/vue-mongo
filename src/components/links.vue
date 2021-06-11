@@ -169,7 +169,7 @@ exit_to_app
                   :class="{'text-white' : dark, ' text-dark': !dark}"
                   role="presentation"
                   >report</i
-                >Reportes</router-link
+                >Reportes de ventas</router-link
               >
               <router-link v-if="usuario.roles.name === 'administrador'"
                 class="mdl-navigation__link"
@@ -183,18 +183,7 @@ exit_to_app
                   >settings</i
                 >configuracion</router-link
               >
-              <router-link v-if="usuario.roles.name === 'administrador'"
-                class="mdl-navigation__link"
-                :class="{'text-white' : dark, ' text-dark': !dark}"
-                to="baul"
-              >
-                <i
-                  class="material-icons"
-                  :class="{'text-white' : dark, ' text-dark': !dark}"
-                  role="presentation"
-                  >archive</i
-                >Archivado</router-link
-              >
+              
               
               <div class="d-none">
                 <router-link
