@@ -8,6 +8,8 @@ import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import store from "./store";
 import router from "./router";
 import Popper from 'vue-popperjs';
+import clipboar from 'vue-clipboard2'
+Vue.use(clipboar)
 Vue.use(Popper)
   import 'vue-popperjs/dist/vue-popper.css';
 import App from './App.vue'
