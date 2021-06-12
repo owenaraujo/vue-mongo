@@ -8,14 +8,16 @@
               type="datetime"
               style="width: 35% ;height: 40px; font-size: 10px"
               class="mr-2"
-              v-model="time"
+              v-model="fechaInicio"
             />
             <b-form-datepicker
+              v-model="fechaFinal"
+
               type="datetime"
               style="width: 35%; height: 40px; font-size: 10px"
               class="mr-2"
             />
-            <div style="width: 15%" class="btn material-icons c-hand color-primary text-white" @click="getProductos">
+            <div style="width: 15%" class="btn material-icons c-hand color-primary text-white" @click="getVentas">
 search
             </div>
             <div style="width: 15%"  class="btn material-icons yellow-danger text-white"  @click="pdfCompleto()" >
@@ -174,14 +176,15 @@ export default {
     Err,
   },
   async created() {
-    await this.getProductos();
-    this.productosAll();
     this.tiempo();
     this.dolar()
   },
   name: "Links",
   data() {
     return {
+      total: [],
+      fechaInicio: null,
+      fechaFinal: null,
       fecha: null,
       reporte: [],
       infoVenta: [],
@@ -209,7 +212,6 @@ export default {
       busqueda: "",
       validated: 1,
 
-      store: [],
       productos: [],
     };
   },
@@ -224,12 +226,7 @@ export default {
       "token",
     ]),
 
-    total() {
-      return this.store.reduce(
-        (sum, item) => sum + parseFloat(item.cantidad * item.precio),
-        0
-      );
-    },
+    
     cantidadReporte() {
       return this.reporte.reduce(
         (sum, item) => sum + parseFloat(item.cantidad),
@@ -266,13 +263,13 @@ export default {
     },
     productosAll() {
       this.reporte = [];
-      this.ventas.map((item) => {
+      this.total.map((item) => {
         item.productos.map((e) => {
           const vall = this.reporte.map((value) => {
             if (value.id_producto._id === e.id_producto._id) {
-              let valor = parseFloat(value.cantidad + e.cantidad);
+              let valor =value.cantidad + e.cantidad
 
-              value.cantidad = valor;
+             value.cantidad = valor;
 
               return true;
             } else {
@@ -309,7 +306,7 @@ export default {
       ventana.document.write(info.innerHTML);
       ventana.document.write(lista.innerHTML);
       ventana.document.write(
-        '<link rel="stylesheet" href="/md/bootstrap.min.css" />'
+        '<link rel="stylesheet" href="../md/bootstrap.min.css" />'
       );
       ventana.document.close();
       ventana.focus();
@@ -318,6 +315,7 @@ export default {
       }, 2000)
     },
     ventaInfo(data) {
+      
       this.infoVenta = data;
       this.productos = data.productos;
     },
@@ -325,44 +323,8 @@ export default {
       const text = this.id;
       console.log(text);
     },
-    sumCantidad(index, id) {
-      this.store.map((element) => {
-        if (element.id_producto == id) {
-          this.productos.map(function (item) {
-            if (item._id === element.id_producto) {
-              if (item.cantidad == 0) {
-                return;
-              }
-              item.cantidad--;
 
-              element.cantidad++;
-            }
-          });
-        }
-      });
-    },
-    resCantidad(index, id) {
-      const self = this;
-      this.store.map((element) => {
-        if (element.id_producto === id) {
-          this.productos.map(function (item) {
-            if (item._id === element.id_producto) {
-              if (element.cantidad == 0) {
-                return;
-              }
-              item.cantidad++;
-              element.cantidad--;
-              if (element.cantidad == 0) {
-                self.deleteFromStore(index);
-              }
-            }
-          });
-        }
-      });
-    },
-    deleteFromStore(index) {
-      this.store.splice(index);
-    },
+    
     ...mapMutations([
       "getStorage",
       "getLogin",
@@ -372,13 +334,25 @@ export default {
       "getInfoEmpresa",
       'dolar',
     ]),
-    async getProductos() {
-      const { data } = await axios.get(`${this.server}/ventas/get/`);
+    async getVentas() {
+      if (this.fechaInicio == null) return
+      if (this.fechaFinal == null) return
+      const { data } = await axios.get(`${this.server}/ventas/get/${this.fechaInicio}/${this.fechaFinal}`);
       this.ventas = data;
+    this.getTotal();
+    
+    },
+    async getTotal() {
+      if (this.fechaInicio == null) return
+      if (this.fechaFinal == null) return
+      const { data } = await axios.get(`${this.server}/ventas/get/${this.fechaInicio}/${this.fechaFinal}`);
+      this.total = data;
+    this.productosAll();
+    
     },
     deleteStore() {
       this.store = [];
-      this.getProductos();
+      this.getVentas();
     },
     obtener() {
       return this.store.reduce(
@@ -386,96 +360,9 @@ export default {
         0
       );
     },
-    async enviar() {
-      if (this.store.length == 0) {
-        return;
-      }
-      const value = this.obtener();
-      const valores = {
-        dolar: this.infoEmpresa.dolar,
-        total: value,
-        productos: this.store,
-      };
-      const { data } = await axios.post(`${this.server}/ventas`, valores, {
-        headers: { xtoken: this.token },
-      });
+   
+  
 
-      this.alert(data);
-      if (data.value === true) {
-        this.store = [];
-      }
-    },
-    verifyStock(index) {
-      for (let i = 0; i < this.productos.length; i++) {
-        const element = this.productos[index];
-        let param = element.cantidad - element.stock;
-        if (element.cantidad < element.venta) {
-          element.alerta = "stock no disponible";
-        }
-        if ((param <= element.venta) & (element.venta < element.cantidad)) {
-          element.alerta = "limite de stock";
-        }
-        if (param > element.venta) {
-          element.alerta = null;
-        }
-
-        if (element.cantidad == element.venta) element.alerta = "stock en 0";
-      }
-    },
-    save() {
-      var index = null;
-      let param = index.cantidad - index.stock;
-
-      if (index.cantidad < index.venta) {
-        index.alerta = "stock no disponible";
-      }
-      if ((param <= index.venta) & (index.venta < index.cantidad)) {
-        index.alerta = "limite de stock";
-      }
-      if (param > index.venta) {
-        index.alerta = null;
-      }
-
-      if (index.cantidad == index.venta) index.alerta = "stock en 0";
-    },
-
-    saveStore(index) {
-      for (let i = 0; i < this.productos.length; i++) {
-        const element = this.productos[index];
-        if (element.venta == 0 || element.venta == null) return;
-        if (element.cantidad - element.stock < element.venta) {
-          element.alerta = "limite de stock disponible";
-        } else {
-          element.cantidad = element.cantidad - element.venta;
-          let data = this.store.map(function (item) {
-            if (item.id_producto == element._id) {
-              const ventaActual = parseFloat(element.venta);
-              const ventaAnterior = parseFloat(item.cantidad);
-              //element.cantidad = element.cantidad - ventaActual
-              item.cantidad = ventaActual + ventaAnterior;
-              return true;
-            } else {
-              return false;
-            }
-          });
-          if (data[0] === true) {
-            element.venta = null;
-            element.alerta = null;
-
-            return;
-          }
-          this.store.push({
-            producto: element.nombre,
-            cantidad: element.venta,
-            precio: element.precio,
-            id_producto: element._id,
-          });
-
-          element.venta = null;
-          element.alerta = null;
-        }
-      }
-    },
     alert(data) {
       if (data.value === true) {
         this.$toastr.success(data.message, "configuracion", this.options);

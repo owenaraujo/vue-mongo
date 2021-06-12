@@ -8,7 +8,7 @@ mode: 'history',
 base: process.env.BASE_URL,
 routes:[
 
-{path:'/',
+{path:'/informacion',
 name:'index',
 component: ()=> import('@/views/index.vue')
 },

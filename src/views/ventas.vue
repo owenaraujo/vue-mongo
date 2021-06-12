@@ -313,6 +313,7 @@ export default {
       }
       this.btnEnviar = true;
       const value = this.obtener();
+      console.log(value);
       const valores = {
         dolar: this.infoDolar.promedio,
         total: value,
