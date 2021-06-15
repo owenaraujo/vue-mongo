@@ -15,12 +15,7 @@
           >
             <i class="fab fa-facebook"></i>
           </a>
-          <a
-            @click="openApp(info.contact.twitter)"
-            class="material-icons text-primary mr-2"
-          >
-            <i class="fab fa-twitter"></i>
-          </a>
+        
           <a
             @click="openApp(info.contact.Ig)"
             class="material-icons text-primary mr-2"
@@ -28,7 +23,6 @@
             <i class="fab fa-instagram"></i>
           </a>
         </div>
-       
       </div>
       <div class="mt-4">
       <a  v-clipboard:copy="info.contact.telefono"
@@ -38,6 +32,12 @@
       <a  v-clipboard:copy="info.contact.correo"
       v-clipboard:success="alertCorreo" class=""> <div class="material-icons">email</div> {{ info.contact.correo }}</a>
       </div>
+       <div class="c-hand mt-3" @click="openApp(`http://${info.ip}:${info.PORT}`)"> <p>
+
+         para acceder a la aplicacion desde 
+       un dispostitivo externo conectado a la misma red accede http://{{info.ip}}:{{info.PORT}}
+       </p></div>
+
     </h5>
     <h4></h4>
   </div>

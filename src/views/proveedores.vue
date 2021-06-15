@@ -1,11 +1,10 @@
-
-
 <template>
   <div>
     <b-row>
       <b-col>
         <div class="d-flex">
-          <div v-if="usuario.roles.name !== 'usuario' "
+          <div
+            v-if="usuario.roles.name !== 'usuario'"
             class="text-center boton-cuadrado quinto c-hand text-white mt-3"
             data-toggle="modal"
             data-target="#modalAdd"
@@ -13,7 +12,7 @@
             <i class="fas fa-plus"></i> <br />
             nuevo
           </div>
-          
+
           <div
             class=" d-none text-center boton-cuadrado yellow-danger c-hand text-white mt-3 ml-3"
             data-toggle="modal"
@@ -24,12 +23,11 @@
           </div>
           <div
             class="text-center boton-cuadrado color-primary c-hand text-white mt-3 ml-3"
-           
           >
-           <i>{{proveedores.length}}</i> <br>
-  <div v-if="proveedores.length === 1">proveedor</div>
+            <i>{{ count }}</i> <br />
+            <div v-if="proveedores.length === 1">proveedor</div>
             <div v-if="proveedores.length > 1">proveedores</div>
-            <div v-if="proveedores.length ===0">proveedores</div>
+            <div v-if="proveedores.length === 0">proveedores</div>
           </div>
           <div
             class="d-none text-center boton-cuadrado color-primary c-hand text-white mt-3 ml-3"
@@ -39,79 +37,82 @@
             <i class="fas fa-search"></i> <br />
             buscar
           </div>
-           <div class="d-flex align-items-center" >
+          <div class="d-flex align-items-center">
             <b-form-input
-            class="w-75 ml-3"
+              class="w-75 ml-3"
               id="filter-input"
               v-model="filter"
               type="search"
               placeholder="Buscar"
             ></b-form-input>
-
-            
-             
-            
           </div>
-          
-              
-          
         </div>
       </b-col>
+     
     </b-row>
     <b-row>
       <b-col sm="12">
         <div class="">
           <div class="text-center">
             <div>
-             
-    <b-table :busy="isBusy" class="card mt-3 list-scroll scrollbar-light-blue" :sticky-header="true" striped  hover :filter="filter" :items="proveedores" :fields="fields">
- <template #table-busy>
-        <div class="text-center text-primary my-2">
-          <b-spinner class="align-middle"></b-spinner>
-          <strong>   Cargando...</strong>
-        </div>
-      </template>
-<template #cell(funciones)="row" v-if="usuario.roles.name === 'adminstrador'">
-  <div
-                            :class="{ 'd-none': row.item.status == false }"
-                            @click="deleteProveedor(row.item._id)"
-                            class="btn color-primary text-white mt-0 c-hand"
-                            size="sm"
-                          >
-                            <span class="material-icons d-flex">
-                              toggle_on
-                            </span>
-                          </div>
-                          <div
-                            v-if="row.item.status == false"
-                            @click="activateProveedor(row.item._id)"
-                            class="btn red-alert text-white mt-0 c-hand"
-                            size="sm"
-                          >
-                            <span class="material-icons d-flex">
-                              toggle_off
-                            </span>
-                          </div>
+              <b-table
+                :busy="isBusy"
+                class="card mt-3 list-scroll scrollbar-light-blue"
+                :sticky-header="true"
+                striped
+                hover
+                :filter="filter"
+                :items="proveedores"
+                :fields="fields"
+              >
+                <template #table-busy>
+                  <div class="text-center text-primary my-2">
+                    <b-spinner class="align-middle"></b-spinner>
+                    <strong> Cargando...</strong>
+                  </div>
+                </template>
+                <template
+                  #cell(funciones)="row"
                 
-<div
-                            style="font-size: 1px"
-                            @click="FormEditSend(row.item)"
-                            class="btn yellow-danger text-white mt-0 c-hand"
-                            size="sm"
-                            data-toggle="modal"
-                            data-target="#modalEdit"
-                          >
-                            <span class="material-icons"> border_color </span>
-                          </div>
-       
+                >
+                 <div   v-if="usuario.roles.name === 'administrador'">
+                    <div
+                    :class="{ 'd-none': row.item.status == false }"
+                    @click="deleteProveedor(row.item._id)"
+                    class="btn color-primary text-white mt-0 c-hand"
+                    size="sm"
+                  >
+                    <span class="material-icons d-flex">
+                      toggle_on
+                    </span>
+                  </div>
+                  <div
+                    v-if="row.item.status == false"
+                    @click="activateProveedor(row.item._id)"
+                    class="btn red-alert text-white mt-0 c-hand"
+                    size="sm"
+                  >
+                    <span class="material-icons d-flex">
+                      toggle_off
+                    </span>
+                  </div>
 
-        <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->
-        
-      </template>
+                  <div
+                    style="font-size: 1px"
+                    @click="FormEditSend(row.item)"
+                    class="btn yellow-danger text-white mt-0 c-hand"
+                    size="sm"
+                    data-toggle="modal"
+                    data-target="#modalEdit"
+                  >
+                    <span class="material-icons"> border_color </span>
+                  </div>
+                 </div>
 
-    </b-table>
-  </div>
-            
+                  <!-- As `row.showDetails` is one-way, we call the toggleDetails function on @change -->
+                </template>
+              </b-table>
+            </div>
           </div>
         </div>
       </b-col>
@@ -121,15 +122,14 @@
       <!-- modal edit -->
 
       <div
-      data-bs-backdrop="static"
-       data-bs-keyboard="false" tabindex="-1"
-        aria-labelledby="staticBackdropLabel" aria-hidden="true"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
         class="modal fade"
         id="modalEdit"
-        
         role="dialog"
-       
-       
       >
         <div class="modal-dialog modal-md">
           <div class="modal-content" :class="{ 'dark-secondary ': dark }">
@@ -148,7 +148,6 @@
               </button>
             </div>
             <div class="modal-body mx-3">
-             
               <!-- form editar -->
               <div :class="{ 'd-none': !formVisibilityEDit }">
                 <form id="formEdit" class="">
@@ -176,9 +175,8 @@
                       class="form-control mt-3"
                       autocomplete="off"
                     ></b-form-input>
-                    
+
                     <div class="d-flex">
-                     
                       <b-form-input
                         v-model="FormEdit.telefono"
                         required
@@ -192,16 +190,11 @@
                       ></b-form-input>
                       <b-form-input
                         v-model="FormEdit.rif"
-                        
-                
-                       
-                        
                         placeholder="rif"
                         class="form-control mt-3 ml-2 w-50"
                         autocomplete="off"
                       ></b-form-input>
                     </div>
-                    
                   </div>
                 </form>
                 <div class="d-flex text-white">
@@ -212,7 +205,7 @@
                     guardar
                   </div>
                   <div
-                  @click="intercambioEdit"
+                    @click="intercambioEdit"
                     style="width: 50px; height: 40px; border-radius: 2px"
                     class="c-hand red-alert d-flex align-items-center justify-content-center"
                   >
@@ -245,7 +238,7 @@
               class="modal-header text-center"
               :class="{ 'color-secondary text-white': dark }"
             >
-              <h4 class="modal-title w-100 font-weight-bold">Agregar </h4>
+              <h4 class="modal-title w-100 font-weight-bold">Agregar</h4>
               <button
                 type="button"
                 class="close"
@@ -279,9 +272,8 @@
                     class="form-control mt-3"
                     autocomplete="off"
                   />
-                 
+
                   <div class="d-flex">
-                    
                     <b-form-input
                       required
                       type="number"
@@ -293,22 +285,19 @@
                       autocomplete="off"
                     />
                     <b-form-input
-                    required
-                    type="text"
-                    id="rif"
-                    v-model="formAdd.rif"
-                    placeholder="rif"
-                    class="form-control mt-3 ml-2 w-50"
-                    autocomplete="off"
-                  />
+                      required
+                      type="text"
+                      id="rif"
+                      v-model="formAdd.rif"
+                      placeholder="rif"
+                      class="form-control mt-3 ml-2 w-50"
+                      autocomplete="off"
+                    />
                   </div>
-                 
-                  
                 </div>
               </form>
             </div>
             <div class="modal-footer d-flex justify-content-center">
-             
               <div
                 @click="addProveedores"
                 id="btnPost"
@@ -322,8 +311,6 @@
       </div>
 
       <!-- modal add  -->
-      
-      
     </div>
     <!-- modales  -->
   </div>
@@ -337,20 +324,21 @@ export default {
 
   computed: {
     sortOptions() {
-        // Create an options list from our fields
-        return this.fields
-          .filter(f => f.sortable)
-          .map(f => {
-            return { text: f.label, value: f.key }
-          })
-      },
-    ...mapState(['usuario',"dark", "options", "server", "token"]),
+      // Create an options list from our fields
+      return this.fields
+        .filter((f) => f.sortable)
+        .map((f) => {
+          return { text: f.label, value: f.key };
+        });
+    },
+    ...mapState(["usuario", "dark", "options", "server", "token"]),
   },
   data() {
     return {
+      count: null,
       isBusy: true,
       filter: null,
-        filterOn: [],
+      filterOn: [],
       optionsSearch: [
         {
           value: null,
@@ -360,54 +348,45 @@ export default {
         },
         { value: "nombre", text: "nombre" },
         { value: "codigo", text: "codigo" },
-        
-        
       ],
-      
+
       formVisibilityEDit: false,
-      
 
       FormEdit: {
         codigo: null,
-        
+
         createdAt: null,
-        
-        
+
         nombre: null,
         status: null,
         telefono: null,
         updatedAt: null,
         _id: null,
-        rif: null
-
+        rif: null,
       },
       infoDelete: {
         codigo: null,
-        
+
         createdAt: null,
-       
+
         rif: null,
         nombre: null,
         status: null,
         telefono: null,
         updatedAt: null,
-        _id: null
-        
-
+        _id: null,
       },
       infoSearch: {
         codigo: null,
-        
+
         createdAt: null,
-       
+
         rif: null,
         nombre: null,
         status: null,
         telefono: null,
         updatedAt: null,
-        _id: null
-        
-
+        _id: null,
       },
       resultadosDelete: [],
       resultadosEdit: [],
@@ -423,56 +402,52 @@ export default {
         paramSearch: null,
       },
       fields: [
-          {
-            key: 'nombre',
-            sortable: true
-          },
-          {
-            key: 'codigo',
-            sortable: true
-          },
-          {
-            key: 'telefono',
-            sortable: true
-          },
-          {
-            key: 'rif',
-            sortable: true
-          },
-        'funciones',
-
-        ],
+        {
+          key: "nombre",
+          sortable: true,
+        },
+        {
+          key: "codigo",
+          sortable: true,
+        },
+        {
+          key: "telefono",
+          sortable: true,
+        },
+        {
+          key: "rif",
+          sortable: true,
+        },
+        "funciones",
+      ],
       formAdd: {
         nombre: "",
         codigo: "",
-       
-        
-        telefono: "",
-        
-        rif: ""
 
+        telefono: "",
+
+        rif: "",
       },
       proveedores: [],
     };
   },
   created() {
-    this.getting()
+    this.getting();
   },
   methods: {
-    anonimo(data){console.log(data);},
+    anonimo(data) {
+      console.log(data);
+    },
     alert(data) {
-if (data.value === true) {
-      this.$toastr.success(data.message,'proveedores', this.options);
-  
-}      
-if (data.value === false) {
-      this.$toastr.error(data.message,'proveedores', this.options);
-  
-}      
-if (data.value === null) {
-      this.$toastr.warning(data.message,'proveedores', this.options);
-  
-}      
+      if (data.value === true) {
+        this.$toastr.success(data.message, "proveedores", this.options);
+      }
+      if (data.value === false) {
+        this.$toastr.error(data.message, "proveedores", this.options);
+      }
+      if (data.value === null) {
+        this.$toastr.warning(data.message, "proveedores", this.options);
+      }
     },
     async sendEdit(id) {
       const { data } = await axios.put(
@@ -481,68 +456,68 @@ if (data.value === null) {
           nombre: this.FormEdit.nombre,
           codigo: this.FormEdit.codigo,
           rif: this.FormEdit.rif,
-          
+
           telefono: this.FormEdit.telefono,
-         
-          
-        },{headers:{xtoken: this.token}}
+        },
+        { headers: { xtoken: this.token } }
       );
-    this.getting()
-      
+      this.getting();
+
       this.intercambioEdit();
       this.alert(data);
     },
-   
-    async deleteProveedor(id){
-   const {data}= await  axios
-        .delete(
-          `${this.server}/proveedores/delete/${id}/`,{headers:{xtoken: this.token}}
-        )
-      this.alert(data);
-    this.getting()
 
-    },
-    async activateProveedor(id){
-   const {data}= await  axios
-        .delete(
-          `${this.server}/proveedores/activate/${id}/`,{headers:{xtoken: this.token}}
-        )
+    async deleteProveedor(id) {
+      const {
+        data,
+      } = await axios.delete(`${this.server}/proveedores/delete/${id}/`, {
+        headers: { xtoken: this.token },
+      });
       this.alert(data);
-    this.getting()
-
+      this.getting();
     },
-    FormEditSend(data){
-      if(this.formVisibilityEDit == false)this.intercambioEdit()
-      this.FormEdit= null
-      this.FormEdit= data
+    async activateProveedor(id) {
+      const {
+        data,
+      } = await axios.delete(`${this.server}/proveedores/activate/${id}/`, {
+        headers: { xtoken: this.token },
+      });
+      this.alert(data);
+      this.getting();
+    },
+    FormEditSend(data) {
+      if (this.formVisibilityEDit == false) this.intercambioEdit();
+      this.FormEdit = null;
+      this.FormEdit = data;
       //this.intercambioEdit()
     },
-    
-    
-    
-    
+
     intercambioEdit() {
       this.formVisibilityEDit = !this.formVisibilityEDit;
-      
     },
-    
-   
+
     async addProveedores() {
       const { data } = await axios.post(
         `${this.server}/proveedores/post`,
-        this.formAdd,{headers:{xtoken: this.token}}
+        this.formAdd,
+        { headers: { xtoken: this.token } }
       );
       this.alert(data);
-if (data.value == false) return
+      if (data.value == false) return;
       this.formAdd = {};
-      this.getting()
+      this.getting();
     },
-   
+
     async getting() {
-      const {data} = await axios
-        .get(`${this.server}/proveedores/get`)
-        this.proveedores = data
-        this.isBusy = false
+      const { data } = await axios.get(`${this.server}/proveedores/get`);
+      this.proveedores = data;
+      this.isBusy = false;
+      this.gettingCount()
+    },
+    async gettingCount() {
+      const { data } = await axios.get(`${this.server}/proveedores/get/count`);
+      this.count = data;
+     
     },
   },
 };

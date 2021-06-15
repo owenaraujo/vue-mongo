@@ -215,12 +215,32 @@
         </div>
       </template>
                   <template #cell(Acciones)="row">
+                     <div   v-if="usuario.roles.name === 'administrador'">
                     <div
-                      class="btn c-hand text-white red-alert"
-                      @click="deleteCategoria(row.item._id)"
-                    >
-                      <i class="fas fa-trash-alt"></i>
-                    </div>
+                    :class="{ 'd-none': row.item.status == false }"
+                    @click="deleteCategoria(row.item._id)"
+                    class="btn color-primary text-white mt-0 c-hand"
+                    size="sm"
+                  >
+                    <span class="material-icons d-flex">
+                      toggle_on
+                    </span>
+                  </div>
+                  <div
+                    v-if="row.item.status == false"
+                    @click="activateCategoria(row.item._id)"
+                    class="btn red-alert text-white mt-0 c-hand"
+                    size="sm"
+                  >
+                    <span class="material-icons d-flex">
+                      toggle_off
+                    </span>
+                  </div>
+
+                  
+                 </div>
+
+                   
                   </template>
                 </b-table>
               </b-col>
@@ -277,12 +297,27 @@
         </div>
       </template>
                   <template #cell(Acciones)="row">
-                    <div
-                      class="btn c-hand text-white red-alert"
-                      @click="deleteUnidad(row.item._id)"
-                    >
-                      <i class="fas fa-trash-alt"></i>
-                    </div>
+                     <div
+                            :class="{ 'd-none': row.item.status == false }"
+                            @click="deleteUnidad(row.item._id)"
+                            class="btn color-primary text-white mt-0 c-hand"
+                            size="sm"
+                          >
+                            <span class="material-icons d-flex">
+                              toggle_on
+                            </span>
+                          </div>
+                          <div
+                            v-if="row.item.status == false"
+                            @click="activateUnidad(row.item._id)"
+                            class="btn red-alert text-white mt-0 c-hand"
+                            size="sm"
+                          >
+                            <span class="material-icons d-flex">
+                              toggle_off
+                            </span>
+                          </div>
+                   
                   </template>
                 </b-table>
               </b-col>
@@ -914,6 +949,15 @@ export default {
 
       this.getCategoriasProductos();
     },
+    async activateCategoria(id) {
+      const { data } = await axios.delete(
+        `${this.server}/system/categoriaProducto/activate/${id}`,
+        { headers: { xtoken: this.token } }
+      );
+      this.alert(data);
+
+      this.getCategoriasProductos();
+    },
     async getUsers() {
       const { data } = await axios.get(`${this.server}/auth/getUsers/`);
       this.usuarios = data;
@@ -922,6 +966,16 @@ export default {
     async deleteUnidad(id) {
       const { data } = await axios.delete(
         `${this.server}/system/unidades/${id}`,
+        { headers: { xtoken: this.token } }
+      );
+      this.alert(data);
+      this.getUnidades();
+
+      this.getCategoriasProductos();
+    },
+    async activateUnidad(id) {
+      const { data } = await axios.delete(
+        `${this.server}/system/unidades/activate/${id}`,
         { headers: { xtoken: this.token } }
       );
       this.alert(data);

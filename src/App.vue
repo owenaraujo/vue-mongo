@@ -103,7 +103,7 @@
       <div class="modal-body">
         <div>
           <b-form-input placeholder="nombre de usuario" class="mt-3"  v-model="user.username"></b-form-input>
-          <b-form-input placeholder="contraseña" class="mt-3" v-model="user.password"></b-form-input>
+          <b-form-input type="password" placeholder="contraseña" class="mt-3" v-model="user.password"></b-form-input>
         </div>
       </div>
       <div class="modal-footer">

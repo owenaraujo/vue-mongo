@@ -4,10 +4,9 @@
     trigger="hover"
     
     :options="{
-      placement: 'top-end',
-      modifiers: { offset: { offset: '0,10px' } }
-    }">
-    <div class="popper">
+      placement: 'right-end'}
+    ">
+    <div  class="popper">
                 {{ infoDolar.promedio | formatNumber }} -
                 {{ infoDolar.fecha}}
     

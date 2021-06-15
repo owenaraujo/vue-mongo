@@ -18,7 +18,7 @@
             data-toggle="modal"
             data-target="#modalSearch"
           >
-          {{productos.length}}
+          {{count}}
             <br>
             <div v-if="productos.length === 1">producto</div>
             <div v-if="productos.length > 1">productos</div>
@@ -536,7 +536,7 @@ function() {
 },  
     //solicitudes inmediatas
     async getUnidades() {
-      const { data } = await axios.get(`${this.server}/system/unidades`);
+      const { data } = await axios.get(`${this.server}/system/unidades/activate`);
       data.forEach((item) => {
         let data = { value: item._id, text: item.nombre };
         this.unidadesMedida.push(data);
@@ -550,7 +550,7 @@ function() {
     },
     async getCategorias() {
       const { data } = await axios.get(
-        `${this.server}/system/categoriaProducto`
+        `${this.server}/system/categoriaProducto/activate`
       );
       data.forEach((item) => {
         let data = { value: item._id, text: item.nombre };
@@ -567,6 +567,11 @@ function() {
       const { data } = await axios.get(`${this.server}/productos/get`);
       this.productos = data;
       this.isBusy = false
+      this.getProductosCount()
+    },
+    async getProductosCount() {
+      const { data } = await axios.get(`${this.server}/productos/get/count`);
+      this.count = data;
     },
     //solicitudes inmediatas
 
@@ -594,7 +599,7 @@ function() {
     },
 
     async getProveedores() {
-      const { data } = await axios.get(`${this.server}/proveedores/get`);
+      const { data } = await axios.get(`${this.server}/proveedores/get/activate`);
       data.forEach((item) => {
         let data = { value: item._id, text: item.nombre };
         this.proveedores.push(data);
@@ -691,6 +696,7 @@ function() {
 
   data() {
     return {
+      count: null,
       fecha: null,
       isBusy: true,
       proveedores: [],

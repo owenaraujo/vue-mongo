@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card mt-2 p-2">
+    <div class="card mt-2 p-2" :class="{'dark-complement': dark}">
       <b-row cols-md="2" cols="1">
         <b-col>
           <div class="d-flex align-items-center">
@@ -54,7 +54,7 @@ search
     <div>
       <b-tabs content-class="mt-3">
         <b-tab title="total de productos vendidos">
-          <div class="container fluid" ref="reporteCompleto">
+          <div class=" container fluid" ref="reporteCompleto">
             <div class="container fluid">
               <b-table
                 :sticky-header="true"
@@ -63,7 +63,7 @@ search
                 hover
                 bordered
                 outlined
-                class="mt-3 list-scroll scrollbar-light-blue text-center"
+                class="card mt-3 list-scroll scrollbar-light-blue text-center"
                 :fields="reportesField"
                 :items="reporte"
               >
@@ -86,7 +86,6 @@ search
                   {{ (row.item.cantidad * row.item.id_producto.precio)  }} $
                 </template>
               </b-table>
-              <hr />
             </div>
           </div>
         </b-tab>
@@ -296,6 +295,11 @@ export default {
       );
       ventana.document.write(info.innerHTML);
       ventana.document.write(lista.innerHTML);
+      ventana.document.close();
+      ventana.focus();
+      setTimeout(function () {
+        ventana.print();
+      }, 2000)
     },
     createPdf() {
       const lista = this.$refs.lista;
