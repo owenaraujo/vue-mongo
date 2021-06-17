@@ -4,7 +4,10 @@
     <div v-if="usuario.roles.name !== 'usuario'">
       <div class="mt-2">
         <b-tabs content-class="mt-3" align="center">
-          <b-tab title="General">
+          <b-tab title="General" 
+            active
+          
+          >
             <b-container fluid>
               <b-row>
                 <b-col md="4">
@@ -34,7 +37,7 @@
                       class="d-flex justify-content-between align-items-center"
                     >
                       total de ventas
-                      <b-badge variant="primary" pill>1</b-badge>
+                      <b-badge variant="primary" pill>{{ventasCount}}</b-badge>
                     </b-list-group-item>
                     <b-list-group-item
                       :class="{ 'dark-secondary': dark }"
@@ -325,7 +328,6 @@
           </b-tab>
 
           <b-tab
-            active
             v-if="usuario.roles.name === 'administrador'"
             title="Usuarios"
           >
@@ -525,7 +527,7 @@
                     class="form-control mt-3"
                     autocomplete="off"
                   />
-                  {{ formAdd.username }}
+                  
                   <b-form-input
                     required
                     type="password"
@@ -816,7 +818,7 @@ export default {
       usuarios: [],
       categoriasProductos: [],
       unidades: [],
-
+ventasCount: null,
       tipoEquipo: {},
       tipoHerramienta: {},
       subsistemaPiezas: {},
@@ -833,6 +835,7 @@ export default {
     this.countProductos();
     this.getUsers();
     this.getRoles();
+    this.countVentas()
   },
   methods: {
     editUser(data) {
@@ -991,6 +994,10 @@ export default {
     async countProductos() {
       const { data } = await axios.get(`${this.server}/productos/get/count`);
       this.productosCount = data;
+    },
+    async countVentas() {
+      const data  = await axios.get(`${this.server}/ventas/get/count`);
+      this.ventasCount = data.data;
     },
     async getInfoUsuario() {
       const data = await axios.get(`${this.server}/auth/config/user/:id`);

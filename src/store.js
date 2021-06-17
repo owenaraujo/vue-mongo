@@ -9,7 +9,7 @@ state:{
         promedio : null,
         fecha:  null
     },
-    server :'',
+    server :'http://localhost:3000',
     server2 :'http://localhost:3000',
     dark : false,
     modalShow: true,
@@ -31,7 +31,6 @@ roles:{name: null}
          
         
       },
-    alerts: []
 },
 mutations:{
    
@@ -103,22 +102,17 @@ if (localStorage.dark === 'false') {
         state.token = localStorage.token
     }
     const {data} = await axios.get(`${state.server}/auth/authToken/`,{headers:{xtoken: state.token}})
-    
      if(data.value === null){
-         state.alerts.push(data)
          state.modalShow = true
          localStorage.modalShow = state.modalShow
          return 
         }
      if(data.value === false){
-         state.alerts.push(data)
          state.modalShow = true
          localStorage.modalShow = state.modalShow
          return 
         }
-      if (!sessionStorage.usuario) {
-        state.alerts.push(data) 
-      }  
+      
          if (localStorage.id) {
         state.id = localStorage.id
     }

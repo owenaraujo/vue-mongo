@@ -565,6 +565,13 @@ function() {
     },
     async getProductos() {
       const { data } = await axios.get(`${this.server}/productos/get`);
+      if (data.length > 0) {
+       this.productos = data;
+      this.isBusy = false
+      this.getProductosCount()
+      } else {
+      this.isBusy = false
+      }
       this.productos = data;
       this.isBusy = false
       this.getProductosCount()
