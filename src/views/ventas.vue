@@ -12,7 +12,9 @@
         <div class="btn color-primary text-white">
           <i class="fas fa-shopping-cart"></i>
         </div>
-        <div class=" iconC red-alert text-white">{{ store.length }}</div>
+        <div class=" iconC red-alert text-white">
+          {{ store.length + store_mayor.length }}
+        </div>
       </div>
       <div
         style="position: fixed; z-index: 1000; right: 10px ; bottom: 65px; width: 340px"
@@ -24,75 +26,86 @@
               :class="{ 'color-secondary': dark }"
             >
               <p class="text-left w-50">
-                total {{ (total_mayor) | formatNumber }}
+                total {{ total_mayor | formatNumber }}
               </p>
-              <p class="text-right w-50">total {{ total | formatNumber }}</p>
+              <p class="text-right w-50">
+                total {{ (total + total_mayor) | formatNumber }}
+              </p>
             </div>
-            <b-form-checkbox v-model="is_dolar">pago en dolares</b-form-checkbox>
-            {{is_dolar}}
             <div class="card-body list-scroll scrollbar-light-blue">
-             <div>
+              <b-form-checkbox v-model="is_dolar"
+                >pago en dolares</b-form-checkbox
+              >
+              <div>
                 <div v-for="(productos, index) in store" :key="index">
-                <div>
-                  {{ productos.producto }}
-                  <div>{{ productos.precio }} $ c/u</div>
                   <div>
-                    <div
-                      class="btn red-alert text-white"
-                      v-on:click="
-                        resCantidad(index, `${productos.id_producto}`)
-                      "
-                    >
-                      <i class="fas fa-minus"></i>
+                    {{ productos.producto }}
+                    <div>{{ productos.precio }} $ c/u</div>
+                    <div>
+                      <div
+                        class="btn red-alert text-white"
+                        v-on:click="
+                          resCantidad(index, `${productos.id_producto}`)
+                        "
+                      >
+                        <i class="fas fa-minus"></i>
+                      </div>
+                      {{ productos.cantidad }}
+                      <div
+                        class="btn yellow-danger text-white"
+                        v-on:click="
+                          sumCantidad(index, `${productos.id_producto}`)
+                        "
+                      >
+                        <i class="fas fa-plus"></i>
+                      </div>
+                      <p class="text-right">
+                        total: {{ productos.cantidad * productos.precio }}
+                      </p>
                     </div>
-                    {{ productos.cantidad }}
-                    <div
-                      class="btn yellow-danger text-white"
-                      v-on:click="
-                        sumCantidad(index, `${productos.id_producto}`)
-                      "
-                    >
-                      <i class="fas fa-plus"></i>
-                    </div>
-                    <p class="text-right">
-                      total: {{ productos.cantidad * productos.precio }}
-                    </p>
                   </div>
                 </div>
               </div>
-             </div>
               <div>
-                <hr>
+                <hr />
                 venta al mayor
                 <div v-for="(productos, index) in store_mayor" :key="index">
-                <div>
-                  {{ productos.producto }}
-                  <div>{{ productos.precio }} $ c/u</div>
                   <div>
-                    <div
-                      class="btn red-alert text-white"
-                      v-on:click="
-                        resCantidad_mayor(index, `${productos.id_producto}`)
-                      "
-                    >
-                      <i class="fas fa-minus"></i>
+                    {{ productos.producto }}
+                    <div>{{ productos.precio }} $ c/u</div>
+                    <div>
+                      <div
+                        class="btn red-alert text-white"
+                        v-on:click="
+                          resCantidad_mayor(index, `${productos.id_producto}`)
+                        "
+                      >
+                        <i class="fas fa-minus"></i>
+                      </div>
+                      {{ productos.cantidad }}
+                      <div
+                        class="btn yellow-danger text-white"
+                        v-on:click="
+                          sumCantidad_mayor(index, `${productos.id_producto}`)
+                        "
+                      >
+                        <i class="fas fa-plus"></i>
+                      </div>
+                      <p class="text-right">
+                        total: {{ productos.cantidad * productos.precio }}
+                      </p>
                     </div>
-                    {{ productos.cantidad }}
-                    <div
-                      class="btn yellow-danger text-white"
-                      v-on:click="
-                        sumCantidad_mayor(index, `${productos.id_producto}`)
-                      "
-                    >
-                      <i class="fas fa-plus"></i>
-                    </div>
-                    <p class="text-right">
-                      total: {{ productos.cantidad * productos.precio }}
-                    </p>
                   </div>
                 </div>
               </div>
-              </div>
+              <b-form-checkbox class="mt-3" v-model="perdida_prestamo"
+                >no agregar al total diario</b-form-checkbox
+              >
+              <b-form-input
+                placeholder="agregar nota"
+                v-model="nota"
+                v-if="perdida_prestamo"
+              ></b-form-input>
             </div>
             <div class="card-footer d-flex">
               <button
@@ -149,7 +162,6 @@
                   disponible: {{ producto.cantidad }}
                 </div>
                 <div class=" w-50 text-right">
-                  {{producto.venta}}
                   <b-button
                     style="border-radius: 0.6rem;
     
@@ -172,10 +184,13 @@
                     class="d-flex boton-cuadrado w-100 color-primary mr-2 text-white c-hand w-50"
                     @click="saveStore(producto.cantidad_mayor, producto._id)"
                     :disabled="
-                      producto.venta > producto.cantidad 
+                      producto.venta > producto.cantidad ||
+                        producto.cantidad < producto.cantidad_mayor
                     "
                   >
-                    agregar mayor<i class=" ml-2 material-icons">add_shopping_cart</i>
+                    agregar mayor<i class=" ml-2 material-icons"
+                      >add_shopping_cart</i
+                    >
                   </b-button>
                   <div>
                     {{ producto.alerta }}
@@ -187,7 +202,7 @@
         </div>
       </div>
     </div>
-   
+
     <Err />
   </div>
 </template>
@@ -215,7 +230,7 @@ export default {
     return {
       is_dolar: false,
       perdida_prestamo: false,
-      nota: '',
+      nota: "",
       btnEnviar: false,
       fields: ["producto", "opciones"],
       visible: false,
@@ -288,54 +303,56 @@ export default {
       "infoDolar",
     ]),
     total() {
-
-      this.store.map(item =>{
+      this.store.map((item) => {
         if (item.aumento === true) {
-          const valor = this.infoDolar.promedio * 10 / 100
-         
-        item.dolar = parseFloat(this.infoDolar.promedio + valor)
-        }
-        else{item.dolar= this.infoDolar.promedio}
-      })
-        
-       if (this.is_dolar === true) {
-          return this.store.reduce(
-        (sum, item) =>sum + parseFloat(item.cantidad * item.precio * item.dolar ),0);
-       }
-       else{
-          return this.store.reduce(
-        (sum, item) =>sum + parseFloat(item.cantidad * item.precio),0);
-       }
-    
-      },
-    total_mayor() {
+          const valor = (this.infoDolar.promedio * 10) / 100;
 
-      this.store_mayor.map(item =>{
-        if (item.aumento === true) {
-          const valor = this.infoDolar.promedio * 10 / 100
-         
-        item.dolar = parseFloat(this.infoDolar.promedio + valor)
+          item.dolar = parseFloat(this.infoDolar.promedio + valor);
+        } else {
+          item.dolar = this.infoDolar.promedio;
         }
-        else{item.dolar= this.infoDolar.promedio}
-      })
-        
-       if (this.is_dolar === true) {
-          return this.store_mayor.reduce(
-        (sum, item) =>sum + parseFloat(item.cantidad * item.precio * item.dolar ),0);
-       }
-       else{
-          return this.store_mayor.reduce(
-        (sum, item) =>sum + parseFloat(item.cantidad * item.precio),0);
-       }
-    
+      });
+
+      if (this.is_dolar === false) {
+        return this.store.reduce(
+          (sum, item) =>
+            sum + parseFloat(item.cantidad * item.precio * item.dolar),
+          0
+        );
+      } else {
+        return this.store.reduce(
+          (sum, item) => sum + parseFloat(item.cantidad * item.precio),
+          0
+        );
       }
-      
+    },
+    total_mayor() {
+      this.store_mayor.map((item) => {
+        if (item.aumento === true) {
+          const valor = (this.infoDolar.promedio * 10) / 100;
+
+          item.dolar = parseFloat(this.infoDolar.promedio + valor);
+        } else {
+          item.dolar = this.infoDolar.promedio;
+        }
+      });
+
+      if (this.is_dolar === false) {
+        return this.store_mayor.reduce(
+          (sum, item) =>
+            sum + parseFloat(item.cantidad * item.precio * item.dolar),
+          0
+        );
+      } else {
+        return this.store_mayor.reduce(
+          (sum, item) => sum + parseFloat(item.cantidad * item.precio),
+          0
+        );
+      }
+    },
   },
   methods: {
-    filter() {
-      const text = this.id;
-      console.log(text);
-    },
+    
     sumCantidad(index, id) {
       this.store.map((element) => {
         if (element.id_producto == id) {
@@ -362,7 +379,7 @@ export default {
               }
 
               if (item.cantidad - item.cantidad_mayor < 0) {
-                return
+                return;
               }
               item.cantidad = item.cantidad - item.cantidad_mayor;
 
@@ -381,7 +398,7 @@ export default {
               if (element.cantidad == 0) {
                 return;
               }
-              item.cantidad = item.cantidad+ item.cantidad_mayor;
+              item.cantidad = item.cantidad + item.cantidad_mayor;
               element.cantidad--;
               if (element.cantidad == 0) {
                 heredado.deleteFromStore_mayor(index);
@@ -411,11 +428,9 @@ export default {
       });
     },
     deleteFromStore(index) {
-      console.log(index);
       this.store.splice(index, 1);
     },
     deleteFromStore_mayor(index) {
-      console.log(index);
       this.store_mayor.splice(index, 1);
     },
     ...mapMutations([
@@ -436,25 +451,22 @@ export default {
       this.store_mayor = [];
       this.getProductos();
     },
-    obtener() {
-      return this.store.reduce(
-        (sum, item) => sum + parseFloat(item.cantidad * item.salida),
-        0
-      );
-    },
+    
     async enviar() {
-      if (this.store.length == 0) {
-        return;
+      if (this.store.length == 0 ) {
+        if ( this.store_mayor.length == 0) {
+          
+          return;
+        }
       }
       this.btnEnviar = true;
-      const value = this.obtener();
-      console.log(value);
+      const value = this.total + this.total_mayor;
       const valores = {
         dolar: this.infoDolar.promedio,
         total: value,
         nota: this.nota,
-        perdida_prestamo: this.prestamo,
-        is_dolar: this.is_Dolar,
+        perdida_prestamo: this.perdida_prestamo,
+        is_dolar: this.is_dolar,
         productos: this.store,
         por_mayor: this.store_mayor,
       };
@@ -504,15 +516,16 @@ export default {
     },
 
     saveStore(numero, id) {
-      const number = parseFloat(numero)
+      console.log(numero);
+      const number = parseFloat(numero);
       this.productos.map((element) => {
         if (number === 1) {
-           if (element._id === id) {
-          element.venta = 1
-          if (element.venta == 0 || element.venta == null) return;
-          if (element.cantidad - element.stock < element.venta) {
-            element.alerta = "limite de stock"
-          } 
+          if (element._id === id) {
+            element.venta = 1;
+            if (element.venta == 0 || element.venta == null) return;
+            if (element.cantidad - element.stock < element.venta) {
+              element.alerta = "limite de stock";
+            }
             element.cantidad = element.cantidad - element.venta;
             let data = this.store.map(function(item) {
               if (item.id_producto === element._id) {
@@ -541,27 +554,30 @@ export default {
 
             element.venta = 1;
             if (element.cantidad - element.stock < element.venta) {
-            element.alerta = "limite de stock"; return
-          } element.alert = null
+              element.alerta = "limite de stock";
+              return;
+            }
+            element.alert = null;
           }
         }
         if (number > 1) {
-           if (element._id === id) {
-          console.log(number);
-          if (number == 0 || number == null)  return;
-          if (element.cantidad - element.stock < number) {
-            return  element.alerta = "limite de stock"
-          } 
-          if (element.cantidad < number) {
-            return
-          }
-            element.venta = number
+          if (element._id === id) {
+            if (number == 0 || number == null) return;
+            if (element.cantidad - element.stock < number) {
+              return (element.alerta = "limite de stock");
+            }
+            if (element.cantidad < number) {
+              return;
+            }
+            element.venta = number;
             element.cantidad = element.cantidad - element.venta;
             let data = this.store_mayor.map(function(item) {
               if (item.id_producto === element._id) {
                 const ventaAnterior = parseFloat(item.cantidad);
-                //element.cantidad = element.cantidad - ventaActual
+                
                 item.cantidad = 1 + ventaAnterior;
+                element.venta = 1;
+
                 return true;
               } else {
                 return false;
@@ -582,14 +598,13 @@ export default {
             });
             element.venta = 1;
             if (element.cantidad - element.stock < element.venta) {
-            element.alerta = "limite de stock"; return
-          } element.alert = null
+              element.alerta = "limite de stock";
+              return;
+            }
+            element.alert = null;
           }
         }
-      
-        }
-      );
-    
+      });
     },
     alert(data) {
       if (data.value === true) {

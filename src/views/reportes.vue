@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="card mt-2 p-2" :class="{'dark-complement': dark}">
+    <div class="card mt-2 p-2" :class="{ 'dark-complement': dark }">
       <b-row cols-md="2" cols="1">
         <b-col>
           <div class="d-flex align-items-center">
@@ -12,20 +12,25 @@
             />
             <b-form-datepicker
               v-model="fechaFinal"
-
               type="datetime"
               style="width: 35%; height: 40px; font-size: 10px"
               class="mr-2"
             />
-            <div style="width: 15%" class="btn material-icons c-hand color-primary text-white" @click="getVentas">
-search
+            <div
+              style="width: 15%"
+              class="btn material-icons c-hand color-primary text-white"
+              @click="getVentas"
+            >
+              search
             </div>
-            <div style="width: 15%"  class="btn material-icons yellow-danger text-white"  @click="pdfCompleto()" >
+            <div
+              style="width: 15%"
+              class="btn material-icons yellow-danger text-white"
+              @click="pdfCompleto()"
+            >
               download
             </div>
-          
           </div>
-
         </b-col>
         <b-col>
           <div class="d-flex align-items-center ">
@@ -34,7 +39,7 @@ search
             </div>
             <div class="w-50">
               <p class="text-center">
-                ventas del dia: {{ totalVentasBs | formatNumber }} bs
+                ventas del dia en bolivares: {{ totalVentasBs }} bs
               </p>
             </div>
           </div>
@@ -82,8 +87,7 @@ search
                   {{ row.index + 1 }}
                 </template>
                 <template #cell(total)="row">
-                  
-                  {{ (row.item.cantidad * row.item.id_producto.precio)  }} $
+                  {{ row.item.cantidad * row.item.id_producto.salida }} $
                 </template>
               </b-table>
             </div>
@@ -92,57 +96,106 @@ search
         <b-tab title="detalles de ventas" active>
           <b-row class="">
             <b-col class="" md="6">
-              <b-table
-                style="max-height: 67.2vh"
-                :shortable="true"
-                :sticky-header="true"
-                :items="ventas"
-                :fields="fields"
-                striped
-                responsive="sm"
-                class="card mt-3 list-scroll scrollbar-light-blue"
-              >
-                <template #cell(createdAt)="row">
-                  {{ row.item.createdAt | formatDate }}
-                </template>
+              <div>
+                <b-table
+                  style="max-height: 67.2vh"
+                  :shortable="true"
+                  :sticky-header="true"
+                  :items="ventasBs"
+                  :fields="fields"
+                  striped
+                  responsive="sm"
+                  class="card mt-3 list-scroll scrollbar-light-blue"
+                >
+                  <template #cell(createdAt)="row">
+                    {{ row.item.createdAt | formatDate }}
+                  </template>
 
-                <template #cell(acciones)="row">
-                  <div size="sm" @click="ventaInfo(row.item)" class="mr-2 btn">
-                    información
-                  </div>
-                </template>
-              </b-table>
+                  <template #cell(acciones)="row">
+                    <div
+                      size="sm"
+                      @click="ventaInfo(row.item)"
+                      class="mr-2 btn"
+                    >
+                      información
+                    </div>
+                  </template>
+                </b-table>
+              </div>
+              <div>
+                <b-table
+                  style="max-height: 67.2vh"
+                  :shortable="true"
+                  :sticky-header="true"
+                  :items="ventasDolar"
+                  :fields="fields"
+                  striped
+                  responsive="sm"
+                  class="card mt-3 list-scroll scrollbar-light-blue"
+                >
+                  <template #cell(createdAt)="row">
+                    {{ row.item.createdAt | formatDate }}
+                  </template>
+
+                  <template #cell(acciones)="row">
+                    <div
+                      size="sm"
+                      @click="ventaInfo(row.item)"
+                      class="mr-2 btn"
+                    >
+                      información
+                    </div>
+                  </template>
+                </b-table>
+              </div>
             </b-col>
             <b-col md="6">
-              <div class="card mt-3 text-dark" >
-                <div class="card-header text-center c-hand"  @click="createPdf()">detalles de venta
-                  
-                   </div>
-                <div  ref="lista">
+              <div class="card mt-3 text-dark">
+                <div
+                  class="card-header text-center c-hand"
+                  @click="createPdf()"
+                >
+                  detalles de venta
+                </div>
+                <div ref="lista">
                   <div class="card-body">
-                  <p>
-                    cotizacion del dia de venta :
-                    {{ infoVenta.dolar | formatNumber }}
-                  </p>
-                  <p>total de venta : {{ totalPrecio }}$</p>
-                  <p>vendidos: {{ totalProductos }} unidades</p>
-                </div>
-                <div class="text-center container-fluid">
-                  <b-table
-                    style="max-height: 30vh"
-                    :sticky-header="true"
-                    striped
-                    hover
-                    class="mt-3 list-scroll scrollbar-light-blue"
-                    :items="productos"
-                    :fields="fieldsInfo"
-                  >
-                  <template #cell(total)='row'>
-                  {{row.item.cantidad * row.item.id_producto.precio}}
-                  
-                  </template>
-                  </b-table>
-                </div>
+                    <p>
+                      cotizacion del dia de venta :
+                      {{ infoVenta.dolar | formatNumber }}
+                    </p>
+                    <p>total de venta : {{ infoVenta.total| formatNumber }}</p>
+                    <p>vendidos: {{ totalProductos }} unidades</p>
+                  </div>
+                  <div class="text-center container-fluid">
+                    <b-table
+                      style="max-height: 30vh"
+                      :sticky-header="true"
+                      striped
+                      hover
+                      class="mt-3 list-scroll scrollbar-light-blue"
+                      :items="productos"
+                      :fields="fieldsInfo"
+                    >
+                      <template #cell(total)="row">
+                        {{ row.item.cantidad * row.item.id_producto.salida }}
+                      </template>
+                    </b-table>
+                  </div>
+                  <div class="text-center container-fluid">
+                    <b-table
+                      style="max-height: 30vh"
+                      :sticky-header="true"
+                      striped
+                      hover
+                      class="mt-3 list-scroll scrollbar-light-blue"
+                      :items="mayor"
+                      :fields="fieldsInfo"
+                    >
+                      <template #cell(total)="row">
+                        {{ row.item.cantidad * row.item.id_producto.salida }}
+                      </template>
+                    </b-table>
+                  </div>
                 </div>
               </div>
             </b-col>
@@ -162,12 +215,12 @@ import axios from "axios";
 import Vue from "vue";
 import Err from "../components/404.vue";
 import moment from "moment";
-Vue.filter("formatDate", function (value) {
+Vue.filter("formatDate", function(value) {
   if (value) {
     return moment(String(value)).format("DD/MM/YYYY hh:mm a");
   }
 });
-Vue.filter("formatNumber", function (value) {
+Vue.filter("formatNumber", function(value) {
   return numeral(value).format("0,0.00"); // displaying other groupings/separators is possible, look at the docs
 });
 export default {
@@ -176,12 +229,16 @@ export default {
   },
   async created() {
     this.tiempo();
-    this.dolar()
+    this.dolar();
   },
   name: "Links",
   data() {
     return {
+      totalProductosDolar: [],
+      totalProductosBs: [],
       total: [],
+      ventasDolar: [],
+      ventasBs: [],
       fechaInicio: null,
       fechaFinal: null,
       fecha: null,
@@ -212,12 +269,13 @@ export default {
       validated: 1,
 
       productos: [],
+      mayor: [],
     };
   },
   computed: {
     ...mapState([
       "options",
-      'infoDolar',
+      "infoDolar",
       "dark",
       "server",
       "infoEmpresa",
@@ -225,7 +283,6 @@ export default {
       "token",
     ]),
 
-    
     cantidadReporte() {
       return this.reporte.reduce(
         (sum, item) => sum + parseFloat(item.cantidad),
@@ -233,13 +290,16 @@ export default {
       );
     },
     totalVentasBs() {
-      return this.ventas.reduce(
-        (sum, item) => sum + parseFloat(item.total * item.dolar),
+      return this.ventasBs.reduce(
+        (sum, item) => sum + parseFloat(item.total),
         0
       );
     },
     totalVentas$() {
-      return this.ventas.reduce((sum, item) => sum + parseFloat(item.total), 0);
+      return this.ventasDolar.reduce(
+        (sum, item) => sum + parseFloat(item.total),
+        0
+      );
     },
     totalProductos() {
       return this.productos.reduce(
@@ -260,32 +320,7 @@ export default {
         this.fecha = new Date();
       }, 1000);
     },
-    productosAll() {
-      this.reporte = [];
-      this.total.map((item) => {
-        item.productos.map((e) => {
-          const vall = this.reporte.map((value) => {
-            if (value.id_producto._id === e.id_producto._id) {
-              let valor =value.cantidad + e.cantidad
-
-             value.cantidad = valor;
-
-              return true;
-            } else {
-              return false;
-            }
-          });
-          if (vall.length === 0) {
-            return this.reporte.push(e);
-          }
-          if (vall.indexOf(true) !== -1) {
-            return;
-          }
-
-          this.reporte.push(e);
-        });
-      });
-    },
+    productosAll() {},
     pdfCompleto() {
       const info = this.$refs.info;
       const lista = this.$refs.reporteCompleto;
@@ -297,9 +332,9 @@ export default {
       ventana.document.write(lista.innerHTML);
       ventana.document.close();
       ventana.focus();
-      setTimeout(function () {
+      setTimeout(function() {
         ventana.print();
-      }, 2000)
+      }, 2000);
     },
     createPdf() {
       const lista = this.$refs.lista;
@@ -314,21 +349,21 @@ export default {
       );
       ventana.document.close();
       ventana.focus();
-      setTimeout(function () {
+      setTimeout(function() {
         ventana.print();
-      }, 2000)
+      }, 2000);
     },
     ventaInfo(data) {
-      
       this.infoVenta = data;
+      console.log(data);
       this.productos = data.productos;
+      this.mayor = data.por_mayor
     },
     filter() {
       const text = this.id;
       console.log(text);
     },
 
-    
     ...mapMutations([
       "getStorage",
       "getLogin",
@@ -336,36 +371,41 @@ export default {
       "saveToken",
       "getUser",
       "getInfoEmpresa",
-      'dolar',
+      "dolar",
     ]),
     async getVentas() {
-      if (this.fechaInicio == null) return
-      if (this.fechaFinal == null) return
-      const { data } = await axios.get(`${this.server}/ventas/get/${this.fechaInicio}/${this.fechaFinal}`);
+      if (this.fechaInicio == null) return;
+      if (this.fechaFinal == null) return;
+      const { data } = await axios.get(
+        `${this.server}/ventas/get/${this.fechaInicio}/${this.fechaFinal}`
+      );
       this.ventas = data;
-    this.getTotal();
-    
+      data.map((item) => {
+        if (item.is_dolar === true) {
+          this.ventasDolar.push(item);
+        }
+        if (item.is_dolar === false) {
+          this.ventasBs.push(item);
+        }
+      });
+      this.getTotal();
     },
     async getTotal() {
-      if (this.fechaInicio == null) return
-      if (this.fechaFinal == null) return
-      const { data } = await axios.get(`${this.server}/ventas/get/${this.fechaInicio}/${this.fechaFinal}`);
+      if (this.fechaInicio == null) return;
+      if (this.fechaFinal == null) return;
+      const { data } = await axios.get(
+        `${this.server}/ventas/get/${this.fechaInicio}/${this.fechaFinal}`
+      );
       this.total = data;
-    this.productosAll();
-    
+      this.productosAll();
     },
-    deleteStore() {
-      this.store = [];
-      this.getVentas();
-    },
+
     obtener() {
       return this.store.reduce(
         (sum, item) => sum + parseFloat(item.cantidad * item.precio),
         0
       );
     },
-   
-  
 
     alert(data) {
       if (data.value === true) {

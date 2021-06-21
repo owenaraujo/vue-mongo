@@ -46,12 +46,11 @@ mutations:{
     async dolar(state) {
         state.dolar ={}
         try {
-            let {data}   = await axios.get('https://s3.amazonaws.com/dolartoday/data.json') 
+            //let {data}   = await axios.get('https://s3.amazonaws.com/dolartoday/data.json') 
       
-      state.infoDolar.promedio = data.USD.promedio
-      state.infoDolar.fecha = data._timestamp.fecha
+      state.infoDolar.promedio = state.infoEmpresa.dolar
+      state.infoDolar.fecha = 'dolar sin conexion'
      
-      data = {}
       if (state.infoDolar.promedio === state.infoEmpresa.dolar ) {
      
       return 
