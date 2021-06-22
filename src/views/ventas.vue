@@ -60,7 +60,7 @@
                         <i class="fas fa-plus"></i>
                       </div>
                       <p class="text-right">
-                        total: {{ productos.cantidad * productos.precio }}
+                        total: {{ productos.cantidad * productos.salida }}
                       </p>
                     </div>
                   </div>
@@ -92,7 +92,7 @@
                         <i class="fas fa-plus"></i>
                       </div>
                       <p class="text-right">
-                        total: {{ productos.cantidad * productos.precio }}
+                        total: {{ productos.cantidad * productos.salida }}
                       </p>
                     </div>
                   </div>
@@ -316,12 +316,12 @@ export default {
       if (this.is_dolar === false) {
         return this.store.reduce(
           (sum, item) =>
-            sum + parseFloat(item.cantidad * item.precio * item.dolar),
+            sum + parseFloat(item.cantidad * item.salida * item.dolar),
           0
         );
       } else {
         return this.store.reduce(
-          (sum, item) => sum + parseFloat(item.cantidad * item.precio),
+          (sum, item) => sum + parseFloat(item.cantidad * item.salida),
           0
         );
       }
@@ -340,12 +340,12 @@ export default {
       if (this.is_dolar === false) {
         return this.store_mayor.reduce(
           (sum, item) =>
-            sum + parseFloat(item.cantidad * item.precio * item.dolar),
+            sum + parseFloat(item.cantidad * item.salida * item.dolar),
           0
         );
       } else {
         return this.store_mayor.reduce(
-          (sum, item) => sum + parseFloat(item.cantidad * item.precio),
+          (sum, item) => sum + parseFloat(item.cantidad * item.salida),
           0
         );
       }
@@ -548,7 +548,8 @@ export default {
               aumento: element.aumento,
               cantidad: element.venta,
               dolar: null,
-              precio: element.salida,
+              entrada: element.entrada,
+              salida: element.salida,
               id_producto: element._id,
             });
 
@@ -592,8 +593,9 @@ export default {
               producto: element.nombre,
               aumento: element.aumento,
               cantidad: 1,
+              entrada: element.entrada * element.cantidad_mayor,
               dolar: null,
-              precio: element.salida_mayor,
+              salida: element.salida_mayor,
               id_producto: element._id,
             });
             element.venta = 1;
