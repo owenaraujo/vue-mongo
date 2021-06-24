@@ -479,6 +479,7 @@ export default {
 
       if (data.value === true) {
         this.store = [];
+        this.store_mayor = [];
       }
     },
     verifyStock(index) {

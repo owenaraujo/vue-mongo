@@ -67,7 +67,7 @@
                       modifiers: { offset: { offset: '0,10px' } },
                     }"
                   >
-                    <div class="popper">
+                    <div class="popper" >
                       {{ row.item.unidadMedida.nombre }}
                     </div>
 
@@ -84,11 +84,20 @@
                       modifiers: { offset: { offset: '0,10px' } },
                     }"
                   >
-                    <div class="popper">
+                    <div class="popper" v-if="row.item.aumento === true ">
                       {{
-                        (infoDolar.promedio * row.item.salida) | formatNumber
-                      }}Bs
-                      mayor:
+                        ((infoDolar.promedio * 10 / 100 + infoDolar.promedio)  * row.item.salida ) | formatNumber
+                      }} Bs
+                       mayor:
+                      {{
+                      row.item.salida_mayor
+                      }} $
+                    </div>
+                    <div class="popper" v-if="row.item.aumento === false ">
+                      {{
+                       (infoDolar.promedio  * row.item.salida ) | formatNumber
+                      }} Bs
+                       mayor:
                       {{
                       row.item.salida_mayor
                       }} $
@@ -157,9 +166,9 @@
               <h5>R.i.F. {{ infoEmpresa.rif }}</h5>
               <h5>
                 cotizacion del dolar :
-                {{ infoDolar.promedio | formatNumber }}--{{
-                  infoDolar.fecha | formatDate
-                }}
+                {{ infoDolar.promedio | formatNumber }}
+
+                
               </h5>
             </div>
           </div>
@@ -171,37 +180,47 @@
             striped
             hover
             :items="productos"
-            :fields="fieldsReporte"
+            :fields="reportesField"
           >
-            <template #cell(#)="row">
-              {{ row.index + 1 }}
-            </template>
-            <template v-slot:custom-foot>
-              <b-tr>
-                <b-th colspan="5"><span class="sr-only"></span></b-th>
-                <b-th variant="warning" colspan="1">
-                  {{ totalUnidades }} unidades
-                </b-th>
-                <b-th variant="primary" colspan="1"> {{ total$ }} $ </b-th>
-              </b-tr>
-            </template>
-            <template #cell(total)="row">
-              {{ row.item.cantidad * row.item.precio }} $
-            </template>
-            <template #cell(createdAt)="row">
-              {{ row.item.createdAt | formatDate }}
-            </template>
-            <template #table-busy>
-              <div class="text-center text-primary my-2">
-                <b-spinner class="align-middle"></b-spinner>
-                <strong> Cargando...</strong>
-              </div>
-              te
-            </template>
-            <template #cell(cantidad)="row">
-              {{ row.item.cantidad }} {{ row.item.unidadMedida.nombre }}
-            </template>
-            <template #cell(precio)="row"> {{ row.item.precio }} $ </template>
+<template v-slot:custom-foot>
+                  <b-tr class="">
+                    <b-th colspan="3"><span class="sr-only"></span></b-th>
+                    <b-th variant="warning" colspan="1">
+                      {{ inversion}}
+                      
+                    </b-th>
+                    <b-th variant="primary" colspan="1">
+                      {{ totalProductos}} 
+                    </b-th>
+                    <b-th variant="primary" colspan="1">
+                      {{ ganancias }} 
+                    </b-th>
+                  </b-tr>
+                </template>
+                <template #cell(numero)="row ">
+                  <div>
+                  {{ row.index + 1 }}
+
+
+                  </div>
+                </template>
+                <template #cell(nombre)="row ">
+                  <div :class="{'text-danger' : row.item.mayo}">
+                  {{ row.item.nombre }} ({{row.item.unidadMedida.abreviacion}})
+
+
+                  </div>
+                </template>
+                
+                <template #cell(entrada)="row">
+                  {{ row.item.cantidad * row.item.entrada }} 
+                </template>
+                <template #cell(salida)="row">
+                  {{ row.item.cantidad * row.item.salida }} 
+                </template>
+                <template #cell(ganancias)="row">
+                  {{ (row.item.cantidad * row.item.salida)-(row.item.cantidad * row.item.entrada)  }} 
+                </template>
           </b-table>
         </div>
       </div>
@@ -439,14 +458,20 @@
                   />
                  
 <div class="d-flex">
-    <b-form-input
+    
+    <div class="form-floating w-50">
+        <b-form-input
                       required
                       type="number"
-                      v-model="formEdit.cantidad"
+                      v-model="cantidad"
                       placeholder="cantidad"
-                      class="form-control mt-3  w-50"
+                      class="form-control mt-3  "
                       autocomplete="off"
+                      id="cantidad"
                     />
+                    <small class="form-text text-muted">cantidad actualmente en inventario: {{formEdit.cantidad}}</small>
+    </div>
+   
 
                     <b-form-input
                       required
@@ -508,24 +533,17 @@
                     style="  border-radius: 0.25rem;
 "
                   />
-                   <b-form-checkbox
-                      required
-                      v-model="formEdit.aumento"
-                      placeholder="aumento del 10%"
-                      class=" mt-3 ml-2 w-50"
-                      
-                    >aumento del 10%
-                      </b-form-checkbox>
+                   
                 </div>
               </form>
             </div>
             <div class="modal-footer d-flex justify-content-center mr-4 ml-4">
-              <div
+              <b-button :disabled="botonEditar"
                 @click="sendEdit(formEdit._id)"
                 class="text-white mt-3 btn btn-block color-primary mr-4 ml-4 c-hand"
               >
                 guardar
-              </div>
+              </b-button>
             </div>
           </div>
         </div>
@@ -638,7 +656,18 @@ export default {
     //solicitudes inmediatas
 
     async sendEdit(id) {
-      const { data } = await axios.put(
+      if (this.formEdit._id == null) {
+        return
+        }
+        this.botonEditar = true
+        let valor1 = parseFloat(this.cantidad)
+      if (this.cantidad === "") {
+        valor1 = 0
+      }
+      let valor2 = parseFloat(this.formEdit.cantidad)
+     const cantidad = valor1 + valor2
+this.formEdit.cantidad = cantidad
+const { data } = await axios.put(
         `${this.server}/productos/${id}`,
         this.formEdit,
         { headers: { xtoken: this.token } }
@@ -659,6 +688,8 @@ export default {
       this.formEdit.unidadMedida = null;
       this.formEdit.descripcion = null;
       this.formEdit._id = null;
+this.cantidad = ""
+this.botonEditar = false
       this.getProductos();
     },
 
@@ -744,6 +775,22 @@ export default {
   },
 
   computed: {
+
+    ganancias (){
+      return this.productos.reduce(
+        (sum, item)=> sum+parseFloat((item.cantidad * item.salida)-(item.cantidad * item.entrada)),0
+      )
+    },
+    inversion (){
+      return this.productos.reduce(
+        (sum, item)=> sum+parseFloat(item.cantidad * item.entrada),0
+      )
+    },
+    totalProductos (){
+      return this.productos.reduce(
+        (sum, item)=> sum+parseFloat(item.cantidad * item.salida),0
+      )
+    },
     totalUnidades() {
       return this.productos.reduce(
         (sum, item) => sum + parseFloat(item.cantidad),
@@ -777,37 +824,23 @@ export default {
 
   data() {
     return {
+      botonEditar: false,
+      cantidad: "",
       count: null,
       fecha: null,
       isBusy: true,
       proveedores: [],
       filter: null,
       filterOn: [],
-      fieldsReporte: [
-        "#",
-        {
-          key: "createdAt",
-          label: "creacion",
-        },
-        {
-          key: "nombre",
-        },
-        {
-          key: "codigo",
-        },
-
-        {
-          key: "salida",
-          label: "precio de venta",
-        },
-
-        {
-          key: "cantidad",
-          label: "cantidad",
-        },
-
-        "total",
+      reportesField: [
+        { key: "numero", label: "#" },
+        { key: "nombre", label: "Nombre" , sortable: true},
+        "cantidad",
+        { key: "entrada", label: "entrada" , sortable : true},
+        "salida",
+"ganancias", 
       ],
+      
       fields: [
         {
           key: "nombre",

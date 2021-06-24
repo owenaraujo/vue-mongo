@@ -12,6 +12,10 @@ routes:[
 name:'index',
 component: ()=> import('@/views/index.vue')
 },
+{path:'/',
+name:'principal',
+component: ()=> import('@/views/productos.vue')
+},
 {path:'/ventas',
 name:'ventas',
 component: ()=> import('@/views/ventas.vue')
