@@ -302,7 +302,7 @@ async searchmodelo(){
             if (this.newmodel.categoria == null) {
                 return
             }
-            console.log(id);
+            
             if (this.newmodel.marca != "xiaomi") this.newmodel.codename = null
             if (this.newmodel.marca == "xiaomi") this.newmodel.sku = null
 

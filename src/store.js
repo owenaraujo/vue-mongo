@@ -9,7 +9,7 @@ state:{
         promedio : null,
         fecha:  null
     },
-    server :'http://localhost:3000',
+    server :process.env.VUE_APP_SERVER,
     server2 :'http://localhost:3000',
     dark : false,
     modalShow: true,
