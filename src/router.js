@@ -24,6 +24,10 @@ component: ()=> import('@/views/ventas.vue')
 name:'proveedores',
 component: ()=> import('@/views/proveedores.vue')
 },
+{path:'/vidrios',
+name:'vidrios',
+component: ()=> import('@/views/vidrios.vue')
+},
 {path:'/categorias',
 name:'categorias',
 component: ()=> import('@/views/categorias.vue')

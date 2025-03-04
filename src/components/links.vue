@@ -134,6 +134,17 @@ exit_to_app
                   >local_mall</i
                 >Ventas</router-link
               >
+              <router-link v-if="usuario.roles.name !== 'usuario'"
+                class="mdl-navigation__link"
+                :class="{'text-white' : dark, 'text-dark': !dark}"
+                to="vidrios"
+                ><i
+                  class="material-icons"
+                  :class="{'text-white' : dark, ' text-dark': !dark}"
+                  role="presentation"
+                  >local_mall</i
+                >vidrios</router-link
+              >
               
               <router-link
                 class="mdl-navigation__link"
