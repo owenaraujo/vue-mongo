@@ -463,7 +463,7 @@ async searchmodelo(){
 
             ],
             modelos: [
-                "xiaomi", "samsung", "motorola", "tecno", "infinix", "lenovo", "oppo", "realme", "vivo", "oneplus", "apple", "google"
+                "xiaomi", "samsung", "motorola", "tecno", "infinix", "lenovo", "oppo", "zte","realme", "vivo", "oneplus", "apple", "google"
             ],
 
             unidadesMedida: [],
