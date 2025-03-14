@@ -85,7 +85,7 @@
                       @click="ventaInfo(row.item)"
                       class="mr-2 btn"
                     >
-                      información
+                    {{row.item }}  información
                     </div>
                   </template>
                 </b-table>
@@ -101,11 +101,8 @@
                 </div>
                 <div ref="lista">
                   <div class="card-body">
-                    <p>
-                      cotizacion del dia de venta :
-                      {{ infoVenta.dolar | formatNumber }}
-                    </p>
-                    <p>total de venta : {{ infoVenta.total | formatNumber }}</p>
+                    
+                    <p>total de venta  : {{ infoVenta }}</p>
                     <p>vendidos: {{ totalProductos }} unidades</p>
                   </div>
                   <div
@@ -476,7 +473,7 @@ const val =      this.totalProductosDolar.map(item=>{
         const salida = item.cantidad * item.salida
         return salida- entrada
       })
-        console.log(val);
+        
       return val.reduce(
         (sum, item) => sum + parseFloat(item),
         0
@@ -488,7 +485,7 @@ const val =      this.totalProductosBs.map(item=>{
         const salida = item.cantidad * item.salida
         return salida- entrada
       })
-        console.log(val);
+        
       return val.reduce(
         (sum, item) => sum + parseFloat(item),
         0
@@ -499,7 +496,7 @@ const val =      this.totalProductosDolar.map(item=>{
         const entrada = item.cantidad * item.entrada
         return  entrada
       })
-        console.log(val);
+        
       return val.reduce(
         (sum, item) => sum + parseFloat(item),
         0
@@ -510,7 +507,7 @@ const val =      this.totalProductosBs.map(item=>{
         const entrada = item.cantidad * item.entrada
         return  entrada
       })
-        console.log(val);
+        
       return val.reduce(
         (sum, item) => sum + parseFloat(item),
         0
@@ -588,10 +585,7 @@ const val =      this.totalProductosBs.map(item=>{
       this.productos = [];
       this.mayor = [];
     },
-    filter() {
-      const text = this.id;
-      console.log(text);
-    },
+  
 
     ...mapMutations([
       "getStorage",
@@ -605,21 +599,18 @@ const val =      this.totalProductosBs.map(item=>{
     async getVentas() {
       if (this.fechaInicio == null) return;
       if (this.fechaFinal == null) return;
-      const { data } = await axios.get(
+      const  data  = await axios.get(
         `${this.server}/ventas/get/${this.fechaInicio}/${this.fechaFinal}`
       );
+      console.log(data.data);
+      
       this.ventasBs = [];
       this.ventasDolar = [];
-      this.ventas = data;
-      data.map((item) => {
-        if (item.is_dolar === true) {
-          this.ventasDolar.push(item);
-        }
-        if (item.is_dolar === false) {
-          this.ventasBs.push(item);
-        }
-      });
-      this.getTotal();
+      this.ventasBs = data.data;
+    
+      
+      
+      
     },
     async getTotal() {
       this.totalProductosBs.splice(0)
