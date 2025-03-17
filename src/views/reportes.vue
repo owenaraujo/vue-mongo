@@ -599,14 +599,14 @@ const val =      this.totalProductosBs.map(item=>{
     async getVentas() {
       if (this.fechaInicio == null) return;
       if (this.fechaFinal == null) return;
-      const  data  = await axios.get(
+      const  {data}  = await axios.get(
         `${this.server}/ventas/get/${this.fechaInicio}/${this.fechaFinal}`
       );
-      console.log(data.data);
+      console.log(data);
       
       this.ventasBs = [];
       this.ventasDolar = [];
-      this.ventasBs = data.data;
+      this.ventasBs = data;
     
       
       
