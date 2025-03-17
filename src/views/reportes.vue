@@ -69,7 +69,7 @@
                   style="max-height: 64.2vh"
                   :shortable="true"
                   :sticky-header="true"
-                  :items="ventasBs"
+                  :items="ventas"
                   :fields="fields"
                   striped
                   responsive="sm"
@@ -85,7 +85,7 @@
                       @click="ventaInfo(row.item)"
                       class="mr-2 btn"
                     >
-                    {{row.item }}  información
+                      información
                     </div>
                   </template>
                 </b-table>
@@ -102,7 +102,7 @@
                 <div ref="lista">
                   <div class="card-body">
                     
-                    <p>total de venta  : {{ infoVenta }}</p>
+                    <p>total de venta  : {{ infoVenta}}</p>
                     <p>vendidos: {{ totalProductos }} unidades</p>
                   </div>
                   <div
@@ -404,7 +404,7 @@ export default {
       totalProductosBs: [],
       total: [],
       ventasDolar: [],
-      ventasBs: [],
+      ventas: [],
       fechaInicio: null,
       fechaFinal: null,
       fecha: null,
@@ -429,7 +429,7 @@ export default {
         { key: "total", label: "total" },
       ],
       time: null,
-      ventas: [],
+     
       visible: false,
       busqueda: "",
       validated: 1,
@@ -456,7 +456,7 @@ export default {
       );
     },
     totalVentasBs() {
-      return this.ventasBs.reduce(
+      return this.ventas.reduce(
         (sum, item) => sum + parseFloat(item.total),
         0
       );
@@ -604,9 +604,9 @@ const val =      this.totalProductosBs.map(item=>{
       );
       console.log(data);
       
-      this.ventasBs = [];
+      this.ventas = [];
       this.ventasDolar = [];
-      this.ventasBs = data;
+      this.ventas = data;
     
       
       
@@ -625,7 +625,7 @@ element.status = 'awesome'
          this.totalProductosDolar.push(element)
        })
      })
-     this.ventasBs.map(item=>{
+     this.ventas.map(item=>{
        item.productos.map(element=>{
          let dolar = null
          if (element.id_producto.aumento === true) {
